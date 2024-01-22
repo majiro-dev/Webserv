@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/22 13:45:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/01/22 14:06:43 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool   Config::parse(char *path)
     std::string     ext = pathStr.substr(pathStr.find_last_of(".") + 1);
     if (ext != "conf")
     {
-        std::cout << ERROR_FILE_EXT;
+        std::cout << ERROR_FILE_EXTENSION;
         return (false);
     }
     //if the file is empty returns false
