@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/22 11:44:37 by manujime         ###   ########.fr       */
+/*   Updated: 2024/01/22 13:46:11 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,10 @@ int main(int argc, char **argv)
         std::cout << ERROR_ARGC;
         return (1);
     }
-    
+    Config  config(argv[1]);
+    if (!config.valid)
+        return (1);
     Server  server;
-    Config  config;
-
-    config = Config(argv[1]);
 
     return (0);
 }
