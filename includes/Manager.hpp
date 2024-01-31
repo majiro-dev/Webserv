@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   outputMacros.hpp                                   :+:      :+:    :+:   */
+/*   Manager.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/22 11:33:43 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 12:51:17 by manujime         ###   ########.fr       */
+/*   Created: 2024/01/31 12:15:31 by manujime          #+#    #+#             */
+/*   Updated: 2024/01/31 12:23:15 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef OUTPUTMACROS_HPP
-# define OUTPUTMACROS_HPP
+#ifndef MANAGER_HPP
+# define MANAGER_HPP
 
-#define ERROR_ARGC "Error: wrong number of arguments.\n"
+# include "Config.hpp"
+# include "Server.hpp"
 
-#define ERROR_FILE_READ "Error: file is not readable or does not exist.\n"
-#define ERROR_FILE_EMPTY "Error: file is empty.\n"
-#define ERROR_FILE_EXTENSION "Error: file is not a .conf file.\n"
-#define ERROR_FILE_VALID "Error: not a valid .conf file.\n"
+class Manager
+{
+	public:
+		Manager(void);
+		~Manager(void);
+		
+
+	private:
+		std::list<Config>	_configs;
+		std::list<Server>	_servers;
+};
 
 #endif

@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   outputMacros.hpp                                   :+:      :+:    :+:   */
+/*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/22 11:33:43 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 12:51:17 by manujime         ###   ########.fr       */
+/*   Created: 2024/01/31 13:46:56 by manujime          #+#    #+#             */
+/*   Updated: 2024/01/31 13:47:06 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef OUTPUTMACROS_HPP
-# define OUTPUTMACROS_HPP
+#include "../includes/Location.hpp"
 
-#define ERROR_ARGC "Error: wrong number of arguments.\n"
+Location::Location(void)
+{
+}
 
-#define ERROR_FILE_READ "Error: file is not readable or does not exist.\n"
-#define ERROR_FILE_EMPTY "Error: file is empty.\n"
-#define ERROR_FILE_EXTENSION "Error: file is not a .conf file.\n"
-#define ERROR_FILE_VALID "Error: not a valid .conf file.\n"
-
-#endif
+Location::~Location(void)
+{
+}

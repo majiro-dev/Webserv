@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/30 22:46:56 by manujime         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:40:32 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,38 @@
 
 # include "outputMacros.hpp"
 # include "ConfigUtils.hpp"
-
-# include <iostream>
-# include <fstream>
-# include <string>
-# include <sstream>
-# include <list>
-# include <map>
-# include <netinet/in.h>
+# include "Location.hpp"
 
 
 class Config
 {
     public:
-        Config(char *path);
+        Config(void);
         ~Config(void);
 
-        bool    valid;
+        bool        isValid;
+
+        uint16_t    GetPort(void);
+        in_addr_t   GetHost(void);
+        std::string GetServerName(void);
+        std::string GetRoot(void);
+        size_t      GetClientMaxBodySize(void);
+        std::string GetIndex(void);
+        
+        std::list<Location>         GetLocations(void);
+        std::map<int, std::string>  GetErrorPages(void);
+
+        void   SetPort(uint16_t port);
+        void   SetHost(in_addr_t host);
+        void   SetServerName(std::string server_name);
+        void   SetRoot(std::string root);
+        void   SetClientMaxBodySize(size_t client_max_body_size);
+        void   SetIndex(std::string index);
+
+        void   AddLocation(Location location);
+        void   AddErrorPage(int error_code, std::string error_page);
 
     private:
-        bool    parse(char *path);
-        
         uint16_t     _port;
         in_addr_t    _host;
         std::string  _server_name;
@@ -44,7 +55,7 @@ class Config
         size_t       _client_max_body_size;
         std::string  _index;
         
-        
+        std::list<Location>         _locations;
         std::map<int, std::string>  _error_pages;
 };
 
