@@ -6,14 +6,14 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:35:35 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 13:48:18 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/02 00:11:14 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
 # define LOCATION_HPP
 
-# include "ConfigUtils.hpp"
+# include "Utils.hpp"
 
 
 class Location

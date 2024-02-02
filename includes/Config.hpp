@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 13:40:32 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/02 11:46:46 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define CONFIG_HPP
 
 # include "outputMacros.hpp"
-# include "ConfigUtils.hpp"
+# include "Utils.hpp"
 # include "Location.hpp"
 
 
