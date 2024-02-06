@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 12:29:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:39:20 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ int main(int argc, char **argv)
     if (!Utils::FileIsValid(path))
         return (1);
 
-    Utils::log("init server");
+    Utils::log("Init server");
     //Server server = Server("0.0.0.0", 8080);
     Server server = Server(config);
-    server.startListen();
+    server.runServer();
     Utils::log("Server is running");
     return (0);
 }

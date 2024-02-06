@@ -65,15 +65,24 @@ void Utils::log(const std::string &message)
     std::cout << message << std::endl;
 }
 
-void Utils::exitWithError(const std::string &message)
-{
-    log(message + "\n");
-    exit(1);
-}
 
 std::string Utils::IntToString(int number)
 {
     std::stringstream ss;
     ss << number;
     return ss.str();
+}
+
+MyError::MyError(const char *msg)
+    :_msg(msg)
+{}
+
+const char * MyError::what() const throw()
+{
+    return _msg;
+}
+
+void Utils::exceptWithError(const std::string &message)
+{
+    throw MyError(message.c_str());
 }
