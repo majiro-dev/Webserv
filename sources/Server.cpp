@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 12:32:20 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/06 17:00:07 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Server::Server(Config config) : _config(config), _port(config.GetPort()),
 {
     struct in_addr addr;
     addr.s_addr = config.GetHost();
-    _ip_address = inet_ntoa(addr);
+    _ip_address = htonl(addr.s_addr);
 
     _socket_address.sin_family = AF_INET;
     _socket_address.sin_addr.s_addr = inet_addr(_ip_address.c_str());

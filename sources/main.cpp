@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 12:29:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:56:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../includes/outputMacros.hpp"
 #include "../includes/Server.hpp"
 #include "../includes/Config.hpp"
+#include "../includes/Manager.hpp"
 
 int main(int argc, char **argv)
 {
@@ -28,7 +29,9 @@ int main(int argc, char **argv)
     Config  config = Config();
     if (!Utils::FileIsValid(path))
         return (1);
-
+    Manager manager = Manager(std::string(argv[1]));
+    if (!manager.parseConfig())
+        return (1);
     Utils::log("init server");
     //Server server = Server("0.0.0.0", 8080);
     Server server = Server(config);
