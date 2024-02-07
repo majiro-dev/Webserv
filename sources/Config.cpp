@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 16:32:30 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:11:35 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 Config::Config(void)
 {
-    this->_port = 8080;
-    this->_host = inet_addr("127.0.0.1");
+    //this->_port = 8080;
+    //this->_host = inet_addr("127.0.0.1");
     return ;
 }
 
@@ -64,14 +64,16 @@ std::map<int, std::string> Config::GetErrorPages(void)
     return (this->_error_pages);
 }
 
-void Config::SetPort(uint16_t port)
+void Config::SetPort(std::string port)
 {
-    this->_port = port;
+    std::string port_str = port.substr(port.find_last_of(" ") + 1, port.length() - port.find_last_of(";") - 1);
+    this->_port = Utils::StringToUint16(port_str);
 }
 
-void Config::SetHost(in_addr_t host)
+void Config::SetHost(std::string host)
 {
-    this->_host = host;
+    std::string host_str = host.substr(host.find_last_of(" ") + 1, host.length() - host.find_last_of(";") - 1);
+    this->_host = inet_addr(host_str.c_str());
 }
 
 void Config::SetServerName(std::string server_name)
@@ -84,9 +86,9 @@ void Config::SetRoot(std::string root)
     this->_root = root;
 }
 
-void Config::SetClientMaxBodySize(size_t client_max_body_size)
+void Config::SetClientMaxBodySize(std::string client_max_body_size)
 {
-    this->_client_max_body_size = client_max_body_size;
+    this->_client_max_body_size = Utils::StringToSizeT(client_max_body_size);
 }
 
 void Config::SetIndex(std::string index)

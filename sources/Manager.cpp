@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 20:04:17 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:01:38 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,42 +29,48 @@ Manager::~Manager(void)
 
 bool	Manager::parseConfig()
 {
-	//Reads line by line the config file c
-	//Creates a new Config object for each server
-	//Sets the values of the Config object
-	//Adds the new Config object to the _configs list
-	int serverCount = _serverCount();
-	Utils::log("Server count: " + std::to_string(serverCount));
-	for (int i = 0; i < serverCount; i++)
-	{
-		//_configs.push_back(new Config());
-	}
-
-	return true;
-}
-
-int 	Manager::_serverCount()
-{
-	//Returns the number of server blocks in the _path file
-	//a block is defined by the "server" keyword
-	int count = 0;
 	std::ifstream file(_path.c_str());
 	std::string line;
-
 	while (std::getline(file, line))
 	{
 		if (line.find("server {") != std::string::npos)
 		{
-			while (std::getline(file, line))
+			Config *config = new Config();
+			_parseServerBlock(&file, &line, config);
+			_configs.push_back(*config);
+		}
+	}
+	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks");
+	return true;
+}
+
+void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
+{
+	std::string toFind[] = {"listen ", "host" };
+	while (std::getline(*file, *line))
+	{
+		if (line->find("}") != std::string::npos)
+		{
+			break;
+		}		
+		for (int i = 0; i < 5; i++)
+		{
+			if (line->find(toFind[i]) != std::string::npos)
 			{
-				if (line.find("server {") != std::string::npos)
+				std::string value = line->substr(toFind[i].length());
+				switch (i)
 				{
-					Utils::log("Error: nested server blocks are not allowed");
+					case 0:
+						config->SetPort(value);
+						break;
+					case 1:
+						config->SetHost(value);
+						break;
 				}
-				if (line.find("}") != std::string::npos)
-					count++;
 			}
 		}
 	}
-	return count;
-}
+	Utils::log("Parsed server block");
+	Utils::log("Port: " + Utils::IntToString(config->GetPort()));
+	Utils::log("Host: " + Utils::IntToString(config->GetHost()));
+} 

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 11:46:46 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 14:04:57 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ class Config
         std::list<Location>         GetLocations(void);
         std::map<int, std::string>  GetErrorPages(void);
 
-        void   SetPort(uint16_t port);
-        void   SetHost(in_addr_t host);
+        void   SetPort(std::string port);
+        void   SetHost(std::string host);
         void   SetServerName(std::string server_name);
         void   SetRoot(std::string root);
-        void   SetClientMaxBodySize(size_t client_max_body_size);
+        void   SetClientMaxBodySize(std::string client_max_body_size);
         void   SetIndex(std::string index);
 
         void   AddLocation(Location location);

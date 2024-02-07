@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 12:31:42 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 15:05:23 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ class Utils
 	static void exitWithError(const std::string &message);
 
 	static std::string IntToString(int number);
+	static int StringToInt(std::string str);
+	static uint16_t StringToUint16(std::string str);
+	static size_t StringToSizeT(std::string str);
+
 };
 
 #endif

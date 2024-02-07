@@ -77,3 +77,27 @@ std::string Utils::IntToString(int number)
     ss << number;
     return ss.str();
 }
+
+int Utils::StringToInt(std::string str)
+{
+    std::stringstream ss(str);
+    int number;
+    ss >> number;
+    return number;
+}
+
+uint16_t Utils::StringToUint16(std::string str)
+{
+    std::stringstream ss(str);
+    uint16_t number;
+    ss >> number;
+    return number;
+}
+
+size_t Utils::StringToSizeT(std::string str)
+{
+    std::stringstream ss(str);
+    size_t size;
+    ss >> size;
+    return size;
+}
