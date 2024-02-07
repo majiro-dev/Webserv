@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 19:35:49 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 21:27:15 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,4 +112,15 @@ std::string Config::_trim(std::string str)
     size_t end = str.find_last_not_of(";");
     std::string aux = str.substr(start, end - start + 1);
     return (aux.substr(0, aux.find_last_not_of(" \t") + 1));
+}
+
+
+void Config::PrintConfig(void)
+{
+    std::cout << "Port: " << this->_port << std::endl;
+    std::cout << "Host: " << inet_ntoa(*(in_addr*)&this->_host) << std::endl;
+    std::cout << "Server Name: " << this->_server_name << std::endl;
+    std::cout << "Root: " << this->_root << std::endl;
+    std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
+    std::cout << "Index: " << this->_index << std::endl;
 }

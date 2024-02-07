@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 19:33:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 21:07:13 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,39 +55,37 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 		{
 			if (line->find(toFind[i]) != std::string::npos)
 			{
-				std::string value = *line;
-				switch (i)
-				{
-					case 0:
-						config->SetPort(value);
-						break;
-					case 1:
-						config->SetHost(value);
-						break;
-					case 2:
-						config->SetServerName(value);
-						break;
-					case 3:
-						config->SetRoot(value);
-						break;
-					case 4:
-						config->SetClientMaxBodySize(value);
-						break;
-					case 5:
-						config->SetIndex(value);
-						break;
-					default:
-						break;
-				}
+				_assignConfValues(line, config, i);
 			}
 		}
 	}
-	Utils::log("Parsed server block");
-	Utils::log("Port: " + Utils::IntToString(config->GetPort()));
-	Utils::log("Host: " + Utils::IntToString(ntohl(config->GetHost())));
-	Utils::log("ServerName: " + config->GetServerName());
-	Utils::log("Root: " + config->GetRoot());
-	Utils::log("ClientMaxBodySize: " + Utils::IntToString(config->GetClientMaxBodySize()));
-	Utils::log("Index: " + config->GetIndex());
-	
-} 
+	config->PrintConfig();
+}
+
+void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
+{
+	std::string value = *line;
+	switch (i)
+	{
+		case 0:
+			config->SetPort(value);
+			break;
+		case 1:
+			config->SetHost(value);
+			break;
+		case 2:
+			config->SetServerName(value);
+			break;
+		case 3:
+			config->SetRoot(value);
+			break;
+		case 4:
+			config->SetClientMaxBodySize(value);
+			break;
+		case 5:
+			config->SetIndex(value);
+			break;
+		default:
+			break;
+	}
+}

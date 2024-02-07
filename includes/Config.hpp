@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 18:05:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 20:34:26 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class Config
 
         void   AddLocation(Location location);
         void   AddErrorPage(int error_code, std::string error_page);
+
+        void  PrintConfig(void);
 
     private:
         uint16_t     _port;
