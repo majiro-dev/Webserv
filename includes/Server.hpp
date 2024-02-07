@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 20:01:37 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/07 18:49:29 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Server
         int startServer();
         void loopListen();
         void closeServer();
+        void handleConnection(int &client_fd);
         void acceptConnection(int &new_socket);
         std::string buildResponse();
         void sendResponse();

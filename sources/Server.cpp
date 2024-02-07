@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 20:26:15 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/07 20:06:48 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void Server::runServer()
 int Server::startServer()
 {
     _sock = socket(AF_INET, SOCK_STREAM, 0);
+    
     if (_sock < 0)
         Utils::exceptWithError(ERROR_SOCKET_CREATE);
 
@@ -84,30 +85,63 @@ int Server::startServer()
 
 void Server::loopListen()
 {
-    int bytesReceived = 0;
+    //int nConectClient;
+    //int sockClient[10];
+    fd_set current_sockets, fd_read;
+   
     
     if (listen(_sock, 20) < 0)
         Utils::exceptWithError(ERROR_SOCKET_LISTEN);
 
     Utils::log("Server is running");
-    char ip_server[INET_ADDRSTRLEN];
+    
+    FD_ZERO(&current_sockets);
+    FD_SET(_sock, &current_sockets);
+    
     while (1)
     {
         Utils::log(WAITING_CONNECTION);
-        acceptConnection(_connect_sock);
-        inet_ntop(AF_INET,&_socketaddr.sin_addr, ip_server, INET_ADDRSTRLEN);
-        Utils::log("Listening to address: " + (std::string)ip_server + " on port: " + Utils::IntToString(_port));
 
-        char buffer[BUFFER_SIZE] = {0};
-        
-        bytesReceived = recv(_connect_sock, buffer, BUFFER_SIZE, 0);
-        if (bytesReceived < 0)
-            Utils::exceptWithError(ERROR_SOCKET_READ);
-            
-        Utils::log(REQUEST_RECEIVED);
-        sendResponse();
-        close(_connect_sock);
+        fd_read = current_sockets;
+
+        if(select(FD_SETSIZE, &fd_read, NULL, NULL, 0) < 0)
+            Utils::exceptWithError("Select error");
+
+        for (int i = 0; i < FD_SETSIZE; i++)
+        {
+            if(FD_ISSET(i, &fd_read))
+            {
+                if(i == _sock)
+                {
+                    acceptConnection(_connect_sock);
+                    FD_SET(_connect_sock, &current_sockets);
+                }
+                else
+                {
+                    handleConnection(i);
+                    FD_CLR(i, &current_sockets);
+                }
+            }
+        }
     }
+}
+
+void Server::handleConnection(int &client_fd)
+{
+    //char ip_server[INET_ADDRSTRLEN];
+    int bytesReceived = 0;
+    //inet_ntop(AF_INET,&_socketaddr.sin_addr, ip_server, INET_ADDRSTRLEN);
+    //Utils::log("Listening to address: " + (std::string)ip_server + " on port: " + Utils::IntToString(_port));
+
+    char buffer[BUFFER_SIZE] = {0};
+        
+    bytesReceived = recv(client_fd, buffer, BUFFER_SIZE, 0);
+    if (bytesReceived < 0)
+        Utils::exceptWithError(ERROR_SOCKET_READ);
+            
+    Utils::log(REQUEST_RECEIVED);
+    sendResponse();
+    close(client_fd);
 }
 
 void Server::acceptConnection(int &connect_sock)
