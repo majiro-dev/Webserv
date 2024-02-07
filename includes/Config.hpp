@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 14:04:57 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 18:05:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ class Config
         
         std::list<Location>         _locations;
         std::map<int, std::string>  _error_pages;
+
+        std::string  _trim(std::string str);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 15:01:38 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/07 19:33:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,16 @@ bool	Manager::parseConfig()
 
 void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
 {
-	std::string toFind[] = {"listen ", "host" };
+	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ", "index " };
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
-		{
-			break;
-		}		
-		for (int i = 0; i < 5; i++)
+			break;	
+		for (unsigned int i = 0; i < toFind->length(); i++)
 		{
 			if (line->find(toFind[i]) != std::string::npos)
 			{
-				std::string value = line->substr(toFind[i].length());
+				std::string value = *line;
 				switch (i)
 				{
 					case 0:
@@ -66,11 +64,30 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 					case 1:
 						config->SetHost(value);
 						break;
+					case 2:
+						config->SetServerName(value);
+						break;
+					case 3:
+						config->SetRoot(value);
+						break;
+					case 4:
+						config->SetClientMaxBodySize(value);
+						break;
+					case 5:
+						config->SetIndex(value);
+						break;
+					default:
+						break;
 				}
 			}
 		}
 	}
 	Utils::log("Parsed server block");
 	Utils::log("Port: " + Utils::IntToString(config->GetPort()));
-	Utils::log("Host: " + Utils::IntToString(config->GetHost()));
+	Utils::log("Host: " + Utils::IntToString(ntohl(config->GetHost())));
+	Utils::log("ServerName: " + config->GetServerName());
+	Utils::log("Root: " + config->GetRoot());
+	Utils::log("ClientMaxBodySize: " + Utils::IntToString(config->GetClientMaxBodySize()));
+	Utils::log("Index: " + config->GetIndex());
+	
 } 
