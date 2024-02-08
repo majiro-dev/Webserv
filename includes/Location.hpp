@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 11:35:35 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/02 00:11:14 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:02:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ class Location
 
 		bool	IsValid;
 
-		std::string 	GetPath(void);
 		std::string 	GetRoot(void);
 		bool 			GetAutoindex(void);
 		std::list<int> 	GetAllowMethods(void);
@@ -33,9 +32,9 @@ class Location
 		std::string 	GetCgiExtension(void);
 		std::string 	GetCgiPath(void);
 
-		void 	SetPath(std::string path);
+
 		void 	SetRoot(std::string root);
-		void 	SetAutoindex(bool autoindex);
+		void 	SetAutoindex(std::string autoindex);
 		void 	SetAllowMethods(std::list<int> allow_methods);
 		void 	SetIndex(std::string index);
 		void 	SetClientMaxBodySize(size_t client_max_body_size);
@@ -43,7 +42,6 @@ class Location
 		void 	SetCgiPath(std::string cgi_path);
 
 	private:
-		std::string 	path;
 		std::string 	root;
 		bool 			autoindex;
 		std::list<int> 	allow_methods;

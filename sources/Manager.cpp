@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/08 16:11:11 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/08 18:10:09 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,13 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 		for (unsigned int i = 0; i < toFind->length(); i++)
 		{
 			if (line->find(toFind[i]) != std::string::npos)
-			{
 				_assignConfValues(line, config, i);
+			if (line->find("location ") != std::string::npos)
+			{
+				Location *location = new Location();
+				_parseLocationBlock(file, line, location);
+				config->AddLocation(*location);
+				delete location;
 			}
 		}
 	}
@@ -97,3 +102,29 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 			break;
 	}
 }
+
+void 	Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Location *location)
+{
+	std::string toFind[] = {"root ", "index ", "autoindex ", "cgi ", "cgi_path ", "cgi_index ", "cgi_ext ", "cgi_param "};
+	while (std::getline(*file, *line))
+	{
+		if (line->find("}") != std::string::npos)
+			break;	
+		for (unsigned int i = 0; i < toFind->length(); i++)
+		{
+			if (line->find(toFind[i]) != std::string::npos)
+			{
+				_assignLocationValues(line, location, i);
+			}
+		}
+	}
+}
+
+void	Manager::_assignLocationValues(std::string *line, Location *location, int i)
+{
+	std::cout << "line: " << *line << std::endl;
+	std::cout << "i: " << i << std::endl;
+	std::string value = *line;
+	std::cout << "Location :" << location << std::endl;
+}
+
