@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 21:07:13 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/08 13:20:12 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ Manager::Manager(void)
 
 Manager::~Manager(void)
 {
-	
+	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+	{
+		_configs.erase(it);
+	}
 }
 
 bool	Manager::parseConfig()
@@ -38,8 +41,11 @@ bool	Manager::parseConfig()
 			Config *config = new Config();
 			_parseServerBlock(&file, &line, config);
 			_configs.push_back(*config);
+			delete config;
 		}
 	}
+	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+		it->PrintConfig();
 	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks");
 	return true;
 }
@@ -59,7 +65,6 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 			}
 		}
 	}
-	config->PrintConfig();
 }
 
 void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
