@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/07 21:27:15 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/08 16:53:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,11 @@ void Config::AddLocation(Location location)
     this->_locations.push_back(location);
 }
 
-void Config::AddErrorPage(int error_code, std::string error_page)
+void Config::AddErrorPage(std::string line)
 {
-    this->_error_pages[error_code] = error_page;
+
+    std::pair<int, std::string> error_page = _errorPageTrim(line);
+    this->_error_pages.insert(error_page);
 }
 
 std::string Config::_trim(std::string str)
@@ -114,6 +116,14 @@ std::string Config::_trim(std::string str)
     return (aux.substr(0, aux.find_last_not_of(" \t") + 1));
 }
 
+std::pair<int, std::string> Config::_errorPageTrim(std::string str)
+{
+    size_t start = str.find_first_of("0123456789");
+    size_t end = str.find_last_of(" \t");
+    std::string error_code_str = str.substr(start, end - start + 1);
+    std::string error_page = str.substr(end + 1, str.length() - end);
+    return (std::make_pair(Utils::StringToInt(error_code_str), error_page));
+}
 
 void Config::PrintConfig(void)
 {
@@ -123,4 +133,12 @@ void Config::PrintConfig(void)
     std::cout << "Root: " << this->_root << std::endl;
     std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
     std::cout << "Index: " << this->_index << std::endl;
+
+    std::map<int, std::string>::iterator it = this->_error_pages.begin();
+    while (it != this->_error_pages.end())
+    {
+        std::cout << "Error Page: " << it->first << " " << it->second << std::endl;
+        it++;
+    }
+
 }

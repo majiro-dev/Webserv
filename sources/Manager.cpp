@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/08 13:20:12 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/08 16:11:11 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool	Manager::parseConfig()
 
 void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
 {
-	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ", "index " };
+	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ", "index " , "error_page "};
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
@@ -89,6 +89,9 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 			break;
 		case 5:
 			config->SetIndex(value);
+			break;
+		case 6:
+			config->AddErrorPage(value);
 			break;
 		default:
 			break;
