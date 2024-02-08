@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 17:00:07 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:00:24 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Server::Server(std::string ip_address, int port) : _ip_address(ip_address), _por
     }
 }
 
-Server::Server(Config config) : _config(config), _port(config.GetPort()),
+Server::Server(Config config) : _config(config), _port(config.GetPorts()[0]),
     _socket(), _new_socket(), _socket_address(), _address_length(sizeof(_socket_address)),
     _server_message(buildResponse())
 {

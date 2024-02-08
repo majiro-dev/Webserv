@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/08 16:53:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:00:59 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ Config::~Config(void)
     return ;
 }
 
-uint16_t Config::GetPort(void)
+std::vector<uint16_t> Config::GetPorts(void)
 {
-    return (this->_port);
+    return (this->_ports);
 }
 
 in_addr_t Config::GetHost(void)
@@ -54,7 +54,7 @@ std::string Config::GetIndex(void)
     return (this->_index);
 }
 
-std::list<Location> Config::GetLocations(void)
+std::vector<Location> Config::GetLocations(void)
 {
     return (this->_locations);
 }
@@ -66,8 +66,10 @@ std::map<int, std::string> Config::GetErrorPages(void)
 
 void Config::SetPort(std::string port)
 {
+    uint16_t port_int = Utils::StringToUint16(port);
     std::string port_str = _trim(port);
-    this->_port = Utils::StringToUint16(port_str);
+    port_int = Utils::StringToUint16(port_str);
+    this->_ports.push_back(port_int);
 }
 
 void Config::SetHost(std::string host)
@@ -127,7 +129,6 @@ std::pair<int, std::string> Config::_errorPageTrim(std::string str)
 
 void Config::PrintConfig(void)
 {
-    std::cout << "Port: " << this->_port << std::endl;
     std::cout << "Host: " << inet_ntoa(*(in_addr*)&this->_host) << std::endl;
     std::cout << "Server Name: " << this->_server_name << std::endl;
     std::cout << "Root: " << this->_root << std::endl;
@@ -139,6 +140,12 @@ void Config::PrintConfig(void)
     {
         std::cout << "Error Page: " << it->first << " " << it->second << std::endl;
         it++;
+    }
+    std::vector<uint16_t>::iterator it2 = this->_ports.begin();
+    while (it2 != this->_ports.end())
+    {
+        std::cout << "PortV: " << *it2 << std::endl;
+        it2++;
     }
 
 }

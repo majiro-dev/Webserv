@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/08 16:47:49 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:43:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sstream>
 # include <list>
 # include <map>
+# include <vector>
 # include <netinet/in.h>
 # include <stdio.h>
 # include <sys/socket.h>
