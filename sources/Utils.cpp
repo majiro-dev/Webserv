@@ -82,7 +82,7 @@ const char * MyError::what() const throw()
     return _msg;
 }
 
-void Utils::exceptWithError(const std::string &message)
+void Utils::exceptWithError(const char* message)
 {
-    throw MyError(message.c_str());
+    throw MyError(message);
 }

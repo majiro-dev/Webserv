@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 20:34:00 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/09 14:53:46 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class Utils
 		static bool FileIsValid(std::string path);
 
 		static void log(const std::string &message);
-		static void exceptWithError(const std::string &message);
+		static void exceptWithError(const char *message);
 
 		static std::string IntToString(int number);
 };
