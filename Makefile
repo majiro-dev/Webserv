@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
+#    By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/01/22 12:01:22 by manujime         ###   ########.fr        #
+#    Updated: 2024/02/06 20:44:45 by cmorales         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,9 @@ END			=		\033[0m
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 
-OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+SRC_EXCLUDE_TCPCLIENT = $(filter-out $(SRC_DIR)/tcpclient.cpp $(SRC_DIR)/multiples_clients.cpp, $(SRC))
+
+OBJ = $(SRC_EXCLUDE_TCPCLIENT:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
@@ -45,8 +47,12 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -rf a.out
 	@echo "$(RED)$(NAME) deleted$(END)"
 
 re: fclean all
+
+r: re
+	@./$(NAME) tests/conf/server.conf
 
 .PHONY: all clean fclean re
