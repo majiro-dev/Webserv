@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 13:00:59 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 16:18:02 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,28 @@ Config::Config(void)
 {
     //this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
+    this-> _allow_methods.resize(3);
+    for (int i = 0; i < 3; i++)
+        this->_allow_methods[i] = 0;
+    return ;
+}
+
+Config::Config(const Config &src)
+{
+    //deep copy
+    this->_ports = src._ports;
+    this->_host = src._host;
+    this->_server_name = src._server_name;
+    this->_root = src._root;
+    this->_client_max_body_size = src._client_max_body_size;
+    this->_index = src._index;
+    this->_locations = src._locations;
+    this->_error_pages = src._error_pages;
+    this->_allow_methods = src._allow_methods;
+    this->_autoindex = src._autoindex;
+    this->_cgi_pass = src._cgi_pass;
+    this->_cgi_extension = src._cgi_extension;
+    this->_error_pages = src._error_pages;
     return ;
 }
 
@@ -54,7 +76,7 @@ std::string Config::GetIndex(void)
     return (this->_index);
 }
 
-std::vector<Location> Config::GetLocations(void)
+std::vector<Config> Config::GetLocations(void)
 {
     return (this->_locations);
 }
@@ -98,7 +120,7 @@ void Config::SetIndex(std::string index)
     this->_index = _trim(index);
 }
 
-void Config::AddLocation(Location location)
+void Config::AddLocation(Config location)
 {
     this->_locations.push_back(location);
 }

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 12:57:38 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 16:17:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 
 # include "outputMacros.hpp"
 # include "Utils.hpp"
-# include "Location.hpp"
-
 
 class Config
 {
     public:
         Config(void);
+        Config(const Config &src);
         ~Config(void);
 
         bool        isValid;
@@ -34,7 +33,10 @@ class Config
         size_t      GetClientMaxBodySize(void);
         std::string GetIndex(void);
         
-        std::vector<Location>         GetLocations(void);
+        std::string GetCgiPass(void);
+        std::string GetCgiExtension(void);
+
+        std::vector<Config>       GetLocations(void);
         std::map<int, std::string>  GetErrorPages(void);
 
         void   SetPort(std::string port);
@@ -43,9 +45,15 @@ class Config
         void   SetRoot(std::string root);
         void   SetClientMaxBodySize(std::string client_max_body_size);
         void   SetIndex(std::string index);
-
-        void   AddLocation(Location location);
         void   AddErrorPage(std::string line);
+
+        void   AddLocation(Config location);
+        
+        void   SetAutoindex(std::string autoindex);
+        void   SetAllowMethods(std::string allow_methods);
+        void   SetCgiPass(std::string cgi_pass);
+        void   SetCgiExtension(std::string cgi_extension);
+
 
         void  PrintConfig(void);
 
@@ -56,9 +64,16 @@ class Config
         std::string  _root;
         size_t       _client_max_body_size;
         std::string  _index;
+
+        std::string  _cgi_pass;
+        std::string  _cgi_extension;
+        bool         _autoindex;
+        std::vector<bool> _allow_methods;
         
-        std::vector<Location>         _locations;
+        std::vector<Config>         _locations;
         std::map<int, std::string>  _error_pages;
+
+        
 
         std::string  _trim(std::string str);
         std::pair<int, std::string> _errorPageTrim(std::string str);

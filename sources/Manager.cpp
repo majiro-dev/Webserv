@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/08 18:10:09 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 17:17:03 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 		{
 			if (line->find(toFind[i]) != std::string::npos)
 				_assignConfValues(line, config, i);
-			if (line->find("location ") != std::string::npos)
+			else if (line->find("location ") != std::string::npos)
 			{
-				Location *location = new Location();
+				Config *location = new Config(*config);
 				_parseLocationBlock(file, line, location);
 				config->AddLocation(*location);
 				delete location;
@@ -103,28 +103,26 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 	}
 }
 
-void 	Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Location *location)
+void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)
 {
-	std::string toFind[] = {"root ", "index ", "autoindex ", "cgi ", "cgi_path ", "cgi_index ", "cgi_ext ", "cgi_param "};
+	std::string toFind[] = {"autoindex ", "allow_methods ", "cgi_pass ", "cgi_extension "};
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
-			break;	
-		for (unsigned int i = 0; i < toFind->length(); i++)
+			break;
+		while (std::getline(*file, *line))
 		{
-			if (line->find(toFind[i]) != std::string::npos)
+			for (unsigned int i = 0; i < toFind->length(); i++)
 			{
-				_assignLocationValues(line, location, i);
+				if (line->find(toFind[i]) != std::string::npos)
+				{
+					//_assignConfValues(line, location, i);
+					Utils::log("found something in a location block");
+					Utils::log(*line);
+				}
 			}
 		}
 	}
-}
-
-void	Manager::_assignLocationValues(std::string *line, Location *location, int i)
-{
-	std::cout << "line: " << *line << std::endl;
-	std::cout << "i: " << i << std::endl;
-	std::string value = *line;
-	std::cout << "Location :" << location << std::endl;
+	(void)location;
 }
 
