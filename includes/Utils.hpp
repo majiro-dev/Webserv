@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/09 14:53:46 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:54:10 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Utils
 		static bool FileIsConf(std::string path);
 		static bool FileIsValid(std::string path);
 
-		static void log(const std::string &message);
+		static void log(const std::string &message, const char *color);
 		static void exceptWithError(const char *message);
 
 		static std::string IntToString(int number);

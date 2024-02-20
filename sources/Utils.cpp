@@ -60,9 +60,9 @@ bool Utils::FileIsValid(std::string path)
 }
 
 
-void Utils::log(const std::string &message)
+void Utils::log(const std::string &message, const char* color)
 {
-    std::cout << message << std::endl;
+    std::cout << color << message << std::endl << RESET;
 }
 
 
