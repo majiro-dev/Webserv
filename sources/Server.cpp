@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/20 17:59:57 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/23 00:00:04 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void Server::runServer()
 
 std::string Server::buildResponse()
 {
-    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> HELLO BURNING WORLD :D </p></body></html>";
+    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Ruben se va a follar a Villa y se la pela :):D </p></body></html>";
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
         << htmlFile;
@@ -80,19 +80,19 @@ void Server::startServer()
 {   
     int on = 1;
     
-    if ((_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    if ((this->_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         Utils::exceptWithError(ERROR_SOCKET_CREATE);
 
-    if(setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
+    if(setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
         Utils::exceptWithError("Error failed to set socket options");
 
-    if (bind(_sock, (struct sockaddr *)&_socketaddr, sizeof(_socketaddr)) < 0)
+    if (bind(this->_sock, (struct sockaddr *)&_socketaddr, sizeof(_socketaddr)) < 0)
         Utils::exceptWithError(ERROR_SOCKET_BIND);
         
-    if (listen(_sock, MAX_CLIENTS) < 0)
+    if (listen(this->_sock, MAX_CLIENTS) < 0)
         Utils::exceptWithError(ERROR_SOCKET_LISTEN);
         
-    if (fcntl(_sock, F_SETFL, O_NONBLOCK) < 0) 
+    if (fcntl(this->_sock, F_SETFL, O_NONBLOCK) < 0) 
         Utils::exceptWithError("Error setting socket to non-blocking");
 
     Utils::log("Start server", YELLOW);
@@ -112,10 +112,10 @@ void Server::loopListen()
     {
         Utils::log(WAITING_CONNECTION, RESET);
         
-        if((_ret = poll(pollfds.data(), pollfds.size(), -1)) < 0)
+        if((this->_ret = poll(pollfds.data(), pollfds.size(), -1)) < 0)
             Utils::exceptWithError("Poll error");
         
-        if(_ret)
+        if(this->_ret)
         {
             for(size_t i = 0; i < pollfds.size(); i++)
             {
@@ -123,7 +123,7 @@ void Server::loopListen()
                 {
                     if(pollfds[i].fd == _sock)
                     {
-                        _connect_sock = acceptConnection();
+                        this->_connect_sock = acceptConnection();
                         if (_connect_sock >= 0)
                         {
                             struct pollfd new_client;
@@ -161,8 +161,8 @@ int Server::acceptConnection()
     if (connect_sock < 0)
     {
         //No esta listo (esta modo-noblcoking) puede seguir otras tareas
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return -1;
+     /*    if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return -1; */
        Utils::exceptWithError(ERROR_SOCKET_ACCEPT);
     }  
 
@@ -181,10 +181,12 @@ void Server::handleConnection(int &client_fd)
     if (bytesReceived < 0)
     {
         //**PREGUNTAR** No esta listo (esta modo-noblcoking) puede seguir otras tareas
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return;            
+        /* if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;   */          
+        //Utils::exceptWithError(ERROR_SOCKET_READ);
         close(client_fd);
-        Utils::exceptWithError(ERROR_SOCKET_READ);
+        Utils::log(ERROR_SOCKET_READ, RED);
+        return ;
     } 
     if (bytesReceived == 0) 
     {
@@ -192,9 +194,8 @@ void Server::handleConnection(int &client_fd)
         std::cout << "Conexión cerrada por el cliente, socket: " << client_fd << std::endl; 
         return ;
     }
-
-    //Utils::log(REQUEST_RECEIVED);
-    std::cout << MAGENTA << "Mensaje del cliente en el socket " << client_fd << ": " << buffer << std::endl << RESET;
+    std::cout << MAGENTA << "Mensaje del cliente en el socket "  << client_fd << ": " << buffer << std::endl << RESET;
+    Request req(buffer);
 }
 
 
@@ -206,6 +207,10 @@ void Server::sendResponse(int &client_fd)
     if (bytesSenT == _server_message.size())
         Utils::log("Response sent successfully.", GREEN);
     else
-        Utils::exceptWithError("Failed to send response.");
+    {
+        //Utils::exceptWithError("Failed to send response.");
+        Utils::log("Failed to send response", RED);
+        return ;
+    }
     close(client_fd);
 }

@@ -6,7 +6,7 @@
 #    By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/02/06 20:44:45 by cmorales         ###   ########.fr        #
+#    Updated: 2024/02/21 11:40:06 by cmorales         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ END			=		\033[0m
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 
-SRC_EXCLUDE_TCPCLIENT = $(filter-out $(SRC_DIR)/tcpclient.cpp $(SRC_DIR)/multiples_clients.cpp, $(SRC))
+SRC_EXCLUDE_TCPCLIENT = $(filter-out $(SRC_DIR)/tcpclient.cpp $(SRC_DIR)/test.cpp, $(SRC))
 
 OBJ = $(SRC_EXCLUDE_TCPCLIENT:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 

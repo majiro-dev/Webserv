@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/20 17:54:10 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:25:11 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,6 @@
 # include <stdlib.h>
 
 # include "outputMacros.hpp"
-
-
-
-enum AllowMethods
-{
-	GET,
-	POST,
-	DELETE,
-};
 
 class Utils
 {
