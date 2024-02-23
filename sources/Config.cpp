@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 16:18:02 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/23 14:06:42 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@ Config::Config(void)
 {
     //this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
+    this->_root = "";
+    this->_client_max_body_size = 0;
+    this->_autoindex = false;
     this-> _allow_methods.resize(3);
     for (int i = 0; i < 3; i++)
         this->_allow_methods[i] = 0;
@@ -24,7 +27,6 @@ Config::Config(void)
 
 Config::Config(const Config &src)
 {
-    //deep copy
     this->_ports = src._ports;
     this->_host = src._host;
     this->_server_name = src._server_name;
@@ -43,6 +45,7 @@ Config::Config(const Config &src)
 
 Config::~Config(void)
 {
+    this->_locations.clear();
     return ;
 }
 
@@ -84,6 +87,31 @@ std::vector<Config> Config::GetLocations(void)
 std::map<int, std::string> Config::GetErrorPages(void)
 {
     return (this->_error_pages);
+}
+
+std::string Config::GetCgiPass(void)
+{
+    return (this->_cgi_pass);
+}
+
+std::string Config::GetCgiExtension(void)
+{
+    return (this->_cgi_extension);
+}
+
+std::string Config::GetRedirect(void)
+{
+    return (this->_redirect);
+}
+
+bool Config::GetAutoindex(void)
+{
+    return (this->_autoindex);
+}
+
+std::vector<bool> Config::GetAllowMethods(void)
+{
+    return (this->_allow_methods);
 }
 
 void Config::SetPort(std::string port)
@@ -132,6 +160,42 @@ void Config::AddErrorPage(std::string line)
     this->_error_pages.insert(error_page);
 }
 
+void Config::SetAutoindex(std::string autoindex)
+{
+    std::string autoindex_str = _trim(autoindex);
+    if (autoindex_str == "on")
+        this->_autoindex = true;
+    else
+        this->_autoindex = false;
+}
+
+void Config::SetAllowMethods(std::string allow_methods)
+{
+    std::string methods[3] = {"GET", "POST", "DELETE"};
+    Utils::log(allow_methods);
+    Utils::log("ALLOW METHODS");
+    for (int i = 0; i < 3; i++)
+    {
+        if (allow_methods.find(methods[i]) != std::string::npos)
+            this->_allow_methods[i] = 1;
+    }
+}
+
+void Config::SetCgiPass(std::string cgi_pass)
+{
+    this->_cgi_pass = _trim(cgi_pass);
+}
+
+void Config::SetCgiExtension(std::string cgi_extension)
+{
+    this->_cgi_extension = _trim(cgi_extension);
+}
+
+void Config::SetRedirect(std::string redirect)
+{
+    this->_redirect = _trim(redirect);
+}
+
 std::string Config::_trim(std::string str)
 {
     size_t start = str.find_last_of(" \t") + 1;
@@ -151,11 +215,19 @@ std::pair<int, std::string> Config::_errorPageTrim(std::string str)
 
 void Config::PrintConfig(void)
 {
+    std::cout << "-----------------------------------" << std::endl;
     std::cout << "Host: " << inet_ntoa(*(in_addr*)&this->_host) << std::endl;
     std::cout << "Server Name: " << this->_server_name << std::endl;
     std::cout << "Root: " << this->_root << std::endl;
     std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
     std::cout << "Index: " << this->_index << std::endl;
+    std::cout << "Redirect: " << this->_redirect << std::endl;
+    std::cout << "Cgi Pass: " << this->_cgi_pass << std::endl;
+    std::cout << "Cgi Extension: " << this->_cgi_extension << std::endl;
+    std::cout << "Autoindex: " << this->_autoindex << std::endl;
+    std::cout << "GET: " << this->_allow_methods[0] << std::endl;
+    std::cout << "POST: " << this->_allow_methods[1] << std::endl;
+    std::cout << "DELETE: " << this->_allow_methods[2] << std::endl;
 
     std::map<int, std::string>::iterator it = this->_error_pages.begin();
     while (it != this->_error_pages.end())
@@ -169,5 +241,12 @@ void Config::PrintConfig(void)
         std::cout << "PortV: " << *it2 << std::endl;
         it2++;
     }
-
+    std::vector<Config>::iterator it3 = this->_locations.begin();
+    while (it3 != this->_locations.end())
+    {
+        std::cout << "Location: " << std::endl;
+        it3->PrintConfig();
+        it3++;
+    }
+    std::cout << "+++++++++++++++++++++++++++++++++++" << std::endl;
 }

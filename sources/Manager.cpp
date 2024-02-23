@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 17:17:03 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/23 14:18:56 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ bool	Manager::parseConfig()
 
 void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
 {
-	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ", "index " , "error_page "};
+	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
+							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"return "};
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
@@ -60,7 +62,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 		for (unsigned int i = 0; i < toFind->length(); i++)
 		{
 			if (line->find(toFind[i]) != std::string::npos)
-				_assignConfValues(line, config, i);
+				_assignConfValues(line, config, i);  
 			else if (line->find("location ") != std::string::npos)
 			{
 				Config *location = new Config(*config);
@@ -75,54 +77,30 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 {
 	std::string value = *line;
-	switch (i)
-	{
-		case 0:
-			config->SetPort(value);
-			break;
-		case 1:
-			config->SetHost(value);
-			break;
-		case 2:
-			config->SetServerName(value);
-			break;
-		case 3:
-			config->SetRoot(value);
-			break;
-		case 4:
-			config->SetClientMaxBodySize(value);
-			break;
-		case 5:
-			config->SetIndex(value);
-			break;
-		case 6:
-			config->AddErrorPage(value);
-			break;
-		default:
-			break;
-	}
+	void (Config::*setters[])(std::string) = {&Config::SetPort, &Config::SetHost, &Config::SetServerName,
+				&Config::SetRoot, &Config::SetClientMaxBodySize, &Config::SetAutoindex, &Config::AddErrorPage,
+				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension,
+				&Config::SetRedirect};
+	(config->*setters[i])(value);
+	std::cout << "Assigned " << value << " to " << i << std::endl;
+	Utils::log("BREAKPOINTE TEST");
 }
 
 void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)
 {
-	std::string toFind[] = {"autoindex ", "allow_methods ", "cgi_pass ", "cgi_extension "};
+	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
+							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"return "};
+	
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
 			break;
-		while (std::getline(*file, *line))
+		for (unsigned int i = 0; i < toFind->length(); i++)
 		{
-			for (unsigned int i = 0; i < toFind->length(); i++)
-			{
-				if (line->find(toFind[i]) != std::string::npos)
-				{
-					//_assignConfValues(line, location, i);
-					Utils::log("found something in a location block");
-					Utils::log(*line);
-				}
-			}
+			if (line->find(toFind[i]) != std::string::npos)
+				_assignConfValues(line, location, i);
 		}
 	}
-	(void)location;
 }
 

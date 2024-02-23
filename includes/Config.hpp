@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 16:17:58 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/23 14:06:39 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,14 @@ class Config
         std::string GetRoot(void);
         size_t      GetClientMaxBodySize(void);
         std::string GetIndex(void);
+        std::string GetRedirect(void);
         
         std::string GetCgiPass(void);
         std::string GetCgiExtension(void);
+
+        bool        GetAutoindex(void);
+        std::vector<bool> GetAllowMethods(void);
+        
 
         std::vector<Config>       GetLocations(void);
         std::map<int, std::string>  GetErrorPages(void);
@@ -45,6 +50,7 @@ class Config
         void   SetRoot(std::string root);
         void   SetClientMaxBodySize(std::string client_max_body_size);
         void   SetIndex(std::string index);
+        void   SetRedirect(std::string redirect);
         void   AddErrorPage(std::string line);
 
         void   AddLocation(Config location);
@@ -64,6 +70,7 @@ class Config
         std::string  _root;
         size_t       _client_max_body_size;
         std::string  _index;
+        std::string  _redirect;
 
         std::string  _cgi_pass;
         std::string  _cgi_extension;
