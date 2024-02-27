@@ -6,7 +6,7 @@
 #    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/02/06 17:59:32 by manujime         ###   ########.fr        #
+#    Updated: 2024/02/27 18:15:35 by manujime         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,9 @@ END			=		\033[0m
 
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 
-OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+SRC_EXCLUDE_TCPCLIENT = $(filter-out $(SRC_DIR)/tcpclient.cpp $(SRC_DIR)/test.cpp, $(SRC))
+
+OBJ = $(SRC_EXCLUDE_TCPCLIENT:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
@@ -45,8 +47,12 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -rf a.out
 	@echo "$(RED)$(NAME) deleted$(END)"
 
 re: fclean all
+
+r: re
+	@./$(NAME) tests/conf/server.conf
 
 .PHONY: all clean fclean re

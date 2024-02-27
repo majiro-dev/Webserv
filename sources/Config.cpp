@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 17:45:52 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:09:23 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Config::Config(void)
 {
-    //this->_port = 8080;
+    this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
     this->_client_max_body_size = 0;

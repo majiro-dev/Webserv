@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 11:43:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:06:34 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,29 +33,30 @@
 
 # include "outputMacros.hpp"
 
-enum AllowMethods
-{
-	GET,
-	POST,
-	DELETE,
-};
-
 class Utils
 {
 	public:
-	static bool FileIsReadable(std::string path);
-	static bool FileIsEmpty(std::string path);
-	static bool FileIsConf(std::string path);
-	static bool FileIsValid(std::string path);
+		static bool FileIsReadable(std::string path);
+		static bool FileIsEmpty(std::string path);
+		static bool FileIsConf(std::string path);
+		static bool FileIsValid(std::string path);
 
-	static void log(const std::string &message);
-	static void exitWithError(const std::string &message);
+		static void log(const std::string &message, const char *color);
+		static void exceptWithError(const char *message);
 
 	static std::string IntToString(int number);
 	static int StringToInt(std::string str);
 	static uint16_t StringToUint16(std::string str);
 	static size_t StringToSizeT(std::string str);
+};
 
+class MyError : public std::exception
+{
+	private:
+		const char *_msg;
+	public:
+		MyError(const char *msg);
+		virtual const char * what() const throw();
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/23 14:06:39 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:04:11 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 
 # include "outputMacros.hpp"
 # include "Utils.hpp"
+# include "Socket.hpp"
+
 
 class Config
 {
