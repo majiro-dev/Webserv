@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 14:57:04 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:45:22 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension, 
 				&Config::SetRedirect};
 	(config->*setters[i])(value);
-	std::cout << "Assigned " << value << " to " << i << std::endl;
-	Utils::log("BREAKPOINTE TEST");
+	//std::cout << "Assigned " << value << " to " << i << std::endl;
+	//Utils::log("BREAKPOINTE TEST");
 }
 
 void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)

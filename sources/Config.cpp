@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 13:27:22 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:45:52 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,8 +172,6 @@ void Config::SetAutoindex(std::string autoindex)
 void Config::SetAllowMethods(std::string allow_methods)
 {
     std::string methods[3] = {"GET", "POST", "DELETE"};
-    Utils::log(allow_methods);
-    Utils::log("ALLOW METHODS");
     for (int i = 0; i < 3; i++)
     {
         if (allow_methods.find(methods[i]) != std::string::npos)
