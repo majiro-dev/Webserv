@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Location.cpp                                       :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/31 13:46:56 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 13:47:06 by manujime         ###   ########.fr       */
+/*   Created: 2024/02/20 21:00:02 by cmorales          #+#    #+#             */
+/*   Updated: 2024/02/20 21:02:08 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Location.hpp"
+#ifndef CLIENT_HPP
+# define CLIENT_HPP
 
-Location::Location(void)
-{
-}
 
-Location::~Location(void)
+# include "Server.hpp"
+
+class Client
 {
-}
+    private:
+        int _fd;
+    public:
+};
+
+#endif

@@ -60,20 +60,55 @@ bool Utils::FileIsValid(std::string path)
 }
 
 
-void Utils::log(const std::string &message)
+void Utils::log(const std::string &message, const char* color)
 {
-    std::cout << message << std::endl;
+    std::cout << color << message << std::endl << RESET;
 }
 
-void Utils::exitWithError(const std::string &message)
-{
-    log(message + "\n");
-    exit(1);
-}
 
 std::string Utils::IntToString(int number)
 {
     std::stringstream ss;
     ss << number;
     return ss.str();
+}
+
+
+MyError::MyError(const char *msg)
+    :_msg(msg)
+{}
+
+const char * MyError::what() const throw()
+{
+    return _msg;
+}
+
+void Utils::exceptWithError(const char* message)
+{
+    throw MyError(message);
+}
+
+
+int Utils::StringToInt(std::string str)
+{
+    std::stringstream ss(str);
+    int number;
+    ss >> number;
+    return number;
+}
+
+uint16_t Utils::StringToUint16(std::string str)
+{
+    std::stringstream ss(str);
+    uint16_t number;
+    ss >> number;
+    return number;
+}
+
+size_t Utils::StringToSizeT(std::string str)
+{
+    std::stringstream ss(str);
+    size_t size;
+    ss >> size;
+    return size;
 }
