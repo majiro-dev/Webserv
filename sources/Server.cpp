@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/23 00:00:04 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:19:56 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,8 @@ int Server::acceptConnection()
     return connect_sock;
 }
 
+
+//Meter cliente
 void Server::handleConnection(int &client_fd)
 {
     int bytesReceived = 0;
@@ -195,6 +197,7 @@ void Server::handleConnection(int &client_fd)
         return ;
     }
     std::cout << MAGENTA << "Mensaje del cliente en el socket "  << client_fd << ": " << buffer << std::endl << RESET;
+    //CLientev variable request => buffer para parselo a request y luego al response
     Request req(buffer);
 }
 

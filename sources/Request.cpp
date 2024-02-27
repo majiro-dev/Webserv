@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/23 00:26:21 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/26 21:06:17 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ Request::Request(const std::string &msg)
         if((msg.size() - (msg.find("\r\n\r\n") + 4)) > 0)
             this->_body = msg.substr(msg.find("\r\n\r\n") + 4);
         
-        parseUri();
         print();
     }
     catch(const MyError& e)
@@ -75,6 +74,7 @@ int Request::parseFirstLine(std::string &req)
         if(s_len != std::string::npos)
         {
             this->_uri = req.substr(f_len + 1, s_len - f_len -1);
+            parseUri();
             if(s_len != std::string::npos)
                 this->_protocol = req.substr(s_len + 1);
             return 0;
@@ -111,12 +111,13 @@ void Request::parseHeader(std::string line)
 }
 
 /*
-Parse body? preugntar por 
-Transfer-Encoding: chucnked
+Parse body? preguntar por 
+Transfer-Encoding: chuncked
 Content-Length: 123
 Hace falta parsearlo
 */
 
+//Mejorarlo
 void Request::parseUri()
 {
     std::string key;
@@ -158,6 +159,22 @@ std::string Request::getHeader(std::string find)
     if(this->_headers.find(find) == this->_headers.end())
         return "";
     return this->_headers[find];
+}
+
+
+std::string Request::getMethod()
+{
+    return this->_method;    
+}
+
+std::string Request::getBody()
+{
+    return this->_body; 
+}
+
+std::string Request::getProtocol()
+{
+    return this->_protocol;
 }
 
 
