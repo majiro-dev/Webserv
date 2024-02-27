@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:05:23 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:38:55 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 # include "Request.hpp"
 # include "Utils.hpp"
 # include <fcntl.h>
-# include <poll.h>
-# include <poll.h>
 # include <poll.h>
 
 
@@ -39,12 +37,16 @@ class Server
         std::string _ip_addr;
         int         _ret;
         int         _port;
-        int         _socket;
-        int         _new_socket;
+        int         _sock;
+        int         _connect_sock;
+        int         _max_socket;
         //long        _incoming_message;
-
-        struct sockaddr_in      _socket_address;
-        unsigned int            _address_length;
+        
+        //std::vector<int>max_fds;
+        fd_set read_set, write_set; 
+        
+        struct sockaddr_in      _socketaddr;
+        unsigned int            _addrlen;
         std::string             _server_message;
 
         void startServer();

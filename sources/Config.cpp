@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:09:23 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:40:14 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@ Config::~Config(void)
 {
     this->_locations.clear();
     return ;
+}
+
+uint16_t Config::GetPort(void)
+{
+    return (this->_port);
 }
 
 std::vector<uint16_t> Config::GetPorts(void)

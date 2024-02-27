@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:09:40 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:40:52 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ class Config
         ~Config(void);
 
         bool        isValid;
-
+        //Quitar en un futuro
+        uint16_t GetPort(void);
         std::vector<uint16_t>  GetPorts(void);
         in_addr_t   GetHost(void);
         std::string GetServerName(void);

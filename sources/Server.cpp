@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:14:02 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:43:35 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ Server::Server(Config config) : _config(config), _port(config.GetPort()),
     bzero(&_socketaddr, _addrlen);
     _socketaddr.sin_family = AF_INET;
     _socketaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    _socketaddr.sin_port = htons(_port);
+    _socketaddr.sin_port = htons(8080);
 }
 
 Server::~Server(void)
