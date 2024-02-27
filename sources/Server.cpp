@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/13 00:37:40 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/26 23:19:56 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 } */
 
 Server::Server(Config config) : _config(config), _port(config.GetPort()),
-    _sock(), _connect_sock(), _addrlen(sizeof(_socketaddr)),
+    _sock(), _connect_sock(-1), _addrlen(sizeof(_socketaddr)),
     _server_message(buildResponse())
 {
     /* struct in_addr addr;
@@ -68,7 +68,7 @@ void Server::runServer()
 
 std::string Server::buildResponse()
 {
-    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> HELLO BURNING WORLD :D </p></body></html>";
+    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Ruben se va a follar a Villa y se la pela :):D </p></body></html>";
     std::ostringstream ss;
     ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
         << htmlFile;
@@ -78,105 +78,127 @@ std::string Server::buildResponse()
 
 void Server::startServer()
 {   
-    if ((_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    int on = 1;
+    
+    if ((this->_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         Utils::exceptWithError(ERROR_SOCKET_CREATE);
 
-    if (bind(_sock, (struct sockaddr *)&_socketaddr, sizeof(_socketaddr)) < 0)
+    if(setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
+        Utils::exceptWithError("Error failed to set socket options");
+
+    if (bind(this->_sock, (struct sockaddr *)&_socketaddr, sizeof(_socketaddr)) < 0)
         Utils::exceptWithError(ERROR_SOCKET_BIND);
         
-    if (listen(_sock, 1000) < 0)
+    if (listen(this->_sock, MAX_CLIENTS) < 0)
         Utils::exceptWithError(ERROR_SOCKET_LISTEN);
+        
+    if (fcntl(this->_sock, F_SETFL, O_NONBLOCK) < 0) 
+        Utils::exceptWithError("Error setting socket to non-blocking");
 
-    std::cout << YELLOW << "Server is running" << std::endl;   
+    Utils::log("Start server", YELLOW);
 }
+
 
 void Server::loopListen()
 {
-    FD_ZERO(&read_set);
-    FD_ZERO(&write_set);
-    FD_SET(_sock, &read_set); 
+    std::vector<pollfd>pollfds;
 
-    int max_fds = _sock;
-       
-    if (fcntl(_sock, F_SETFL, O_NONBLOCK) < 0) 
-        Utils::exceptWithError("Error setting socket to non-blocking");
-        
-    while (1)
+    struct pollfd pollsock;
+    pollsock.fd = _sock;
+    pollsock.events = POLLIN;
+    pollfds.push_back(pollsock);
+
+    while(1)
     {
-        Utils::log(WAITING_CONNECTION);
-
-       if((_ret = select(max_fds + 1, &read_set, &write_set, NULL, 0)) < 0)
-            Utils::exceptWithError("Select error");
+        Utils::log(WAITING_CONNECTION, RESET);
         
-        for (int i = 0; i <= max_fds; i++)
+        if((this->_ret = poll(pollfds.data(), pollfds.size(), -1)) < 0)
+            Utils::exceptWithError("Poll error");
+        
+        if(this->_ret)
         {
-            if((_ret > 0) && ((FD_ISSET(i, &read_set)) || (FD_ISSET(i, &write_set))))
+            for(size_t i = 0; i < pollfds.size(); i++)
             {
-                if(i == _sock)
+                if(pollfds[i].revents & POLLIN)
                 {
-                    acceptConnection(_connect_sock);
-                    FD_SET(_connect_sock, &read_set);
-                    max_fds = std::max(max_fds, _connect_sock);
-                }
-                else
-                {
-                    if(FD_ISSET(i, &read_set))
+                    if(pollfds[i].fd == _sock)
                     {
-                        handleConnection(i);
-                        FD_CLR(i, &read_set);
-                        FD_SET(i, &write_set);
+                        this->_connect_sock = acceptConnection();
+                        if (_connect_sock >= 0)
+                        {
+                            struct pollfd new_client;
+                            new_client.fd = _connect_sock;
+                            new_client.events = POLLIN;
+                            pollfds.push_back(new_client);
+                        }
                     }
-                        
-                    if(FD_ISSET(i, &write_set))
+                    else
                     {
-                        sendResponse(i);
-                        FD_CLR(i, &write_set);
-                        close(i);
+                        //Tomar las request y convertir en respuesta activando escritura
+                        handleConnection(pollfds[i].fd);
+                        pollfds[i].events = POLLOUT;
                     }
-                    max_fds = std::max(max_fds, i);
                 }
+            }
+            
+        }
+        for(size_t i = 0; i < pollfds.size(); i++)
+        {
+            if(pollfds[i].revents & POLLOUT)
+            {
+                sendResponse(pollfds[i].fd);
+                pollfds.erase(pollfds.begin() + i);
+                i--;
             }
         }
     }
 }
-void Server::acceptConnection(int &connect_sock)
+
+
+int Server::acceptConnection()
 {
-    connect_sock = accept(_sock, (sockaddr *)&_socketaddr, &_addrlen);
+    int connect_sock = accept(_sock, (sockaddr *)&_socketaddr, &_addrlen);
     if (connect_sock < 0)
-        Utils::exceptWithError(ERROR_SOCKET_ACCEPT);
-        
+    {
+        //No esta listo (esta modo-noblcoking) puede seguir otras tareas
+     /*    if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return -1; */
+       Utils::exceptWithError(ERROR_SOCKET_ACCEPT);
+    }  
+
     if (fcntl(connect_sock, F_SETFL, O_NONBLOCK) < 0) 
         Utils::exceptWithError("Error setting socket to non-blocking");
         
-    std::cout << MAGENTA << "Nuevo cliente conectado, socket: " << connect_sock << std::endl << RESET;
+    return connect_sock;
 }
 
+
+//Meter cliente
 void Server::handleConnection(int &client_fd)
 {
-    //char ip_server[INET_ADDRSTRLEN];
-    //inet_ntop(AF_INET,&_socketaddr.sin_addr, ip_server, INET_ADDRSTRLEN);
-    //Utils::log("Listening to address: " + (std::string)ip_server + " on port: " + Utils::IntToString(_port));
     int bytesReceived = 0;
     char buffer[BUFFER_SIZE] = {0};
         
     bytesReceived = recv(client_fd, buffer, BUFFER_SIZE, 0);
-   /*  if (bytesReceived < 0)
+    if (bytesReceived < 0)
     {
-        //TOCAR ESTO LOS ERRORES QUE DEVUELVE
-        FD_CLR(client_fd, &read_set);
+        //**PREGUNTAR** No esta listo (esta modo-noblcoking) puede seguir otras tareas
+        /* if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;   */          
+        //Utils::exceptWithError(ERROR_SOCKET_READ);
         close(client_fd);
-        Utils::exceptWithError(ERROR_SOCKET_READ);
-    } */
+        Utils::log(ERROR_SOCKET_READ, RED);
+        return ;
+    } 
     if (bytesReceived == 0) 
     {
-        FD_CLR(client_fd, &read_set);
         close(client_fd);
         std::cout << "Conexión cerrada por el cliente, socket: " << client_fd << std::endl; 
         return ;
     }
-
-    //Utils::log(REQUEST_RECEIVED);
-    std::cout << MAGENTA << "Mensaje del cliente en el socket " << client_fd << ": " << buffer << std::endl << RESET;
+    std::cout << MAGENTA << "Mensaje del cliente en el socket "  << client_fd << ": " << buffer << std::endl << RESET;
+    //CLientev variable request => buffer para parselo a request y luego al response
+    Request req(buffer);
 }
 
 
@@ -186,7 +208,12 @@ void Server::sendResponse(int &client_fd)
 
     bytesSenT = write(client_fd, _server_message.c_str(), _server_message.size());
     if (bytesSenT == _server_message.size())
-        Utils::log("Response sent successfully.");
+        Utils::log("Response sent successfully.", GREEN);
     else
-        Utils::exceptWithError("Failed to send response.");
+    {
+        //Utils::exceptWithError("Failed to send response.");
+        Utils::log("Failed to send response", RED);
+        return ;
+    }
+    close(client_fd);
 }

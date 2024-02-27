@@ -25,7 +25,7 @@ def client_function(client_id):
     client_socket.close()
 
 # Número de clientes simulados
-num_clients = 200
+num_clients = 1
 
 # Crear y ejecutar threads para simular múltiples clientes
 threads = []

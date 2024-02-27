@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/06 18:14:35 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:51:30 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Config::Config(void)
 {
-    this->_port = 8080;
+    this->_port = PORT;
     //this->ip
     return ;
 }

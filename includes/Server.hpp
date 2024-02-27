@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/13 00:00:36 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/20 22:49:35 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 # define SERVER_HPP
 
 # include "Config.hpp"
+# include "Socket.hpp"
+# include "outputMacros.hpp"
+# include "Request.hpp"
+# include "Utils.hpp"
 # include <fcntl.h>
+# include <poll.h>
 
 
 class Server
@@ -48,7 +53,7 @@ class Server
         void loopListen();
         void closeServer();
         void handleConnection(int &client_fd);
-        void acceptConnection(int &new_socket);
+        int acceptConnection();
         std::string buildResponse();
         void sendResponse(int &client_fd);
 
