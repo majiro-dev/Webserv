@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+         #
+#    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/02/21 11:40:06 by cmorales         ###   ########.fr        #
+#    Updated: 2024/02/27 18:15:35 by manujime         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

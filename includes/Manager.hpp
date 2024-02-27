@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 12:15:31 by manujime          #+#    #+#             */
-/*   Updated: 2024/01/31 12:23:15 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/15 16:24:25 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,21 @@
 class Manager
 {
 	public:
-		Manager(void);
+		Manager(std::string path);
+		Manager();
 		~Manager(void);
-		
+			
+		bool	parseConfig();
+		std::list<Config>	getConfigs(void) const;
 
 	private:
+		std::string			_path;
 		std::list<Config>	_configs;
 		std::list<Server>	_servers;
+
+		void	_parseServerBlock(std::ifstream *file, std::string *line, Config *config);
+		void	_assignConfValues(std::string *line, Config *config, int i);
+		void 	_parseLocationBlock(std::ifstream *file, std::string *line, Config *location);
 };
 
 #endif

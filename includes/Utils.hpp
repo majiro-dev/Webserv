@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 16:52:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:06:34 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ class Utils
 		static void log(const std::string &message, const char *color);
 		static void exceptWithError(const char *message);
 
-		static std::string IntToString(int number);
+	static std::string IntToString(int number);
+	static int StringToInt(std::string str);
+	static uint16_t StringToUint16(std::string str);
+	static size_t StringToSizeT(std::string str);
 };
 
 class MyError : public std::exception
