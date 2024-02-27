@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:04:11 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:09:40 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Config
 
     private:
         std::vector<uint16_t>  _ports;
+        uint16_t     _port;
         in_addr_t    _host;
         std::string  _server_name;
         std::string  _root;

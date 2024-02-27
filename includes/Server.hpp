@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:05:00 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 18:05:23 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Server
         int         _port;
         int         _socket;
         int         _new_socket;
-        long        _incoming_message;
+        //long        _incoming_message;
 
         struct sockaddr_in      _socket_address;
         unsigned int            _address_length;
