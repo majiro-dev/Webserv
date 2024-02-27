@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/23 14:18:56 by manujime         ###   ########.fr       */
+/*   Updated: 2024/02/27 14:57:04 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 	{
 		if (line->find("}") != std::string::npos)
 			break;	
-		for (unsigned int i = 0; i < toFind->length(); i++)
+		for (unsigned int i = 0; i < sizeof(toFind) / sizeof(toFind[0]); i++)
 		{
 			if (line->find(toFind[i]) != std::string::npos)
 				_assignConfValues(line, config, i);  
@@ -79,7 +79,7 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 	std::string value = *line;
 	void (Config::*setters[])(std::string) = {&Config::SetPort, &Config::SetHost, &Config::SetServerName,
 				&Config::SetRoot, &Config::SetClientMaxBodySize, &Config::SetAutoindex, &Config::AddErrorPage,
-				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension,
+				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension, 
 				&Config::SetRedirect};
 	(config->*setters[i])(value);
 	std::cout << "Assigned " << value << " to " << i << std::endl;
@@ -96,7 +96,7 @@ void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Confi
 	{
 		if (line->find("}") != std::string::npos)
 			break;
-		for (unsigned int i = 0; i < toFind->length(); i++)
+		for (unsigned int i = 0; i < sizeof(toFind) / sizeof(toFind[0]); i++)
 		{
 			if (line->find(toFind[i]) != std::string::npos)
 				_assignConfValues(line, location, i);
