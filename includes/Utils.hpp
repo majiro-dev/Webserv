@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/20 22:25:11 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:52:09 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <sstream>
 # include <list>
 # include <map>
+# include <vector>
 # include <netinet/in.h>
 # include <stdio.h>
 # include <sys/socket.h>
