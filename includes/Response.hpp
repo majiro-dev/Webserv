@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:07:00 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/29 12:20:22 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/29 17:52:03 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Response
         unsigned int _statusCode;
         std::string _protocol;
         std::string _body;
-        //unsigned int _bodyLen;
+        unsigned int _bodyLen;
         std::map<unsigned int, std::string>_code_msgs;
         std::multimap<std::string, std::string>_headers;
     public:
@@ -39,6 +39,7 @@ class Response
         std::string getStatusMsg(const unsigned int code);
         
         void init_code_message();
+        void addBody(unsigned int code);
         void addHeaders(std::string header_key, std::string header_value);
         std::string build_response();
 };

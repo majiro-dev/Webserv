@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/29 11:49:32 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:28:03 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void Server::handleConnection(int &client_fd)
 {
     int bytesReceived = 0;
     char buffer[BUFFER_SIZE] = {0};
-        
+    //COMPROBAR CONTENT-LEN
     bytesReceived = recv(client_fd, buffer, BUFFER_SIZE, 0);
     if (bytesReceived < 0)
     {
@@ -205,9 +205,9 @@ void Server::handleConnection(int &client_fd)
 void Server::sendResponse(int &client_fd)
 {
     unsigned long bytesSenT;
-    Response res(400);
-    res.build_response();
-    bytesSenT = write(client_fd, _server_message.c_str(), _server_message.size());
+    Response res(500);
+    std::string respuesta = res.build_response();
+    bytesSenT = write(client_fd, respuesta.c_str(), respuesta.size());
     if (bytesSenT == _server_message.size())
         Utils::log("Response sent successfully.", GREEN);
     else
