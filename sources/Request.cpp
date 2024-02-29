@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/26 21:06:17 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/28 19:08:46 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ Request::Request(const std::string &msg)
     }
     catch(const MyError& e)
     {
+        //Error 400
         std::cerr << RED << e.what() << '\n' << RESET;
     }
     

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:43:35 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/29 11:49:32 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,8 @@ void Server::handleConnection(int &client_fd)
 void Server::sendResponse(int &client_fd)
 {
     unsigned long bytesSenT;
-
+    Response res(400);
+    res.build_response();
     bytesSenT = write(client_fd, _server_message.c_str(), _server_message.size());
     if (bytesSenT == _server_message.size())
         Utils::log("Response sent successfully.", GREEN);

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:38:55 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/02/29 11:42:42 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Socket.hpp"
 # include "outputMacros.hpp"
 # include "Request.hpp"
+# include "Response.hpp"
 # include "Utils.hpp"
 # include <fcntl.h>
 # include <poll.h>
