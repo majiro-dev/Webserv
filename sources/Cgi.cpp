@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/06 16:27:20 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/06 17:54:23 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ bool ExecuteCgi(char **env, char **argv, std::string &response, int socket)
     pid = fork();
     if (pid == 0)
     {
+        //chdir("path"); //change directory of the child process for relative path file access
+
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
@@ -83,5 +85,28 @@ bool ExecuteCgi(char **env, char **argv, std::string &response, int socket)
         alarm(0);
         exit(EXIT_FAILURE);
     }
-
+    else if (pid < 0)
+    {
+        response = "500 Internal Server Error";
+        return (false);
+    }
+    else
+    {
+        close(fd[1]);
+        char buffer[4096];
+        int bytesRead;
+        while ((bytesRead = read(fd[0], buffer, 4096)) > 0)
+        {
+            response.append(buffer, bytesRead);
+        }
+        close(fd[0]);
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+        {
+            if (WEXITSTATUS(status) == 0)
+                return (true);
+        }
+    }
+    response = "500 Internal Server Error";
+    return (false);
 }
