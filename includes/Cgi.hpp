@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:02:49 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/06 16:04:34 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/06 20:17:40 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,15 @@ class Cgi
         void    SetCgiExtension(std::string extension);
         std::string GetCgiPath(void);
         std::string GetCgiExtension(void);
+        std::string GetResult(void);
 
         static bool IsCgi(std::string path);
-        static bool ExecuteCgi(char **env, char **argv, std::string &response, int socket);
+        bool ExecuteCgi(char **env, char **argv);
 
     private:
         std::string cgiPath;
         std::string cgiExtension;
+        std::string result;
 };
 
 #endif
