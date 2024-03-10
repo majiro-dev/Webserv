@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:06:34 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/10 16:20:05 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include <sstream>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/wait.h>
 
 # include "outputMacros.hpp"
 
@@ -48,6 +49,7 @@ class Utils
 	static int StringToInt(std::string str);
 	static uint16_t StringToUint16(std::string str);
 	static size_t StringToSizeT(std::string str);
+	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 };
 
 class MyError : public std::exception

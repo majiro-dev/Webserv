@@ -112,3 +112,29 @@ size_t Utils::StringToSizeT(std::string str)
     ss >> size;
     return size;
 }
+
+void MyStrcpy(char *dst, const char *src)
+{
+    while (*src)
+    {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    *dst = '\0';
+}
+
+char **Utils::MultimapToCharMatrix(std::multimap<std::string, std::string> &map)
+{
+    char **env = new char*[map.size() + 1];
+    int i = 0;
+    for (std::multimap<std::string, std::string>::iterator it = map.begin(); it != map.end(); it++)
+    {
+        std::string str = it->first + "=" + it->second;
+        env[i] = new char[str.length() + 1];
+        MyStrcpy(env[i], str.c_str());
+        i++;
+    }
+    env[i] = NULL;
+    return env;
+}
