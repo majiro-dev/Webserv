@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:41:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/14 19:59:02 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 #include "../includes/Config.hpp"
 #include "../includes/Manager.hpp"
 
+
 int main(int argc, char **argv)
 {
+    //atexit(leaks);
     std::string path;
     if (argc != 2)
     {
@@ -32,10 +34,11 @@ int main(int argc, char **argv)
     Manager manager = Manager(std::string(argv[1]));
     if (!manager.parseConfig())
         return (1);
-    //Server server = Server("0.0.0.0", 8080);
+        
     Server server = Server(config);
+    
+    signal(SIGINT, handleSignal);
     server.runServer();
-    Utils::log("Server is running", RESET);
     return (0);
 }
 

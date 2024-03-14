@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:07:00 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/29 17:52:03 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/13 18:03:01 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define RESPONSE_HPP
 
 
-# include "Server.hpp"
+# include "Utils.hpp"
 
 
 # define HTTP_PROTOCOL "HTTP/1.1"
@@ -28,20 +28,28 @@ class Response
         unsigned int _bodyLen;
         std::map<unsigned int, std::string>_code_msgs;
         std::multimap<std::string, std::string>_headers;
+        
+        void init_code_message();
     public:
         Response();
         Response(unsigned int code);
         ~Response();
         
+        Response& operator=(const Response& src);
+        
         std::string getProtocol();
         std::string getBody();
         unsigned int getStatusCode();
-        std::string getStatusMsg(const unsigned int code);
+        std::string getStatusMsg();
         
-        void init_code_message();
-        void addBody(unsigned int code);
         void addHeaders(std::string header_key, std::string header_value);
+        void setBody(std::string body);
+        void setStatusCode(const unsigned int newCode);
+        
         std::string build_response();
 };
+
+std::string buildErrorPage(Response &Response);
+
 
 #endif

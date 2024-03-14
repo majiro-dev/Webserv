@@ -62,7 +62,7 @@ bool Utils::FileIsValid(std::string path)
 
 void Utils::log(const std::string &message, const char* color)
 {
-    std::cout << color << message << std::endl << RESET;
+    std::cout << color << message << RESET << std::endl;
 }
 
 
@@ -111,4 +111,58 @@ size_t Utils::StringToSizeT(std::string str)
     size_t size;
     ss >> size;
     return size;
+}
+
+static std::string logDataTine()
+{
+    std::stringstream ss;
+
+    std::time_t currentTime = std::time(nullptr);
+
+    std::tm* localTime = std::localtime(&currentTime);
+
+    ss << localTime->tm_year + 1900 << '-' << localTime->tm_mon + 1 << '-' << localTime->tm_mday << ' ';
+    ss << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    return ss.str();
+}
+
+void Utils::logger(const std::string &msg, int mode)
+{
+    std::stringstream ss;
+
+    const char *color;
+    std::string text = "";
+    if(mode == LOG)
+    {
+        color = GREEN;
+        text = "LOG";
+    }
+    else if(mode == INFO)
+    {
+        color = CYAN;
+        text = "INF";
+    }else if(mode == ERROR)
+    {
+        color = RED;
+        text = "ERR";
+    }
+
+
+    ss << '[' << logDataTine() << ']' << "  "<< '[' << color << text  << RESET << ']' << ":  " << color << msg << RESET;
+
+    std::cout << ss.str() << std::endl;
+}
+
+void handleSignal(int signal) 
+{
+	(void)signal;
+
+    std::cout << std::endl;
+    Utils::logger("Webserv closed!", INFO);
+	std::exit(0);
+}
+
+void leaks(void)
+{
+	system("leaks -q webserv");
 }

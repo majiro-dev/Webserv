@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/26 21:05:32 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/12 17:58:41 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define REQUEST_HPP
 
 
-# include "Server.hpp"
+# include "Utils.hpp"
 
 enum AllowMethods
 {
@@ -26,6 +26,7 @@ enum AllowMethods
 class Request
 {
     private:
+        std::string _req_msg;
         std::string _method;
         std::string _uri;
         std::string _protocol;
@@ -33,13 +34,15 @@ class Request
         std::string _resource;
         std::map<std::string, std::string> _headers;
         std::multimap<std::string, std::string> _querys;
-    public:
-        Request(const std::string &msg);
-        ~Request();
+        
         int parseFirstLine(std::string &req);
-        void print();
         void parseHeader(std::string line);
         void parseUri();
+    public:
+        Request();
+        Request(const std::string &msg);
+        ~Request();
+        void print();
         //void parseBody();
         std::string getHeader(std::string find);
         std::string getMethod();

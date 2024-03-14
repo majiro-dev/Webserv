@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/29 11:48:18 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:34:33 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ bool	Manager::parseConfig()
 	}
 	//for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 		//it->PrintConfig();
-	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+	//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return true;
 }
 

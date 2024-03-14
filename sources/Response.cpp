@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/29 18:20:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/13 18:09:22 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,51 @@ unsigned int Response::getStatusCode()
     return this->_statusCode;
 }
 
+Response& Response::operator=(const Response& src)
+{
+    if(this != &src)
+    {
+        this->_statusCode = src._statusCode;
+        this->_code_msgs = src._code_msgs;
+        this->_protocol = src._protocol;
+        this->_headers = src._headers;
+        this->_body = src._body;
+        this->_bodyLen = src._bodyLen;
+    }
+    return *this;
+}
 
-std::string Response::getStatusMsg(const unsigned int code)
+void Response::init_code_message()
+{
+    this->_code_msgs.insert(std::make_pair(200, "OK"));
+    this->_code_msgs.insert(std::make_pair(400, "Bad Request"));
+    this->_code_msgs.insert(std::make_pair(404, "Not found"));
+    this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
+    this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
+}
+
+void Response::setStatusCode(const unsigned int newCode)
+{
+    this->_statusCode = newCode;
+}
+
+void Response::addHeaders(std::string header_key, std::string header_value)
+{
+    this->_headers.insert(std::make_pair(header_key, header_value));
+}
+
+void Response::setBody(std::string body)
+{
+    this->_body += body;
+    this->_bodyLen = body.size();
+    addHeaders("Content-lent", Utils::IntToString(this->_bodyLen));
+}
+
+std::string Response::getStatusMsg()
 {
     std::map<unsigned int, std::string>::iterator it;
 
-    it = this->_code_msgs.find(code);
+    it = this->_code_msgs.find(this->getStatusCode());
     if(it == this->_code_msgs.end())
         return "";
     return it->second;
@@ -57,47 +96,37 @@ std::string Response::getBody()
     return this->_body;
 }
 
-
-void Response::init_code_message()
+std::string buildErrorPage(Response &Response)
 {
-    this->_code_msgs.insert(std::make_pair(200, "OK"));
-    this->_code_msgs.insert(std::make_pair(400, "Bad Request"));
-    this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
+    std::stringstream html;
+    
+    html << "<html>\n"
+                  "<head><title>" << Response.getStatusCode() << " " << Response.getStatusMsg() << "</title></head>\n"
+                  "<body style=\"text-align:center;\">"
+                  "<h1>" << Response.getStatusCode() << " " << Response.getStatusMsg()<< "</h1>\n"
+                  "<hr>\n"
+                  "<p>" << "Webserver 1" << "</p>\n"
+                  "</body>\n"
+                  "</html>";
+    return html.str();
 }
 
-
-/* void Reponse::addBody(unsigned int code)
-{
-    switch(code)
-    {
-        case 200: 
-            this"Todo ok";
-        default: 
-            "Not found code\n";
-    }
-} */
-
-void Response::addHeaders(std::string header_key, std::string header_value)
-{
-    this->_headers.insert(std::make_pair(header_key, header_value));
-}
 
 std::string Response::build_response()
 {
     std::stringstream ss;
     std::multimap<std::string, std::string>::iterator it;
-    this->_body = getStatusMsg(this->_statusCode);
-    this->_bodyLen = this->_body.size();
+    
+    //setBody(getStatusMsg(this->_statusCode));
 
     this->addHeaders("Content-Type", "text/html");
-    this->addHeaders("Content-lent", Utils::IntToString(this->_bodyLen));
 
-    std::cout << "RESPONSE LINE: " << ss.str() << std::endl;
-    ss << getProtocol() << ' ' << getStatusCode() << ' ' << getStatusMsg(this->_statusCode) << "\r\n";
+    ss << getProtocol() << ' ' << getStatusCode() << ' ' << getStatusMsg() << "\r\n";
     for(it = this->_headers.begin(); it != this->_headers.end(); it++){
         ss << it->first << ": " << it->second << "\r\n";    
     }
     ss << "\r\n";
-    ss << this->_body;
+    if(this->_body.size())
+        ss << this->_body;
     return ss.str();
 }
