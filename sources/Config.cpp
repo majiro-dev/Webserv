@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:40:14 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:32:41 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ Config::Config(const Config &src)
 Config::~Config(void)
 {
     this->_locations.clear();
+    this->_cgis.clear();
     return ;
 }
 
@@ -121,8 +122,14 @@ std::vector<bool> Config::GetAllowMethods(void)
 
 void Config::SetPort(std::string port)
 {
-    uint16_t port_int = Utils::StringToUint16(port);
     std::string port_str = _trim(port);
+    int aux = Utils::StringToInt(port_str);
+    if (aux < 0 || aux > 65535) //maybe 1024 to 49151 for server reserved ports
+    {
+        std::string error = "Invalid port: " + port_str;
+        Utils::exceptWithError(error.c_str());
+    }
+    uint16_t port_int = Utils::StringToUint16(port);
     port_int = Utils::StringToUint16(port_str);
     this->_ports.push_back(port_int);
 }
@@ -130,6 +137,25 @@ void Config::SetPort(std::string port)
 void Config::SetHost(std::string host)
 {
     std::string host_str = _trim(host);
+    std::stringstream ss(host_str);
+    std::string segment;
+    std::vector<std::string> segvec;
+
+    while (std::getline(ss, segment, '.'))
+        segvec.push_back(segment);
+    if (segvec.size() != 4)
+    {
+        std::string error = "Invalid host: " + host_str;
+        Utils::exceptWithError(error.c_str());
+    } 
+    for (int i = 0; i < 4; i++)
+    {
+        if (Utils::StringToInt(segvec[i]) < 0 || Utils::StringToInt(segvec[i]) > 255)
+        {
+            std::string error = "Invalid host: " + host_str;
+            Utils::exceptWithError(error.c_str());
+        }
+    }
     this->_host = inet_addr(host_str.c_str());
 }
 
@@ -141,6 +167,11 @@ void Config::SetServerName(std::string server_name)
 void Config::SetRoot(std::string root)
 {
     this->_root = _trim(root);
+    if (Utils::DirIsValid(this->_root) == false)
+    {
+        std::string error = "Invalid root directory: " + this->_root;
+        Utils::exceptWithError(error.c_str());
+    }
 }
 
 void Config::SetClientMaxBodySize(std::string client_max_body_size)
@@ -186,17 +217,53 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    this->_cgi_pass = _trim(cgi_pass);
+    std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
+    if (tokens.size() != 2)
+    {
+        std::string error = "Invalid cgi directory: " + cgi_pass;
+        Utils::exceptWithError(error.c_str());
+    }
+    for (size_t i = 1; i < tokens.size(); i++)
+    {
+        if (Utils::DirIsValid(tokens[i]) == false)
+        {
+            std::string error = "Invalid cgi directory: " + tokens[i];
+            Utils::exceptWithError(error.c_str());
+        }
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(tokens[i]);
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    }
 }
 
 void Config::SetCgiExtension(std::string cgi_extension)
 {
-    this->_cgi_extension = _trim(cgi_extension);
+    std::vector <std::string> tokens = Utils::Tokenize(cgi_extension, " \t;");
+    if (tokens.size() != _cgis.size() + 1)
+    {
+        std::string error = "cgi_extension and cgi_pass mismatch";
+        Utils::exceptWithError(error.c_str());
+    }
+    for (size_t i = 1; i < tokens.size(); i++)
+    {
+        this->_cgis[i - 1].SetCgiExtension(tokens[i]);
+    }
 }
 
 void Config::SetRedirect(std::string redirect)
 {
     this->_redirect = _trim(redirect);
+}
+
+void Config::SetRootAsLocation(std::string location)
+{
+    this->_root = location;
+    if (Utils::DirIsValid(this->_root) == false)
+    {
+        std::string error = "Invalid location directory: " + this->_root;
+        Utils::exceptWithError(error.c_str());
+    }
 }
 
 std::string Config::_trim(std::string str)

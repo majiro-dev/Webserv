@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/06 20:18:57 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/16 14:22:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,4 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
 std::string Cgi::GetResult(void)
 {
     return (this->result);
-}
+} 

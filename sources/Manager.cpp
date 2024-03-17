@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:16:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/17 20:58:16 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,17 @@ bool	Manager::parseConfig()
 	return true;
 }
 
+std::string locationPath(std::string path)
+{
+	std::string location = path.substr(path.find("location ") + 9);
+	location = location.substr(0, location.find(" "));
+	return location;
+}
+
 void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
-							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
 							"return "};
 	while (std::getline(*file, *line))
 	{
@@ -66,6 +73,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 			else if (line->find("location ") != std::string::npos)
 			{
 				Config *location = new Config(*config);
+				location->SetRootAsLocation(locationPath(*line));
 				_parseLocationBlock(file, line, location);
 				config->AddLocation(*location);
 				delete location;
@@ -89,7 +97,7 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
-							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
 							"return "};
 	
 	while (std::getline(*file, *line))

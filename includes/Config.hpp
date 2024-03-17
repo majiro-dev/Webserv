@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:40:52 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/17 20:50:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "outputMacros.hpp"
 # include "Utils.hpp"
 # include "Socket.hpp"
+# include "Cgi.hpp"
 
 
 class Config
@@ -62,7 +63,7 @@ class Config
         void   SetAllowMethods(std::string allow_methods);
         void   SetCgiPass(std::string cgi_pass);
         void   SetCgiExtension(std::string cgi_extension);
-
+        void   SetRootAsLocation(std::string location);
 
         void  PrintConfig(void);
 
@@ -76,6 +77,7 @@ class Config
         std::string  _index;
         std::string  _redirect;
 
+        std::vector<Cgi> _cgis;
         std::string  _cgi_pass;
         std::string  _cgi_extension;
         bool         _autoindex;

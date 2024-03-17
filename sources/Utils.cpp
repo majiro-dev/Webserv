@@ -138,3 +138,26 @@ char **Utils::MultimapToCharMatrix(std::multimap<std::string, std::string> &map)
     env[i] = NULL;
     return env;
 }
+
+bool Utils::DirIsValid(std::string path)
+{
+    struct stat info;
+    if (stat(path.c_str(), &info) == 0 && S_ISDIR(info.st_mode))
+        return true;
+    return false;
+}
+
+std::vector<std::string> Utils::Tokenize(const std::string &str, const std::string &delimiters)
+{
+    std::vector<std::string> tokens;
+    size_t start = str.find_first_not_of(delimiters);
+    size_t end = 0;
+    while ((end = str.find_first_of(delimiters, start)) != std::string::npos)
+    {
+        tokens.push_back(str.substr(start, end - start));
+        start = str.find_first_not_of(delimiters, end);
+    }
+    if (start != std::string::npos)
+        tokens.push_back(str.substr(start));
+    return tokens;
+}
