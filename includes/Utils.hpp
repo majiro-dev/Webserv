@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:06:34 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:06:13 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include <sstream>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/wait.h>
+# include <sys/stat.h>
 
 # include "outputMacros.hpp"
 
@@ -41,6 +43,8 @@ class Utils
 		static bool FileIsConf(std::string path);
 		static bool FileIsValid(std::string path);
 
+		static bool DirIsValid(std::string path);
+
 		static void log(const std::string &message, const char *color);
 		static void exceptWithError(const char *message);
 
@@ -48,6 +52,8 @@ class Utils
 	static int StringToInt(std::string str);
 	static uint16_t StringToUint16(std::string str);
 	static size_t StringToSizeT(std::string str);
+	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
+	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);
 };
 
 class MyError : public std::exception
