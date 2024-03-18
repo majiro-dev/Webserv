@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 19:17:45 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/18 21:27:11 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,30 @@ Manager::~Manager(void)
 
 bool	Manager::parseConfig()
 {
-	std::ifstream file(_path.c_str());
-	std::string line;
-	while (std::getline(file, line))
+	try
 	{
-		if (line.find("server {") != std::string::npos)
+		std::ifstream file(_path.c_str());
+		std::string line;
+		while (std::getline(file, line))
 		{
-			Config *config = new Config();
-			_parseServerBlock(&file, &line, config);
-			_configs.push_back(*config);
-			delete config;
+			if (line.find("server {") != std::string::npos)
+			{
+				Config *config = new Config();
+				_parseServerBlock(&file, &line, config);
+				_configs.push_back(*config);
+				delete config;
+			}
 		}
+		for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+			it->PrintConfig();
+		Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+		return true;
 	}
-	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
-		it->PrintConfig();
-	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
-	return true;
+	catch (std::exception &e)
+	{
+		Utils::log(e.what(), RED);
+		return false;
+	}
 }
 
 std::string locationPath(std::string path)
