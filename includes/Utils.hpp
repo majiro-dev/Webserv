@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/17 21:06:13 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:57:21 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Utils
 
 		static void log(const std::string &message, const char *color);
 		static void exceptWithError(const char *message);
+		static void exceptWithError(const std::string &message);
 
 	static std::string IntToString(int number);
 	static int StringToInt(std::string str);
@@ -62,6 +63,16 @@ class MyError : public std::exception
 		const char *_msg;
 	public:
 		MyError(const char *msg);
+		virtual const char * what() const throw();
+};
+
+class SError : public std::exception
+{
+	private:
+		const std::string _msg;
+	public:
+		SError(const std::string &msg);
+		virtual ~SError() throw();
 		virtual const char * what() const throw();
 };
 
