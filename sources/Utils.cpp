@@ -88,6 +88,23 @@ void Utils::exceptWithError(const char* message)
     throw MyError(message);
 }
 
+SError::SError(const std::string &msg)
+    :_msg(msg)
+{}
+
+
+const char * SError::what() const throw()
+{
+    return _msg.c_str();
+}
+
+SError::~SError() throw() 
+{}
+
+void Utils::exceptWithError(const std::string &message)
+{
+    throw SError(message);
+}
 
 int Utils::StringToInt(std::string str)
 {

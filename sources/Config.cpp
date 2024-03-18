@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/17 21:32:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/18 21:26:19 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,41 +122,56 @@ std::vector<bool> Config::GetAllowMethods(void)
 
 void Config::SetPort(std::string port)
 {
-    std::string port_str = _trim(port);
-    int aux = Utils::StringToInt(port_str);
-    if (aux < 0 || aux > 65535) //maybe 1024 to 49151 for server reserved ports
+    try
     {
-        std::string error = "Invalid port: " + port_str;
-        Utils::exceptWithError(error.c_str());
+        std::string port_str = _trim(port);
+        int aux = Utils::StringToInt(port_str);
+        if (aux < 0 || aux > 65535) //maybe 1024 to 49151 for server reserved ports
+        {
+            std::string error = "Invalid port: " + port_str;
+            Utils::exceptWithError(error);
+        }
+        uint16_t port_int = Utils::StringToUint16(port);
+        port_int = Utils::StringToUint16(port_str);
+        this->_ports.push_back(port_int);
     }
-    uint16_t port_int = Utils::StringToUint16(port);
-    port_int = Utils::StringToUint16(port_str);
-    this->_ports.push_back(port_int);
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 void Config::SetHost(std::string host)
 {
-    std::string host_str = _trim(host);
-    std::stringstream ss(host_str);
-    std::string segment;
-    std::vector<std::string> segvec;
+    try
+    {
+        std::string host_str = _trim(host);
+        std::stringstream ss(host_str);
+        std::string segment;
+        std::vector<std::string> segvec;
 
-    while (std::getline(ss, segment, '.'))
-        segvec.push_back(segment);
-    if (segvec.size() != 4)
-    {
-        std::string error = "Invalid host: " + host_str;
-        Utils::exceptWithError(error.c_str());
-    } 
-    for (int i = 0; i < 4; i++)
-    {
-        if (Utils::StringToInt(segvec[i]) < 0 || Utils::StringToInt(segvec[i]) > 255)
+        while (std::getline(ss, segment, '.'))
+            segvec.push_back(segment);
+        if (segvec.size() != 4)
         {
-            std::string error = "Invalid host: " + host_str;
+            std::string error = "Invalid host 2: " + host_str;
             Utils::exceptWithError(error.c_str());
+        } 
+        for (int i = 0; i < 4; i++)
+        {
+            if (Utils::StringToInt(segvec[i]) < 0 || Utils::StringToInt(segvec[i]) > 255)
+            {
+                std::string error = "Invalid host 1: " + host_str;
+                Utils::exceptWithError(error);
+            }
         }
+        this->_host = inet_addr(host_str.c_str());
     }
-    this->_host = inet_addr(host_str.c_str());
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void Config::SetServerName(std::string server_name)
@@ -166,12 +181,20 @@ void Config::SetServerName(std::string server_name)
 
 void Config::SetRoot(std::string root)
 {
-    this->_root = _trim(root);
-    if (Utils::DirIsValid(this->_root) == false)
+    try
     {
-        std::string error = "Invalid root directory: " + this->_root;
-        Utils::exceptWithError(error.c_str());
+        this->_root = _trim(root);
+        if (Utils::DirIsValid(this->_root) == false)
+        {
+            std::string error = "Invalid root directory: " + this->_root;
+            Utils::exceptWithError(error);
+        }
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void Config::SetClientMaxBodySize(std::string client_max_body_size)
@@ -181,7 +204,21 @@ void Config::SetClientMaxBodySize(std::string client_max_body_size)
 
 void Config::SetIndex(std::string index)
 {
-    this->_index = _trim(index);
+
+    try
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + _trim(index)) == false)
+        {
+            std::string error = "Invalid index file: " + index;
+            Utils::exceptWithError(error);
+        }
+        this->_index = _trim(index);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void Config::AddLocation(Config location)
@@ -217,38 +254,54 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-    if (tokens.size() != 2)
+    try
     {
-        std::string error = "Invalid cgi directory: " + cgi_pass;
-        Utils::exceptWithError(error.c_str());
-    }
-    for (size_t i = 1; i < tokens.size(); i++)
-    {
-        if (Utils::DirIsValid(tokens[i]) == false)
+        std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
+        if (tokens.size() != 2)
         {
-            std::string error = "Invalid cgi directory: " + tokens[i];
-            Utils::exceptWithError(error.c_str());
+            std::string error = "Invalid cgi directory: " + cgi_pass;
+            Utils::exceptWithError(error);
         }
-        Cgi *cgi = new Cgi();
-        cgi->SetCgiPath(tokens[i]);
-        this->_cgis.push_back(*cgi);
-        delete cgi;
+        for (size_t i = 1; i < tokens.size(); i++)
+        {
+            if (Utils::DirIsValid(tokens[i]) == false)
+            {
+                std::string error = "Invalid cgi directory: " + tokens[i];
+                Utils::exceptWithError(error);
+            }
+            Cgi *cgi = new Cgi();
+            cgi->SetCgiPath(tokens[i]);
+            this->_cgis.push_back(*cgi);
+            delete cgi;
+        }
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void Config::SetCgiExtension(std::string cgi_extension)
 {
-    std::vector <std::string> tokens = Utils::Tokenize(cgi_extension, " \t;");
-    if (tokens.size() != _cgis.size() + 1)
+    try
     {
-        std::string error = "cgi_extension and cgi_pass mismatch";
-        Utils::exceptWithError(error.c_str());
+        std::vector <std::string> tokens = Utils::Tokenize(cgi_extension, " \t;");
+        if (tokens.size() != _cgis.size() + 1)
+        {
+            std::string error = "cgi_extension and cgi_pass mismatch";
+            Utils::exceptWithError(error);
+        }
+        for (size_t i = 1; i < tokens.size(); i++)
+        {
+            this->_cgis[i - 1].SetCgiExtension(tokens[i]);
+        }
     }
-    for (size_t i = 1; i < tokens.size(); i++)
+    catch(const std::exception& e)
     {
-        this->_cgis[i - 1].SetCgiExtension(tokens[i]);
+        std::cerr << e.what() << '\n';
     }
+    
 }
 
 void Config::SetRedirect(std::string redirect)
@@ -258,12 +311,20 @@ void Config::SetRedirect(std::string redirect)
 
 void Config::SetRootAsLocation(std::string location)
 {
-    this->_root = location;
-    if (Utils::DirIsValid(this->_root) == false)
+    try
     {
-        std::string error = "Invalid location directory: " + this->_root;
-        Utils::exceptWithError(error.c_str());
+        this->_root = location;
+        if (Utils::DirIsValid(this->_root) == false)
+        {
+            std::string error = "Invalid location directory: " + this->_root;
+            Utils::exceptWithError(error);
+        }
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 std::string Config::_trim(std::string str)
