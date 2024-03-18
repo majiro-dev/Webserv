@@ -219,6 +219,7 @@ void Utils::logger(const std::string &msg, int mode)
     std::cout << ss.str() << std::endl;
 }
 
+
 void handleSignal(int signal) 
 {
 	(void)signal;
