@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/17 21:06:13 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/14 19:57:39 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,18 @@
 # include <iostream>
 # include <sstream>
 # include <unistd.h>
+# include <ctime>
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
 
 # include "outputMacros.hpp"
+
+enum text{
+	LOG = 0,
+	INFO = 1,
+	ERROR = 2,
+};
 
 class Utils
 {
@@ -52,8 +59,9 @@ class Utils
 	static int StringToInt(std::string str);
 	static uint16_t StringToUint16(std::string str);
 	static size_t StringToSizeT(std::string str);
-	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);
+	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
+	static void logger(const std::string &msg, int mode);
 };
 
 class MyError : public std::exception
@@ -64,5 +72,8 @@ class MyError : public std::exception
 		MyError(const char *msg);
 		virtual const char * what() const throw();
 };
+
+void handleSignal(int signal);
+void leaks(void);
 
 #endif

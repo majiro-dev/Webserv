@@ -6,56 +6,53 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/02/26 21:06:17 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/14 12:01:11 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Request.hpp"
 #include <string>
 
+Request::Request()
+    : _req_msg(""),_method(""), _uri(""),_protocol(""), _body("")
+{}
+
 Request::Request(const std::string &msg)
-    : _method(""), _uri(""),_protocol(""), _body("")
+    : _req_msg(msg),_method(""), _uri(""),_protocol(""), _body("")
 {
-    try
-    {
-        size_t len = 0;
-        std::string request;
-        std::string header;
+    
+    size_t len = 0;
+    std::string request;
+    std::string header;
         
-        if(msg.empty())
-            Utils::exceptWithError("Request empty");
+    if(this->_req_msg.empty())
+        Utils::exceptWithError("Request empty");
             
         
-        if((len = msg.find("\r\n")) == std::string::npos)
-            Utils::exceptWithError("Dont have \\r\\n");
+    if((len = this->_req_msg.find("\r\n")) == std::string::npos)
+        Utils::exceptWithError("Dont have \\r\\n");
 
-        request = msg.substr(0, len);
-        if(parseFirstLine(request) == 1)
-            Utils::exceptWithError("Invalid format");
+    request = this->_req_msg.substr(0, len);
+    if(parseFirstLine(request) == 1)
+        Utils::exceptWithError("Invalid format");
         
-        header = msg.substr(len + 2);
-        if((len = msg.find("\r\n\r\n")) == std::string::npos)
-            Utils::exceptWithError("No good final - \\r\\n\\r\\n");
+    header = this->_req_msg.substr(len + 2);
+    if((len = this->_req_msg.find("\r\n\r\n")) == std::string::npos)
+        Utils::exceptWithError("No good final - \\r\\n\\r\\n");
         
-        len = header.find("\r\n");
-        while(len != std::string::npos)
-        {
-            parseHeader(header.substr(0, len + 2));
-            header = header.substr(len + 2);
-            len = header.find("\r\n");
-            if(len <= 2)
-                break;
-        }
-        if((msg.size() - (msg.find("\r\n\r\n") + 4)) > 0)
-            this->_body = msg.substr(msg.find("\r\n\r\n") + 4);
-        
-        print();
-    }
-    catch(const MyError& e)
+    len = header.find("\r\n");
+    while(len != std::string::npos)
     {
-        std::cerr << RED << e.what() << '\n' << RESET;
+        parseHeader(header.substr(0, len + 2));
+        header = header.substr(len + 2);
+        len = header.find("\r\n");
+        if(len <= 2)
+            break;
     }
-    
+    if((this->_req_msg.size() - (this->_req_msg.find("\r\n\r\n") + 4)) > 0)
+        this->_body = this->_req_msg.substr(this->_req_msg.find("\r\n\r\n") + 4);
+        
+    //print();
 }
 
 Request::~Request(){}
@@ -76,7 +73,11 @@ int Request::parseFirstLine(std::string &req)
             this->_uri = req.substr(f_len + 1, s_len - f_len -1);
             parseUri();
             if(s_len != std::string::npos)
+            {
                 this->_protocol = req.substr(s_len + 1);
+                 if(this->_protocol != "HTTP/1.1")
+                    Utils::exceptWithError("Invalid protocol");
+            }
             return 0;
         }
     }
@@ -117,7 +118,7 @@ Content-Length: 123
 Hace falta parsearlo
 */
 
-//Mejorarlo
+//Mejorarlo****
 void Request::parseUri()
 {
     std::string key;
@@ -128,6 +129,8 @@ void Request::parseUri()
     size_t equal = 0;
     
     len = this->_uri.find('?');
+    if(len == std::string::npos)
+        return ;
     //Obtener recursos
     this->_resource = this->_uri.substr(0, len);
     //Obtner cadenas de consultas
@@ -136,6 +139,7 @@ void Request::parseUri()
     len = querys.find('&');
     while(len != std::string::npos)
     {
+        std::cout << "Entrra" << std::endl;
         aux =  querys.substr(0, len);
         equal = aux.find('=');
         key = aux.substr(0, equal);

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:38:55 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/14 20:18:45 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "Socket.hpp"
 # include "outputMacros.hpp"
 # include "Request.hpp"
+# include "Client.hpp"
+# include "Response.hpp"
 # include "Utils.hpp"
 # include <fcntl.h>
 # include <poll.h>
@@ -33,30 +35,22 @@ class Server
 
     private:
         Config  _config;
-        
+        std::vector<Client *>_clients;
+        std::vector<pollfd>_pollfds;
         std::string _ip_addr;
         int         _ret;
         int         _port;
         int         _sock;
         int         _connect_sock;
         int         _max_socket;
-        //long        _incoming_message;
-        
-        //std::vector<int>max_fds;
-        fd_set read_set, write_set; 
-        
         struct sockaddr_in      _socketaddr;
         unsigned int            _addrlen;
-        std::string             _server_message;
 
         void startServer();
         void loopListen();
         void closeServer();
-        void handleConnection(int &client_fd);
         int acceptConnection();
-        std::string buildResponse();
-        void sendResponse(int &client_fd);
-
+        void removeClient(Client *client);
 };
 
 #endif
