@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/17 21:32:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:12:17 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,18 +141,23 @@ void Config::SetHost(std::string host)
     std::string segment;
     std::vector<std::string> segvec;
 
+    Utils::log("host_str: " + host_str, RESET);
+    Utils::log("str:" + host, RESET);
     while (std::getline(ss, segment, '.'))
         segvec.push_back(segment);
+    //print the contents of the vector
+    for (unsigned int i = 0; i < segvec.size(); i++)
+        Utils::log("segvec[" + Utils::IntToString(i) + "]: " + segvec[i], RESET);
     if (segvec.size() != 4)
     {
-        std::string error = "Invalid host: " + host_str;
+        std::string error = "Invalid host 2: " + host_str;
         Utils::exceptWithError(error.c_str());
     } 
     for (int i = 0; i < 4; i++)
     {
         if (Utils::StringToInt(segvec[i]) < 0 || Utils::StringToInt(segvec[i]) > 255)
         {
-            std::string error = "Invalid host: " + host_str;
+            std::string error = "Invalid host 1: " + host_str;
             Utils::exceptWithError(error.c_str());
         }
     }
