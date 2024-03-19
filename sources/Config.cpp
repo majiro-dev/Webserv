@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 21:26:19 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 11:29:09 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,9 +207,10 @@ void Config::SetIndex(std::string index)
 
     try
     {
-        if (Utils::FileIsReadable(this->_root + "/" + _trim(index)) == false)
+        std::string indexPath = this->_root + "/" + _trim(index);
+        if (Utils::FileIsReadable(indexPath) == false)
         {
-            std::string error = "Invalid index file: " + index;
+            std::string error = "Invalid index file: " + indexPath;
             Utils::exceptWithError(error);
         }
         this->_index = _trim(index);
@@ -314,6 +315,7 @@ void Config::SetRootAsLocation(std::string location)
     try
     {
         this->_root = location;
+        std::cout << "LOCATION ROOT: " << this->_root << std::endl;
         if (Utils::DirIsValid(this->_root) == false)
         {
             std::string error = "Invalid location directory: " + this->_root;
@@ -352,7 +354,7 @@ void Config::PrintConfig(void)
     std::cout << "Root: " << this->_root << std::endl;
     std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
     std::cout << "Index: " << this->_index << std::endl;
-    std::cout << "Redirect: " << this->_redirect << std::endl;
+    /*std::cout << "Redirect: " << this->_redirect << std::endl;
     std::cout << "Cgi Pass: " << this->_cgi_pass << std::endl;
     std::cout << "Cgi Extension: " << this->_cgi_extension << std::endl;
     std::cout << "Autoindex: " << this->_autoindex << std::endl;
@@ -371,13 +373,20 @@ void Config::PrintConfig(void)
     {
         std::cout << "PortV: " << *it2 << std::endl;
         it2++;
-    }
+    }*/
     std::vector<Config>::iterator it3 = this->_locations.begin();
     while (it3 != this->_locations.end())
     {
         std::cout << "Location: " << std::endl;
+        std::cout << "HHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
         it3->PrintConfig();
         it3++;
     }
     std::cout << "+++++++++++++++++++++++++++++++++++" << std::endl;
+    
+}
+
+void Config::ClearLocations(void)
+{
+    this->_locations.clear();
 }

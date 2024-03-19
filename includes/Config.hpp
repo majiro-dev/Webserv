@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/17 20:50:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 11:28:26 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ class Config
         void   SetRootAsLocation(std::string location);
 
         void  PrintConfig(void);
+        void  ClearLocations(void);
 
     private:
         std::vector<uint16_t>  _ports;

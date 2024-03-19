@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 21:27:11 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 11:29:41 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,12 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				_assignConfValues(line, config, i);  
 			else if (line->find("location ") != std::string::npos)
 			{
+				std::string locationLine = *line;
 				Config *location = new Config(*config);
+				location->ClearLocations();
 				_parseLocationBlock(file, line, location);
-				Utils::log(location->GetRoot(), RESET);
-				if (location->GetRoot() == "")
-					location->SetRootAsLocation(config->GetRoot() + locationPath(*line));
+				if (location->GetRoot() != config->GetRoot())
+					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
 				config->AddLocation(*location);
 				delete location;
 			}
