@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 11:28:26 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 15:01:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Config
 
         void  PrintConfig(void);
         void  ClearLocations(void);
+        bool  IsValid(void);
 
     private:
         std::vector<uint16_t>  _ports;

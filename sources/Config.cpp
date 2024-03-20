@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 11:29:09 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 19:28:55 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Config::Config(void)
     this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
+    this->_index = "";
     this->_client_max_body_size = 0;
     this->_autoindex = false;
     this-> _allow_methods.resize(3);
@@ -133,7 +134,8 @@ void Config::SetPort(std::string port)
         }
         uint16_t port_int = Utils::StringToUint16(port);
         port_int = Utils::StringToUint16(port_str);
-        this->_ports.push_back(port_int);
+        this->_ports.push_back(port_int);// TODO: remove this line
+        this->_port = port_int;
     }
     catch(const std::exception& e)
     {
@@ -204,7 +206,7 @@ void Config::SetClientMaxBodySize(std::string client_max_body_size)
 
 void Config::SetIndex(std::string index)
 {
-
+    /*
     try
     {
         std::string indexPath = this->_root + "/" + _trim(index);
@@ -218,8 +220,9 @@ void Config::SetIndex(std::string index)
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-    }
-    
+    }*/
+
+    this->_index = _trim(index);
 }
 
 void Config::AddLocation(Config location)
@@ -315,7 +318,7 @@ void Config::SetRootAsLocation(std::string location)
     try
     {
         this->_root = location;
-        std::cout << "LOCATION ROOT: " << this->_root << std::endl;
+        //std::cout << "LOCATION ROOT: " << this->_root << std::endl;
         if (Utils::DirIsValid(this->_root) == false)
         {
             std::string error = "Invalid location directory: " + this->_root;
@@ -389,4 +392,27 @@ void Config::PrintConfig(void)
 void Config::ClearLocations(void)
 {
     this->_locations.clear();
+}
+
+bool Config::IsValid(void)
+{
+    //if (this->_host == 0 || this->_server_name.empty() || this->_root.empty() || this->_index.empty())
+    //    return (false);
+    //if the index file is not readable return false
+    if (this->_index == "")
+    {
+        return (true);
+    }
+    else if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+    {
+        std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+        Utils::log(error, RED);
+        return (false);
+    }
+    /*for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+    {
+        if (it->IsValid() == false)
+            return (false);
+    }*/
+    return (true);
 }

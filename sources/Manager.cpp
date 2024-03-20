@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 11:29:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 20:54:50 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,14 @@ bool	Manager::parseConfig()
 			}
 		}
 		for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
-			it->PrintConfig();
+		{
+			//it->PrintConfig();
+			if (it->isValid == false)
+			{
+				Utils::log("Invalid config", RED);
+				it->PrintConfig();
+			}
+		}
 		Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 		return true;
 	}
