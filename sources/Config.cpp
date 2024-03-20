@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 19:28:55 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/20 19:13:45 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,10 +132,10 @@ void Config::SetPort(std::string port)
             std::string error = "Invalid port: " + port_str;
             Utils::exceptWithError(error);
         }
-        uint16_t port_int = Utils::StringToUint16(port);
-        port_int = Utils::StringToUint16(port_str);
-        this->_ports.push_back(port_int);// TODO: remove this line
-        this->_port = port_int;
+        uint16_t port_int = Utils::StringToUint16(port_str);
+        //port_int = Utils::StringToUint16(port_str);
+        this->_ports.push_back(port_int);
+        //this->_port = port_int;// TODO: remove this line
     }
     catch(const std::exception& e)
     {
@@ -357,13 +357,19 @@ void Config::PrintConfig(void)
     std::cout << "Root: " << this->_root << std::endl;
     std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
     std::cout << "Index: " << this->_index << std::endl;
-    /*std::cout << "Redirect: " << this->_redirect << std::endl;
-    std::cout << "Cgi Pass: " << this->_cgi_pass << std::endl;
-    std::cout << "Cgi Extension: " << this->_cgi_extension << std::endl;
+    std::cout << "Redirect: " << this->_redirect << std::endl;
     std::cout << "Autoindex: " << this->_autoindex << std::endl;
     std::cout << "GET: " << this->_allow_methods[0] << std::endl;
     std::cout << "POST: " << this->_allow_methods[1] << std::endl;
     std::cout << "DELETE: " << this->_allow_methods[2] << std::endl;
+
+    std::vector<Cgi>::iterator it4 = this->_cgis.begin();
+    while (it4 != this->_cgis.end())
+    {
+        std::cout << "Cgi: " << it4->GetCgiPath() << std::endl;
+        std::cout << "Cgi Extension: " << it4->GetCgiExtension() << std::endl;
+        it4++;
+    }
 
     std::map<int, std::string>::iterator it = this->_error_pages.begin();
     while (it != this->_error_pages.end())
@@ -376,12 +382,11 @@ void Config::PrintConfig(void)
     {
         std::cout << "PortV: " << *it2 << std::endl;
         it2++;
-    }*/
+    }
     std::vector<Config>::iterator it3 = this->_locations.begin();
     while (it3 != this->_locations.end())
     {
         std::cout << "Location: " << std::endl;
-        std::cout << "HHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
         it3->PrintConfig();
         it3++;
     }
