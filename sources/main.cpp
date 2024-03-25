@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/25 01:12:32 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:48:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         return (1);
 
     std::list<Config> configs = manager.getConfigs();
-    Cluster cluster = Cluster(configs); 
+    Cluster cluster(configs); 
     signal(SIGINT, handleSignal);
     cluster.init();
     cluster.run();

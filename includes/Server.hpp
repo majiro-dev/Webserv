@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/25 01:13:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:10:04 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ class Server
         std::vector<uint16_t>       _sockets;
         std::vector<sockaddr_in>    _sockaddrs;
         std::vector<uint16_t>       _ports;
-        //char                        *_host;
+        in_addr_t                   _host;
         int                         _max_socket;
+        std::string                 _name;
+        size_t                      _bodySize;
         
         void addSocketsServer();
     public:
@@ -44,7 +46,7 @@ class Server
         std::vector<uint16_t> getSockets();
         std::vector<sockaddr_in> getSockaddrs();
         std::vector<Client *> getClients();
-  
+        Config getConfig();
 };
 
 #endif

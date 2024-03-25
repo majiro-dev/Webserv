@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:40 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/25 01:10:50 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:18:05 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Cluster
         std::vector<Config>_configs;
         std::vector<Server*>_servers;
         std::vector<pollfd>_pollfds;
-
+        
         void removeClient(Client *client);
     public:
         Cluster(std::list<Config> &configs);

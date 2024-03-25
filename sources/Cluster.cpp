@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/25 01:10:59 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:17:58 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,18 @@ Cluster::~Cluster()
 void Cluster::init()
 {
     size_t servers = this->_configs.size();
-    
-    for(size_t i = 0; i < servers; i++)
+    //ModIFICAR PARA EL MAIN SE TERMINE EL BUCLE
+    try
     {
-        std::stringstream ss;
-        Server* server = new Server(this->_configs[i]);
-        ss << "New server started => " << '[' <<  this->_configs[i].GetServerName() << ']';
-        Utils::logger(ss.str(), INFO);
-        this->_servers.push_back(server);
+        for(size_t i = 0; i < servers; i++)
+        {
+            Server* server = new Server(this->_configs[i]);
+            this->_servers.push_back(server);
+        }
+    }
+    catch(const std::exception& e)
+    {
+        Utils::logger(e.what(), ERROR);
     }
     
 }
@@ -110,7 +114,6 @@ void Cluster::checkServerSockets()
             {
                 if(this->_pollfds[k].revents & POLLIN && this->_pollfds[k].fd == sockets[j])
                 {
-                    std::cout << "Sockett: " << sockets[j] << std::endl;
                     acceptConnection(sockets[j], i, _servers[i]->getSockaddrs()[j]);
                     break;
                 }
@@ -130,7 +133,7 @@ void Cluster::checkClientSockets()
             {
                 if (this->_pollfds[k].revents & (POLLERR | POLLHUP) && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
-                    Utils::logger("Client close the connection", ERROR);
+                    Utils::logger("Client close the connection", INFO);
                     close(clients[j]->getSocket());
                     this->_servers[i]->removeClient(clients[j]);
                     this->_pollfds.erase(this->_pollfds.begin() + k);

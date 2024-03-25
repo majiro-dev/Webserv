@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/25 01:14:51 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:09:44 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,17 @@
 Server::Server(Config config):
     _config(config)
 {
-    this->_max_socket = 0;
+    std::stringstream ss;
+    std::string name = config.GetServerName();
+    
+    this->_name = name.size() ? name : "server";
     this->_ports = config.GetPorts();
-    try
-    {
-        addSocketsServer();
-    }
-    catch(const std::exception& e)
-    {
-        Utils::logger(e.what(), ERROR);
-    }
+    this->_host = config.GetHost();
+    this->_bodySize = config.GetClientMaxBodySize();
+    this->_max_socket = 0;
+    addSocketsServer();
+    ss << "New server started => " << '[' << this->_name << ']';
+    Utils::logger(ss.str(), INFO);
     
 }
 
@@ -41,13 +42,11 @@ Server::~Server(void)
 }
 
 
-
 void Server::addSocketsServer()
 {   
     int on = 1;
     int sock;
     struct sockaddr_in sockaddr;
-
     for(size_t i = 0; i < this->_ports.size(); i++)
     {
         if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -57,10 +56,11 @@ void Server::addSocketsServer()
             Utils::exceptWithError("Error failed to set socket options");
             
         memset(&sockaddr, 0, sizeof(sockaddr));
+        //**ECHAR UN OJO EXCEPTCION CON BIND => SEGMENTATION FAULT
         sockaddr.sin_family = AF_INET;
-        sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+        sockaddr.sin_addr.s_addr = this->_host;
         sockaddr.sin_port = htons(this->_ports[i]);
-
+        
         if (bind(sock, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) < 0)
             Utils::exceptWithError(ERROR_SOCKET_BIND);
             
@@ -87,6 +87,12 @@ std::vector<sockaddr_in> Server::getSockaddrs()
 std::vector<Client *> Server::getClients()
 {
     return this->_clients;
+}
+
+
+Config Server::getConfig()
+{
+    return this->_config;
 }
 
 void Server::removeClient(Client *client)

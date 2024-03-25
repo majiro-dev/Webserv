@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/14 12:01:11 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:04:06 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ Request::Request(const std::string &msg)
     if((this->_req_msg.size() - (this->_req_msg.find("\r\n\r\n") + 4)) > 0)
         this->_body = this->_req_msg.substr(this->_req_msg.find("\r\n\r\n") + 4);
         
-    //print();
+    parseBody();
 }
 
 Request::~Request(){}
@@ -111,13 +111,6 @@ void Request::parseHeader(std::string line)
     this->_headers.insert(std::make_pair(key, value)); 
 }
 
-/*
-Parse body? preguntar por 
-Transfer-Encoding: chuncked
-Content-Length: 123
-Hace falta parsearlo
-*/
-
 //Mejorarlo****
 void Request::parseUri()
 {
@@ -155,6 +148,38 @@ void Request::parseUri()
     key = aux.substr(0, equal);
     value = aux.substr(equal + 1, len);
     this->_querys.insert(std::make_pair(key, value));
+}
+
+static bool checkNumString(std::string& s)
+{
+    bool val = true;
+    
+   for(size_t i = 0; i < s.size(); i++)
+   {
+        if(!isdigit(s[i]))
+            return false;
+   }
+   return val;
+}
+
+void Request::parseBody()
+{
+    std::string headerSize = this->getHeader("Content-Length");
+
+    if(headerSize != "")
+    {
+        if(!checkNumString(headerSize))
+            Utils::exceptWithError("Content-Length value is not a number");
+        int size = Utils::StringToInt(headerSize);
+        if(size < 0)
+            Utils::exceptWithError("Content-Length value is an invalid number");
+        if((size_t)size < this->_body.size())
+            Utils::exceptWithError("Content-Length is smaller than body");
+    }
+    else if(this->getHeader("Transfer-Encoding") == "chuncked")
+        return ;
+    else
+        this->_body = "";
 }
 
 
