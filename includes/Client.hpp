@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:00:02 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/13 21:04:14 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/23 20:06:19 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include "Response.hpp"
 # include "Request.hpp"
 # include "Utils.hpp"
-# include <poll.h>
 
 class Client
 {
@@ -34,14 +33,13 @@ class Client
         
         Client& operator=(const Client& src);
         
-        void handleRecv();
         Response hadleRequest(Request &request);
         void generateReponse();
-        void sendResponse();
+        int handleRecv();
+        int sendResponse();
         
         int getSocket();
         bool getfinishReq();
-        //std::stri
 };
 
 #endif

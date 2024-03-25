@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 20:57:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 17:31:21 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,21 @@
 # include <list>
 # include <map>
 # include <vector>
-# include <netinet/in.h>
 # include <stdio.h>
-# include <sys/socket.h>
-# include <arpa/inet.h>
-# include <stdlib.h>
 # include <string>
 # include <iostream>
 # include <sstream>
 # include <unistd.h>
 # include <ctime>
+
+# include <netinet/in.h>
+# include <sys/socket.h>
+# include <arpa/inet.h>
 # include <stdlib.h>
+# include <stdlib.h>
+# include <poll.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 # include <sys/stat.h>
 
 # include "outputMacros.hpp"

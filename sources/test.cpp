@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/14 20:28:47 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/23 17:51:46 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 void sendPart(int sock, const char* part) {
     send(sock, part, strlen(part), 0);
     std::cout << "Sent part: " << part << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(0));  // Simular un retraso de 1 segundo
+    std::this_thread::sleep_for(std::chrono::seconds(3));  // Simular un retraso de 1 segundo
 }
 
 std::string buildHttpRequest(int contentOption) {
@@ -83,12 +83,12 @@ int main(int argc, char const **argv) {
     }
 
     // Enviar la solicitud en partes
-    std::string part1 = buildHttpRequest(1).c_str();
+    std::string part1 = buildHttpRequest(2).c_str();
     
     const char *part2 = "0\r\n\r\n";
 
     sendPart(sock, part1.c_str());
-    //sendPart(sock, part2);
+    sendPart(sock, part2);
 
     // Leer y mostrar la respuesta del servidor
     char buffer[1024] = {0};

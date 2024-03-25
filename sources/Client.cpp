@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/14 12:03:13 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/23 20:06:05 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,36 +47,26 @@ bool Client::getfinishReq()
 }
 
 
-void Client::handleRecv()
+int Client::handleRecv()
 {
+    //std::cout << "REC: " << this->getSocket() << std::endl;
     if(this->_finishReq == true)
-        return ;
+        return 0;
     int bytesReceived = 0;
     char buffer[BUFFER_SIZE + 1] = {0};
     
     bytesReceived = recv(this->getSocket(), buffer, BUFFER_SIZE, 0);
-    //CAMBIAR
-    if (bytesReceived < 0)
+    if (bytesReceived <= 0)
     {
         close(this->getSocket());
-        Utils::logger(ERROR_SOCKET_READ, ERROR);
-        return ;
+        return -1;
     } 
-    if (bytesReceived == 0) 
-    {
-        std::cout << "Hola" << std::endl;
-       /*  close(this->getFd());
-        std::cout << "Conexión cerrada por el cliente, socket: " << this->getFd() << std::endl; 
-        return ; */
-    }
-
     this->_request += buffer;
-    //Check if the request has completed
     size_t pos = this->_request.find("\r\n\r\n");
     if(pos == std::string::npos)
     {
         this->_finishReq = false;
-        return;
+        return 1;
     }
     
     size_t contentPos = this->_request.find("Content-Length: ");
@@ -86,9 +76,6 @@ void Client::handleRecv()
         std::string contentRes = _request.substr((contentPos + 16), (endline - (contentPos + 16) ));
         size_t nRes = Utils::StringToInt(contentRes);
 
-        //Amount number content lent + character ->\r\n\r\n
-        //7std::cout << "Request_size: " << _request.size() << std::endl;
-        //std::cout << "AMount: " << nRes + pos + 4 << std::endl;
         if (this->_request.size() >= nRes + pos + 4) {
             this->_finishReq = true;
             //std::cout << "Solicitud completa. Cuerpo del mensaje: " << this->_request.substr(pos + 4, nRes) << std::endl;
@@ -99,6 +86,7 @@ void Client::handleRecv()
     }
     else if(this->_request.find("Transfer-Encoding: chunked") != std::string::npos)
     {
+        std::cout << "HOAL" << std::endl;
         if(this->_request.substr(_request.size() - 5) == "0\r\n\r\n")
             this->_finishReq = true;
         else
@@ -109,8 +97,7 @@ void Client::handleRecv()
         this->_finishReq = true;
         //std::cout << "Solicitud sin Content-Length. Cuerpo del mensaje: " << this->_request.substr(pos + 4) << std::endl;
     }
-    //CLientev variable request => buffer para parselo a request y luego al response
-    //Request req(buffer);
+    return 0;
 }
 
 Response Client::hadleRequest(Request &request)
@@ -156,7 +143,7 @@ void Client::generateReponse()
     }
 }
 
-void Client::sendResponse()
+int Client::sendResponse()
 {
     unsigned long bytesSenT;
     std::string response = this->_response.build_response();
@@ -166,7 +153,8 @@ void Client::sendResponse()
     else
     {
         Utils::logger("Failed to send response", ERROR);
-        return ;
+        return -1;
     }
     close(this->getSocket());
+    return 0;
 }

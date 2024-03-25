@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/14 19:59:02 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/25 01:12:32 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "../includes/Server.hpp"
 #include "../includes/Config.hpp"
 #include "../includes/Manager.hpp"
+#include "../includes/Cluster.hpp"
 
 
 int main(int argc, char **argv)
@@ -34,11 +35,14 @@ int main(int argc, char **argv)
     Manager manager = Manager(std::string(argv[1]));
     if (!manager.parseConfig())
         return (1);
-        
-    Server server = Server(config);
-    
+
+    std::list<Config> configs = manager.getConfigs();
+    Cluster cluster = Cluster(configs); 
     signal(SIGINT, handleSignal);
-    server.runServer();
+    cluster.init();
+    cluster.run();
+    //Server server = Server(config);
+    
     return (0);
 }
 

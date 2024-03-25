@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 21:27:11 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:22:20 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ bool	Manager::parseConfig()
 				delete config;
 			}
 		}
-		for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
-			it->PrintConfig();
-		Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+		//for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+			//it->PrintConfig();
+		//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 		return true;
 	}
 	catch (std::exception &e)
@@ -82,7 +82,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 			{
 				Config *location = new Config(*config);
 				_parseLocationBlock(file, line, location);
-				Utils::log(location->GetRoot(), RESET);
+				//Utils::log(location->GetRoot(), RESET);
 				if (location->GetRoot() == "")
 					location->SetRootAsLocation(config->GetRoot() + locationPath(*line));
 				config->AddLocation(*location);
@@ -123,3 +123,7 @@ void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Confi
 	}
 }
 
+std::list<Config> Manager::getConfigs(void)
+{
+	return this->_configs;
+}
