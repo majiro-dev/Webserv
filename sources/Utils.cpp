@@ -178,3 +178,10 @@ std::vector<std::string> Utils::Tokenize(const std::string &str, const std::stri
         tokens.push_back(str.substr(start));
     return tokens;
 }
+
+std::string Utils::Uint16ToString(uint16_t number)
+{
+    std::stringstream ss;
+    ss << number;
+    return ss.str();
+}

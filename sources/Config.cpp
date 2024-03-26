@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/20 19:13:45 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:12:45 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,8 @@ void Config::SetAutoindex(std::string autoindex)
 
 void Config::SetAllowMethods(std::string allow_methods)
 {
+    for (int i = 0; i < 3; i++)
+        this->_allow_methods[i] = 0;
     std::string methods[3] = {"GET", "POST", "DELETE"};
     for (int i = 0; i < 3; i++)
     {
@@ -401,23 +403,91 @@ void Config::ClearLocations(void)
 
 bool Config::IsValid(void)
 {
-    //if (this->_host == 0 || this->_server_name.empty() || this->_root.empty() || this->_index.empty())
-    //    return (false);
-    //if the index file is not readable return false
-    if (this->_index == "")
+    if (this->_index != "")
     {
-        return (true);
+        if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+        {
+            std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+            Utils::log(error, RED);
+            return (false);
+        }
     }
-    else if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+    if (this->_redirect != "")
     {
-        std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
+        {
+            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_ports.size() != 0)
+    {
+        for (std::vector<uint16_t>::iterator it = this->_ports.begin(); it != this->_ports.end(); it++)
+        {
+            if (*it < 1024 || *it > 49151) //maybe 0 to 65535
+            {
+                std::string error = "Invalid port: " + Utils::Uint16ToString(*it);
+                Utils::log(error, RED);
+                return (false);
+            }
+        }
+    }
+    if (this->_host == INADDR_NONE)
+    {
+        std::string error = "Invalid host: " + std::string(inet_ntoa(*(in_addr*)&this->_host));
         Utils::log(error, RED);
         return (false);
     }
-    /*for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+    if (this->_root != "")
     {
-        if (it->IsValid() == false)
+        if (Utils::DirIsValid(this->_root) == false)
+        {
+            std::string error = "Invalid root directory: " + this->_root;
+            Utils::log(error, RED);
             return (false);
-    }*/
+        }
+    }
+    if (this->_index != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+        {
+            std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_redirect != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
+        {
+            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+
+    if (this->_cgis.size() != 0)
+    {
+        for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
+        {
+            if (Utils::DirIsValid(it->GetCgiPath()) == false)
+            {
+                std::string error = "Invalid cgi directory: " + it->GetCgiPath();
+                Utils::log(error, RED);
+                return (false);
+            }
+        } 
+    }
+
+    if (this->_locations.size() != 0)
+    {
+        for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+        {
+            if (it->IsValid() == false)
+                return (false);
+        }
+    }
+
     return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 15:01:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/26 21:44:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Config
         Config(const Config &src);
         ~Config(void);
 
-        bool        isValid;
+        //bool        isValid;
         //Quitar en un futuro
         uint16_t GetPort(void);
         std::vector<uint16_t>  GetPorts(void);

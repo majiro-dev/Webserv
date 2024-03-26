@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/20 19:29:40 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:04:59 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,32 @@ Manager::~Manager(void)
 
 bool	Manager::parseConfig()
 {
-	try
+	bool valid = true;
+	std::ifstream file(_path.c_str());
+	std::string line;
+	while (std::getline(file, line))
 	{
-		std::ifstream file(_path.c_str());
-		std::string line;
-		while (std::getline(file, line))
+		if (line.find("server {") != std::string::npos)
 		{
-			if (line.find("server {") != std::string::npos)
-			{
-				Config *config = new Config();
-				_parseServerBlock(&file, &line, config);
-				_configs.push_back(*config);
-				delete config;
-			}
+			Config *config = new Config();
+			_parseServerBlock(&file, &line, config);
+			_configs.push_back(*config);
+			delete config;
 		}
-		for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+	}
+	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+	{
+		//it->PrintConfig();
+		if (it->IsValid() == false)
 		{
+			Utils::log("Invalid config", RED);
 			//it->PrintConfig();
-			if (it->isValid == false)
-			{
-				Utils::log("Invalid config", RED);
-				it->PrintConfig();
-			}
+			valid = false;
 		}
-		Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
-		return true;
+		it->PrintConfig();
 	}
-	catch (std::exception &e)
-	{
-		Utils::log(e.what(), RED);
-		return false;
-	}
+	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+	return valid;
 }
 
 std::string locationPath(std::string path)
