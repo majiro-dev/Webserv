@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 21:26:19 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/27 15:32:21 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 Config::Config(void)
 {
+    this->_parent = NULL;
     this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
+    this->_index = "";
     this->_client_max_body_size = 0;
     this->_autoindex = false;
     this-> _allow_methods.resize(3);
@@ -27,6 +29,7 @@ Config::Config(void)
 
 Config::Config(const Config &src)
 {
+    this->_parent = NULL;
     this->_ports = src._ports;
     this->_host = src._host;
     this->_server_name = src._server_name;
@@ -131,9 +134,10 @@ void Config::SetPort(std::string port)
             std::string error = "Invalid port: " + port_str;
             Utils::exceptWithError(error);
         }
-        uint16_t port_int = Utils::StringToUint16(port);
-        port_int = Utils::StringToUint16(port_str);
+        uint16_t port_int = Utils::StringToUint16(port_str);
+        //port_int = Utils::StringToUint16(port_str);
         this->_ports.push_back(port_int);
+        //this->_port = port_int;// TODO: remove this line
     }
     catch(const std::exception& e)
     {
@@ -204,12 +208,13 @@ void Config::SetClientMaxBodySize(std::string client_max_body_size)
 
 void Config::SetIndex(std::string index)
 {
-
+    /*
     try
     {
-        if (Utils::FileIsReadable(this->_root + "/" + _trim(index)) == false)
+        std::string indexPath = this->_root + "/" + _trim(index);
+        if (Utils::FileIsReadable(indexPath) == false)
         {
-            std::string error = "Invalid index file: " + index;
+            std::string error = "Invalid index file: " + indexPath;
             Utils::exceptWithError(error);
         }
         this->_index = _trim(index);
@@ -217,8 +222,9 @@ void Config::SetIndex(std::string index)
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-    }
-    
+    }*/
+
+    this->_index = _trim(index);
 }
 
 void Config::AddLocation(Config location)
@@ -244,6 +250,8 @@ void Config::SetAutoindex(std::string autoindex)
 
 void Config::SetAllowMethods(std::string allow_methods)
 {
+    for (int i = 0; i < 3; i++)
+        this->_allow_methods[i] = 0;
     std::string methods[3] = {"GET", "POST", "DELETE"};
     for (int i = 0; i < 3; i++)
     {
@@ -314,6 +322,7 @@ void Config::SetRootAsLocation(std::string location)
     try
     {
         this->_root = location;
+        //std::cout << "LOCATION ROOT: " << this->_root << std::endl;
         if (Utils::DirIsValid(this->_root) == false)
         {
             std::string error = "Invalid location directory: " + this->_root;
@@ -353,12 +362,18 @@ void Config::PrintConfig(void)
     std::cout << "Client Max Body Size: " << this->_client_max_body_size << std::endl;
     std::cout << "Index: " << this->_index << std::endl;
     std::cout << "Redirect: " << this->_redirect << std::endl;
-    std::cout << "Cgi Pass: " << this->_cgi_pass << std::endl;
-    std::cout << "Cgi Extension: " << this->_cgi_extension << std::endl;
     std::cout << "Autoindex: " << this->_autoindex << std::endl;
     std::cout << "GET: " << this->_allow_methods[0] << std::endl;
     std::cout << "POST: " << this->_allow_methods[1] << std::endl;
     std::cout << "DELETE: " << this->_allow_methods[2] << std::endl;
+
+    std::vector<Cgi>::iterator it4 = this->_cgis.begin();
+    while (it4 != this->_cgis.end())
+    {
+        std::cout << "Cgi: " << it4->GetCgiPath() << std::endl;
+        std::cout << "Cgi Extension: " << it4->GetCgiExtension() << std::endl;
+        it4++;
+    }
 
     std::map<int, std::string>::iterator it = this->_error_pages.begin();
     while (it != this->_error_pages.end())
@@ -380,4 +395,111 @@ void Config::PrintConfig(void)
         it3++;
     }
     std::cout << "+++++++++++++++++++++++++++++++++++" << std::endl;
+    
+}
+
+void Config::ClearLocations(void)
+{
+    this->_locations.clear();
+}
+
+bool Config::IsValid(void)
+{
+    if (this->_index != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+        {
+            std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_redirect != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
+        {
+            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_ports.size() != 0)
+    {
+        for (std::vector<uint16_t>::iterator it = this->_ports.begin(); it != this->_ports.end(); it++)
+        {
+            if (*it < 1024 || *it > 49151) //maybe 0 to 65535
+            {
+                std::string error = "Invalid port: " + Utils::Uint16ToString(*it);
+                Utils::log(error, RED);
+                return (false);
+            }
+        }
+    }
+    if (this->_host == INADDR_NONE)
+    {
+        std::string error = "Invalid host: " + std::string(inet_ntoa(*(in_addr*)&this->_host));
+        Utils::log(error, RED);
+        return (false);
+    }
+    if (this->_root != "")
+    {
+        if (Utils::DirIsValid(this->_root) == false)
+        {
+            std::string error = "Invalid root directory: " + this->_root;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_index != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
+        {
+            std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+    if (this->_redirect != "")
+    {
+        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
+        {
+            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
+            Utils::log(error, RED);
+            return (false);
+        }
+    }
+
+    if (this->_cgis.size() != 0)
+    {
+        for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
+        {
+            if (Utils::DirIsValid(it->GetCgiPath()) == false)
+            {
+                std::string error = "Invalid cgi directory: " + it->GetCgiPath();
+                Utils::log(error, RED);
+                return (false);
+            }
+        } 
+    }
+
+    if (this->_locations.size() != 0)
+    {
+        for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+        {
+            if (it->IsValid() == false)
+                return (false);
+        }
+    }
+
+    return (true);
+}
+
+void Config::SetParent(Config *parent)
+{
+    this->_parent = parent;
+}
+
+Config *Config::GetParent(void)
+{
+    return (this->_parent);
 }

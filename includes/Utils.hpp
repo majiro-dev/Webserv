@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 20:57:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/26 16:32:41 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class Utils
 	static std::string IntToString(int number);
 	static int StringToInt(std::string str);
 	static uint16_t StringToUint16(std::string str);
+	static std::string Uint16ToString(uint16_t number);
 	static size_t StringToSizeT(std::string str);
 	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);

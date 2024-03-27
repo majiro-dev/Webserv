@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/18 21:27:11 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/27 15:33:26 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,32 @@ Manager::~Manager(void)
 
 bool	Manager::parseConfig()
 {
-	try
+	bool valid = true;
+	std::ifstream file(_path.c_str());
+	std::string line;
+	while (std::getline(file, line))
 	{
-		std::ifstream file(_path.c_str());
-		std::string line;
-		while (std::getline(file, line))
+		if (line.find("server {") != std::string::npos)
 		{
-			if (line.find("server {") != std::string::npos)
-			{
-				Config *config = new Config();
-				_parseServerBlock(&file, &line, config);
-				_configs.push_back(*config);
-				delete config;
-			}
+			Config *config = new Config();
+			_parseServerBlock(&file, &line, config);
+			_configs.push_back(*config);
+			delete config;
 		}
-		for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
-			it->PrintConfig();
-		Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
-		return true;
 	}
-	catch (std::exception &e)
+	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 	{
-		Utils::log(e.what(), RED);
-		return false;
+		//it->PrintConfig();
+		if (it->IsValid() == false)
+		{
+			Utils::log("Invalid config", RED);
+			it->PrintConfig();
+			valid = false;
+		}
+		//it->PrintConfig();
 	}
+	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+	return valid;
 }
 
 std::string locationPath(std::string path)
@@ -80,11 +82,13 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				_assignConfValues(line, config, i);  
 			else if (line->find("location ") != std::string::npos)
 			{
+				std::string locationLine = *line;
 				Config *location = new Config(*config);
+				location->ClearLocations();
 				_parseLocationBlock(file, line, location);
-				Utils::log(location->GetRoot(), RESET);
-				if (location->GetRoot() == "")
-					location->SetRootAsLocation(config->GetRoot() + locationPath(*line));
+				if (location->GetRoot() != config->GetRoot())
+					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
 			}
