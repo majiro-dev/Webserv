@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:03:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:32:33 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void sendPart(int sock, const char* part) {
 std::string buildHttpRequest(int contentOption) {
     if (contentOption == 1) {
         // Mensaje con Content-Length
-        return "GET /path HTTP/1.1\r\n"
+        return "PEP /path HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "Content-Length: 10\r\n"
                "\r\n"

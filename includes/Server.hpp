@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/26 00:10:04 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:17:10 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ class Server
         std::vector<sockaddr_in>    _sockaddrs;
         std::vector<uint16_t>       _ports;
         in_addr_t                   _host;
-        int                         _max_socket;
         std::string                 _name;
-        size_t                      _bodySize;
-        
+        size_t                      _maxBodySize;
+        std::vector<bool>           _allowMethods;
+        Response                     _response;
+        std::map<int, std::string>  _errorPages; 
         void addSocketsServer();
     public:
         //Server(std::string ip_address, int port);
@@ -47,6 +48,13 @@ class Server
         std::vector<sockaddr_in> getSockaddrs();
         std::vector<Client *> getClients();
         Config getConfig();
+        Response getReponse();
+
+        Response hadleRequest(Request &request);
+        void generateReponse(const std::string& request);
+
+        void checkErrorPage();
+        void putErrorPage(Response &response);
 };
 
 #endif

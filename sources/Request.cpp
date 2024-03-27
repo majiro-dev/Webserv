@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:04:06 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 00:44:20 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ Request::Request(const std::string &msg)
         
     header = this->_req_msg.substr(len + 2);
     if((len = this->_req_msg.find("\r\n\r\n")) == std::string::npos)
-        Utils::exceptWithError("No good final - \\r\\n\\r\\n");
+        Utils::exceptWithError("Unexpected final - \\r\\n\\r\\n");
         
     len = header.find("\r\n");
     while(len != std::string::npos)
@@ -64,8 +64,6 @@ int Request::parseFirstLine(std::string &req)
     if(f_len != std::string::npos)
     {
         this->_method = req.substr(0, f_len);
-        if(_method != "GET" && _method != "POST" && _method != "DELETE")
-            Utils::exceptWithError("No method available");
         size_t s_len = req.find(' ', f_len + 1);
         
         if(s_len != std::string::npos)

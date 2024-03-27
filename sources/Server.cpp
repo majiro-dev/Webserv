@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/26 00:09:44 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:37:05 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 Server::Server(Config config):
     _config(config)
 {
+    //config.PrintConfig();
     std::stringstream ss;
     std::string name = config.GetServerName();
     
     this->_name = name.size() ? name : "server";
     this->_ports = config.GetPorts();
     this->_host = config.GetHost();
-    this->_bodySize = config.GetClientMaxBodySize();
-    this->_max_socket = 0;
+    this->_maxBodySize = config.GetClientMaxBodySize();
+    this->_allowMethods = config.GetAllowMethods();
+    checkErrorPage();
     addSocketsServer();
     ss << "New server started => " << '[' << this->_name << ']';
     Utils::logger(ss.str(), INFO);
@@ -41,6 +43,47 @@ Server::~Server(void)
     }
 }
 
+std::vector<uint16_t> Server::getSockets()
+{
+    return this->_sockets;
+}
+
+std::vector<sockaddr_in> Server::getSockaddrs()
+{
+    return this->_sockaddrs;
+}
+
+std::vector<Client *> Server::getClients()
+{
+    return this->_clients;
+}
+
+
+Config Server::getConfig()
+{
+    return this->_config;
+}
+
+Response Server::getReponse()
+{
+    return this->_response;
+}
+
+void Server::removeClient(Client *client)
+{
+    std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
+    if(it != this->_clients.end())
+    {
+        close(client->getSocket());
+        delete *it;
+        this->_clients.erase(it);
+    }
+}
+
+void Server::addClient(Client *client)
+{
+    this->_clients.push_back(client);
+}
 
 void Server::addSocketsServer()
 {   
@@ -74,42 +117,128 @@ void Server::addSocketsServer()
     }
 }
 
-std::vector<uint16_t> Server::getSockets()
-{
-    return this->_sockets;
-}
 
-std::vector<sockaddr_in> Server::getSockaddrs()
+Response Server::hadleRequest(Request &request)
 {
-    return this->_sockaddrs;
-}
+    //Cambiar con la configuracion
+    Response response;
 
-std::vector<Client *> Server::getClients()
-{
-    return this->_clients;
-}
+    std::map<std::string, bool> allowedMethods;
+    allowedMethods.insert(std::make_pair("GET", this->_allowMethods[0]));
+    allowedMethods.insert(std::make_pair("POST", this->_allowMethods[1]));
+    allowedMethods.insert(std::make_pair("DELETE", this->_allowMethods[2]));
 
+    std::map<std::string, bool>::iterator it = allowedMethods.begin();
 
-Config Server::getConfig()
-{
-    return this->_config;
-}
-
-void Server::removeClient(Client *client)
-{
-    std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
-    if(it != this->_clients.end())
+    for(; it != allowedMethods.end(); it++)
     {
-        close(client->getSocket());
-        delete *it;
-        this->_clients.erase(it);
+        if(it->first == request.getMethod())
+        {
+            if(it->second)
+            {
+                Utils::logger("Aplicar metodo " + it->first, LOG);
+                return response;
+            }
+            else
+            {
+                Utils::logger("Method is not allowed", ERROR);
+                return Response(405);
+            }
+        }
+    }
+    response.setStatusCode(404);
+    Utils::logger("This method was not found", ERROR);
+    //response.setBody("This method was not found");
+    return response;
+}
+
+void Server::checkErrorPage()
+{
+    std::map<int, std::string> errorPages = _config.GetErrorPages();
+    std::map<int, std::string>::iterator it = errorPages.begin();
+    
+    for(; it != errorPages.end(); it++)
+    {
+        if(it->first < 0)
+        {
+            Utils::logger("Invalid status code for the error page", ERROR);
+            it++;
+        }
+        this->_errorPages.insert(std::make_pair(it->first, it->second));
+        Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
     }
 }
 
-void Server::addClient(Client *client)
+
+
+void Server::generateReponse(const std::string& request)
 {
-    this->_clients.push_back(client);
+    bool isBrowser = false;
+    (void)isBrowser;
+    try
+    {
+        Request req(request);
+        std::cout << this->_maxBodySize << std::endl;
+       /*  if(req.getBody().size() > this->_maxBodySize)
+        {
+            this->_response = Response(413);
+            this->_response.setBody("The size of the request body exceeds the allowed limit");
+            Utils::logger("Request body exceeds the allowed limit", ERROR);
+            return ;
+        } */
+        if(req.getHeader("User-Agent") != "")
+            isBrowser = true;
+        this->_response = hadleRequest(req);
+    }
+    catch(const std::exception& e)
+    {
+        Utils::logger(e.what(), ERROR);        
+        this->_response = Response(404);
+    }
+    if(this->_response.getStatusCode() >= 400)
+    {
+        std::cout << "Pepe" << std::endl;
+        putErrorPage(this->_response);
+       /*  if(isBrowser)
+            this->_response.setBody(buildErrorPage();
+        else
+            this->_response.setBody(_response.getStatusMsg()); */
+    }
 }
 
+void Server::putErrorPage(Response &response)
+{
+    std::string path;
+    std::string body;
+    try
+    {
+        path = this->_errorPages.at(response.getStatusCode());
+    }
+    catch(const std::exception& e)
+    {
+        Utils::logger("Page not found for this status error", ERROR);
+    }
+    if(!path.size())
+    {
+        std::cout << "HOLA" << std::endl;
+        body = response.buildErrorPage();
+    }
+    else
+    {
+        std::ifstream file(path.c_str());
+        std::stringstream ss;
 
-
+        if(file.good())
+        {
+            ss << file.rdbuf();
+            file.close();
+            body = ss.str();
+        }
+        else
+        {
+            Utils::logger("Path can not opened", ERROR);
+            body = response.buildErrorPage();    
+        }
+    }
+    response.setBody(body);
+}

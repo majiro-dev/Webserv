@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:00:02 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:17:45 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:30:15 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ class Client
     private:
         unsigned int _fd;
         std::string _request;
-        Response     _response;
         bool        _finishReq;
     public:
         Client();
@@ -33,13 +32,12 @@ class Client
         
         Client& operator=(const Client& src);
         
-        Response hadleRequest(Request &request);
-        void generateReponse();
         int handleRecv();
-        int sendResponse();
+        int sendResponse(Response res);
         
         int getSocket();
         bool getfinishReq();
+        std::string getRequest();
 };
 
 #endif

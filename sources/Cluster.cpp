@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:17:58 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:29:30 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void Cluster::checkClientSockets()
                     int val_recv;
                     val_recv = clients[j]->handleRecv();
                     if(val_recv == 0)
-                        clients[j]->generateReponse();
+                        this->_servers[i]->generateReponse(clients[j]->getRequest());
                     //if(val_recv == -2)
                         //Crear response pagina error
                     if(val_recv < 0)
@@ -164,7 +164,7 @@ void Cluster::checkClientSockets()
                 if (this->_pollfds[k].revents & POLLOUT && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     int val_send;
-                    val_send = clients[j]->sendResponse();
+                    val_send = clients[j]->sendResponse(this->_servers[i]->getReponse());
                     if(val_send == 0)
                     {
                         usleep(2000);

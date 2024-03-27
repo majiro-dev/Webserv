@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:19:05 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/26 00:30:03 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,53 +100,12 @@ int Client::handleRecv()
     return 0;
 }
 
-Response Client::hadleRequest(Request &request)
-{
-    //Cambiar con la configuracion
-    Response response;
-    
-    //Meter metodos devulva un reponse
-    if(request.getMethod() == "GET")
-        Utils::logger("Aplicar metodo GET", LOG);
-    else if (request.getMethod() == "POST")
-        Utils::logger("Aplicar metodo POST", LOG);
-    else if (request.getMethod() == "DELETE")
-        Utils::logger("Aplicar metodo DELETE", LOG);
-    else
-        response.setStatusCode(404);
-    return response;
-}
 
 
-void Client::generateReponse()
-{
-    bool isBrowser = false;
-    
-    try
-    {
-        Request req(this->_request);
-        if(req.getHeader("User-Agent") != "")
-            isBrowser = true;
-        this->_response = hadleRequest(req);
-    }
-    catch(const std::exception& e)
-    {
-        Utils::logger(e.what(), ERROR);        
-        this->_response = Response(400);
-    }
-    if(this->_response.getStatusCode() >= 400)
-    {
-        if(isBrowser)
-            this->_response.setBody(buildErrorPage(this->_response));
-        else
-            this->_response.setBody(_response.getStatusMsg());
-    }
-}
-
-int Client::sendResponse()
+int Client::sendResponse(Response res)
 {
     unsigned long bytesSenT;
-    std::string response = this->_response.build_response();
+    std::string response = res.build_response();
     bytesSenT = write(this->getSocket(), response.c_str(), response.size());
     if (bytesSenT == response.size())
         Utils::logger("Response sent successfully.", LOG);
@@ -157,4 +116,10 @@ int Client::sendResponse()
     }
     close(this->getSocket());
     return 0;
+}
+
+
+std::string Client::getRequest()
+{
+    return this->_request;
 }

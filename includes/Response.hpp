@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:07:00 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/13 18:03:01 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:18:33 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ class Response
         void setStatusCode(const unsigned int newCode);
         
         std::string build_response();
+        std::string buildErrorPage();
 };
 
-std::string buildErrorPage(Response &Response);
 
 
 #endif
