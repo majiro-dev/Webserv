@@ -1,0 +1,7 @@
+*.o
+*.a
+a.out
+obj
+.DS_Store
+.vscode
+webserver

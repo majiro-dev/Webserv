@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:41:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:48:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@
 #include "../includes/Server.hpp"
 #include "../includes/Config.hpp"
 #include "../includes/Manager.hpp"
+#include "../includes/Cluster.hpp"
+
 
 int main(int argc, char **argv)
 {
+    //atexit(leaks);
     std::string path;
     if (argc != 2)
     {
@@ -32,10 +35,14 @@ int main(int argc, char **argv)
     Manager manager = Manager(std::string(argv[1]));
     if (!manager.parseConfig())
         return (1);
-    //Server server = Server("0.0.0.0", 8080);
-    Server server = Server(config);
-    server.runServer();
-    Utils::log("Server is running", RESET);
+
+    std::list<Config> configs = manager.getConfigs();
+    Cluster cluster(configs); 
+    signal(SIGINT, handleSignal);
+    cluster.init();
+    cluster.run();
+    //Server server = Server(config);
+    
     return (0);
 }
 

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
 /*   Updated: 2024/03/26 16:32:41 by manujime         ###   ########.fr       */
@@ -20,20 +20,30 @@
 # include <list>
 # include <map>
 # include <vector>
-# include <netinet/in.h>
 # include <stdio.h>
-# include <sys/socket.h>
-# include <arpa/inet.h>
-# include <stdlib.h>
 # include <string>
 # include <iostream>
 # include <sstream>
 # include <unistd.h>
+# include <ctime>
+
+# include <netinet/in.h>
+# include <sys/socket.h>
+# include <arpa/inet.h>
 # include <stdlib.h>
+# include <stdlib.h>
+# include <poll.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 # include <sys/stat.h>
 
 # include "outputMacros.hpp"
+
+enum text{
+	LOG = 0,
+	INFO = 1,
+	ERROR = 2,
+};
 
 class Utils
 {
@@ -54,8 +64,9 @@ class Utils
 	static uint16_t StringToUint16(std::string str);
 	static std::string Uint16ToString(uint16_t number);
 	static size_t StringToSizeT(std::string str);
-	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);
+	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
+	static void logger(const std::string &msg, int mode);
 };
 
 class MyError : public std::exception
@@ -76,5 +87,8 @@ class SError : public std::exception
 		virtual ~SError() throw();
 		virtual const char * what() const throw();
 };
+
+void handleSignal(int signal);
+void leaks(void);
 
 #endif
