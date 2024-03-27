@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/26 22:12:45 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/27 15:32:21 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 Config::Config(void)
 {
+    this->_parent = NULL;
     this->_port = 8080;
     //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
@@ -28,6 +29,7 @@ Config::Config(void)
 
 Config::Config(const Config &src)
 {
+    this->_parent = NULL;
     this->_ports = src._ports;
     this->_host = src._host;
     this->_server_name = src._server_name;
@@ -490,4 +492,14 @@ bool Config::IsValid(void)
     }
 
     return (true);
+}
+
+void Config::SetParent(Config *parent)
+{
+    this->_parent = parent;
+}
+
+Config *Config::GetParent(void)
+{
+    return (this->_parent);
 }

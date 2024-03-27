@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/26 22:04:59 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/27 15:33:26 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ bool	Manager::parseConfig()
 		if (it->IsValid() == false)
 		{
 			Utils::log("Invalid config", RED);
-			//it->PrintConfig();
+			it->PrintConfig();
 			valid = false;
 		}
-		it->PrintConfig();
+		//it->PrintConfig();
 	}
 	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
@@ -88,6 +88,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				_parseLocationBlock(file, line, location);
 				if (location->GetRoot() != config->GetRoot())
 					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
 			}
