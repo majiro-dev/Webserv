@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/27 15:32:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/28 14:05:12 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ void Config::SetRoot(std::string root)
 
 void Config::SetClientMaxBodySize(std::string client_max_body_size)
 {
-    this->_client_max_body_size = Utils::StringToSizeT(client_max_body_size);
+    this->_client_max_body_size = Utils::StringToSizeT(_trim(client_max_body_size));
 }
 
 void Config::SetIndex(std::string index)
