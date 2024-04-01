@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/28 14:02:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 22:07:20 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ Manager::Manager(void)
 
 Manager::~Manager(void)
 {
-	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+	/*for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 	{
 		_configs.erase(it);
-	}
+	}*/
 }
 
 bool	Manager::parseConfig()
@@ -47,14 +47,12 @@ bool	Manager::parseConfig()
 	}
 	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 	{
-		//it->PrintConfig();
 		if (it->IsValid() == false)
 		{
 			Utils::log("Invalid config", RED);
 			it->PrintConfig();
 			valid = false;
 		}
-		//it->PrintConfig();
 	}
 	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
@@ -64,6 +62,8 @@ std::string locationPath(std::string path)
 {
 	std::string location = path.substr(path.find("location ") + 9);
 	location = location.substr(0, location.find(" "));
+	if (location == "/")
+		location = "";
 	return location;
 }
 

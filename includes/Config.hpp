@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:48:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 22:03:54 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Config
     public:
         Config(void);
         Config(const Config &src);
+        //Config &operator=(const Config &src);
         ~Config(void);
 
         uint16_t GetPort(void);
@@ -90,6 +91,8 @@ class Config
 
         std::string  _trim(std::string str);
         std::pair<int, std::string> _errorPageTrim(std::string str);
+
+        void _reParse(void);
 };
 
 #endif

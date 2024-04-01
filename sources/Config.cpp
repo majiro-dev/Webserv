@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:49:02 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 22:07:39 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ Config::Config(const Config &src)
 
 Config::~Config(void)
 {
-    this->_locations.clear();
+    /*this->_locations.clear();
     this->_cgis.clear();
-    return ;
+    this->_error_pages.clear();*/
 }
 
 uint16_t Config::GetPort(void)
@@ -485,6 +485,10 @@ bool Config::IsValid(void)
     }
 
     return (true);
+}
+
+void Config::_reParse(void)
+{
 }
 
 void Config::SetParent(Config *parent)

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:54:49 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:38:26 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,5 @@ void Methods::HandleDelete(std::string path, std::string &response, int &status)
         status = 404;
     }
 }
+
 
