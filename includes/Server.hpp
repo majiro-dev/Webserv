@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:38:55 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:17:10 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,46 +17,44 @@
 # include "Socket.hpp"
 # include "outputMacros.hpp"
 # include "Request.hpp"
+# include "Client.hpp"
+# include "Response.hpp"
 # include "Utils.hpp"
-# include <fcntl.h>
-# include <poll.h>
-
 
 class Server
 {
+    private:
+        Config                      _config;
+        std::vector<Client *>       _clients;
+        std::vector<uint16_t>       _sockets;
+        std::vector<sockaddr_in>    _sockaddrs;
+        std::vector<uint16_t>       _ports;
+        in_addr_t                   _host;
+        std::string                 _name;
+        size_t                      _maxBodySize;
+        std::vector<bool>           _allowMethods;
+        Response                     _response;
+        std::map<int, std::string>  _errorPages; 
+        void addSocketsServer();
     public:
         //Server(std::string ip_address, int port);
         Server(Config config);
         ~Server(void);
-        void startListen();
-        void runServer();
-
-    private:
-        Config  _config;
         
-        std::string _ip_addr;
-        int         _ret;
-        int         _port;
-        int         _sock;
-        int         _connect_sock;
-        int         _max_socket;
-        //long        _incoming_message;
+        void removeClient(Client *client);
+        void addClient(Client *client);
         
-        //std::vector<int>max_fds;
-        fd_set read_set, write_set; 
-        
-        struct sockaddr_in      _socketaddr;
-        unsigned int            _addrlen;
-        std::string             _server_message;
+        std::vector<uint16_t> getSockets();
+        std::vector<sockaddr_in> getSockaddrs();
+        std::vector<Client *> getClients();
+        Config getConfig();
+        Response getReponse();
 
-        void startServer();
-        void loopListen();
-        void closeServer();
-        void handleConnection(int &client_fd);
-        int acceptConnection();
-        std::string buildResponse();
-        void sendResponse(int &client_fd);
+        Response hadleRequest(Request &request);
+        void generateReponse(const std::string& request);
 
+        void checkErrorPage();
+        void putErrorPage(Response &response);
 };
 
 #endif

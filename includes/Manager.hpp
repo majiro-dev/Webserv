@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Manager.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 12:15:31 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/15 16:24:25 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:22:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Manager
 		~Manager(void);
 			
 		bool	parseConfig();
-		std::list<Config>	getConfigs(void) const;
+		std::list<Config>	getConfigs(void) ;
 
 	private:
 		std::string			_path;

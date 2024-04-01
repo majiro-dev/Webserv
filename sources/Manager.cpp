@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:16:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/03/28 14:02:41 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ Manager::~Manager(void)
 
 bool	Manager::parseConfig()
 {
+	bool valid = true;
 	std::ifstream file(_path.c_str());
 	std::string line;
 	while (std::getline(file, line))
@@ -45,15 +46,31 @@ bool	Manager::parseConfig()
 		}
 	}
 	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
-		it->PrintConfig();
+	{
+		//it->PrintConfig();
+		if (it->IsValid() == false)
+		{
+			Utils::log("Invalid config", RED);
+			it->PrintConfig();
+			valid = false;
+		}
+		//it->PrintConfig();
+	}
 	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
-	return true;
+	return valid;
+}
+
+std::string locationPath(std::string path)
+{
+	std::string location = path.substr(path.find("location ") + 9);
+	location = location.substr(0, location.find(" "));
+	return location;
 }
 
 void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config *config)
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
-							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
 							"return "};
 	while (std::getline(*file, *line))
 	{
@@ -65,8 +82,13 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				_assignConfValues(line, config, i);  
 			else if (line->find("location ") != std::string::npos)
 			{
+				std::string locationLine = *line;
 				Config *location = new Config(*config);
+				location->ClearLocations();
 				_parseLocationBlock(file, line, location);
+				if (location->GetRoot() != config->GetRoot())
+					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
 			}
@@ -89,9 +111,10 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
-							"autoindex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
+							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
 							"return "};
 	
+	std::string locationRoot = "";
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
@@ -104,3 +127,7 @@ void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Confi
 	}
 }
 
+std::list<Config> Manager::getConfigs(void)
+{
+	return this->_configs;
+}

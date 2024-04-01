@@ -3,217 +3,256 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:43:35 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 18:16:52 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 
-/* Server::Server(std::string ip_address, int port) : _ip_address(ip_address), _port(port),
-    _sock(), _connect_sock(), _socketaddr(), _addrlen(sizeof(_socketaddr)),
-    _server_message(buildResponse())
+Server::Server(Config config):
+    _config(config)
 {
-    _socketaddr.sin_family = AF_INET;
-    _socketaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    _socketaddr.sin_port = htons(_port);
-
-    if (startServer() != 0)
-    {
-        Utils::exceptWithError(ERROR_SOCKET_CREATE);
-    }
-} */
-
-Server::Server(Config config) : _config(config), _port(config.GetPort()),
-    _sock(), _connect_sock(-1), _addrlen(sizeof(_socketaddr)),
-    _server_message(buildResponse())
-{
-    /* struct in_addr addr;
-    addr.s_addr = config.GetHost();
-    _ip_addr = inet_ntoa(addr);  auxiliar para que funcione */
+    //config.PrintConfig();
+    std::stringstream ss;
+    std::string name = config.GetServerName();
     
-    bzero(&_socketaddr, _addrlen);
-    _socketaddr.sin_family = AF_INET;
-    _socketaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    _socketaddr.sin_port = htons(8080);
+    this->_name = name.size() ? name : "server";
+    this->_ports = config.GetPorts();
+    this->_host = config.GetHost();
+    this->_maxBodySize = config.GetClientMaxBodySize();
+    this->_allowMethods = config.GetAllowMethods();
+    std::cout << "ROOT:" << config.GetRoot() << std::endl;
+    std::cout << "INDEX:" << config.GetIndex() << std::endl;
+    std::vector<Config> locations = config.GetLocations();
+    std::vector<Config>::iterator it = locations.begin();
+    std::cout << "LOCATIONS : " << std::endl;
+    for(; it != locations.end(); it++)
+    {
+        it->PrintConfig();
+    }
+    checkErrorPage();
+    addSocketsServer();
+    ss << "New server started => " << '[' << this->_name << ']';
+    Utils::logger(ss.str(), INFO);
+    
 }
 
 Server::~Server(void)
 {
-    closeServer();
-}
-
-void Server::closeServer()
-{
-    close(_sock);
-    close(_connect_sock);
-    exit(0);
-}
-
-void Server::runServer()
-{
-    try
+    for(size_t i = 0; i < this->_ports.size(); i++)
     {
-        startServer();
-        loopListen();
+        close(this->_ports[i]);
     }
-    catch(const MyError& e)
+    for(size_t i = 0; i < this->_clients.size(); i++)
     {
-        std::cerr << RED << e.what() << '\n';
+        delete(this->_clients[i]);
     }
-    
 }
 
-std::string Server::buildResponse()
+std::vector<uint16_t> Server::getSockets()
 {
-    std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Ruben se va a follar a Villa y se la pela :):D </p></body></html>";
-    std::ostringstream ss;
-    ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-        << htmlFile;
-
-    return ss.str();
+    return this->_sockets;
 }
 
-void Server::startServer()
+std::vector<sockaddr_in> Server::getSockaddrs()
+{
+    return this->_sockaddrs;
+}
+
+std::vector<Client *> Server::getClients()
+{
+    return this->_clients;
+}
+
+
+Config Server::getConfig()
+{
+    return this->_config;
+}
+
+Response Server::getReponse()
+{
+    return this->_response;
+}
+
+void Server::removeClient(Client *client)
+{
+   /* std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
+    if(it != this->_clients.end())
+    {
+        close(client->getSocket());
+        delete *it;
+        this->_clients.erase(it);
+    }*/
+    (void)client;
+}
+
+void Server::addClient(Client *client)
+{
+    this->_clients.push_back(client);
+}
+
+void Server::addSocketsServer()
 {   
     int on = 1;
-    
-    if ((this->_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-        Utils::exceptWithError(ERROR_SOCKET_CREATE);
-
-    if(setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
-        Utils::exceptWithError("Error failed to set socket options");
-
-    if (bind(this->_sock, (struct sockaddr *)&_socketaddr, sizeof(_socketaddr)) < 0)
-        Utils::exceptWithError(ERROR_SOCKET_BIND);
-        
-    if (listen(this->_sock, MAX_CLIENTS) < 0)
-        Utils::exceptWithError(ERROR_SOCKET_LISTEN);
-        
-    if (fcntl(this->_sock, F_SETFL, O_NONBLOCK) < 0) 
-        Utils::exceptWithError("Error setting socket to non-blocking");
-
-    Utils::log("Start server", YELLOW);
-}
-
-
-void Server::loopListen()
-{
-    std::vector<pollfd>pollfds;
-
-    struct pollfd pollsock;
-    pollsock.fd = _sock;
-    pollsock.events = POLLIN;
-    pollfds.push_back(pollsock);
-
-    while(1)
+    int sock;
+    struct sockaddr_in sockaddr;
+    for(size_t i = 0; i < this->_ports.size(); i++)
     {
-        Utils::log(WAITING_CONNECTION, RESET);
-        
-        if((this->_ret = poll(pollfds.data(), pollfds.size(), -1)) < 0)
-            Utils::exceptWithError("Poll error");
-        
-        if(this->_ret)
-        {
-            for(size_t i = 0; i < pollfds.size(); i++)
-            {
-                if(pollfds[i].revents & POLLIN)
-                {
-                    if(pollfds[i].fd == _sock)
-                    {
-                        this->_connect_sock = acceptConnection();
-                        if (_connect_sock >= 0)
-                        {
-                            struct pollfd new_client;
-                            new_client.fd = _connect_sock;
-                            new_client.events = POLLIN;
-                            pollfds.push_back(new_client);
-                        }
-                    }
-                    else
-                    {
-                        //Tomar las request y convertir en respuesta activando escritura
-                        handleConnection(pollfds[i].fd);
-                        pollfds[i].events = POLLOUT;
-                    }
-                }
-            }
+        if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+            Utils::exceptWithError(ERROR_SOCKET_CREATE);
+
+        if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
+            Utils::exceptWithError("Error failed to set socket options");
             
-        }
-        for(size_t i = 0; i < pollfds.size(); i++)
+        memset(&sockaddr, 0, sizeof(sockaddr));
+        //**ECHAR UN OJO EXCEPTCION CON BIND => SEGMENTATION FAULT
+        sockaddr.sin_family = AF_INET;
+        sockaddr.sin_addr.s_addr = this->_host;
+        sockaddr.sin_port = htons(this->_ports[i]);
+        
+        if (bind(sock, (struct sockaddr *)&sockaddr, sizeof(sockaddr)) < 0)
+            Utils::exceptWithError(ERROR_SOCKET_BIND);
+            
+        if (listen(sock, MAX_CLIENTS) < 0)
+            Utils::exceptWithError(ERROR_SOCKET_LISTEN);
+            
+        if (fcntl(sock, F_SETFL, O_NONBLOCK) < 0) 
+            Utils::exceptWithError("Error setting socket to non-blocking");
+        this->_sockets.push_back(sock);
+        this->_sockaddrs.push_back(sockaddr);
+    }
+}
+
+void Server::checkErrorPage()
+{
+    std::map<int, std::string> errorPages = _config.GetErrorPages();
+    std::map<int, std::string>::iterator it = errorPages.begin();
+    
+    for(; it != errorPages.end(); it++)
+    {
+        if(it->first < 0)
         {
-            if(pollfds[i].revents & POLLOUT)
+            Utils::logger("Invalid status code for the error page", ERROR);
+            it++;
+        }
+        this->_errorPages.insert(std::make_pair(it->first, it->second));
+        Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
+    }
+}
+
+
+Response Server::hadleRequest(Request &request)
+{
+    //Cambiar con la configuracion
+    Response response;
+
+    std::map<std::string, bool> allowedMethods;
+    allowedMethods.insert(std::make_pair("GET", this->_allowMethods[0]));
+    allowedMethods.insert(std::make_pair("POST", this->_allowMethods[1]));
+    allowedMethods.insert(std::make_pair("DELETE", this->_allowMethods[2]));
+
+    std::map<std::string, bool>::iterator it = allowedMethods.begin();
+
+    for(; it != allowedMethods.end(); it++)
+    {
+        if(it->first == request.getMethod())
+        {
+            if(it->second)
             {
-                sendResponse(pollfds[i].fd);
-                pollfds.erase(pollfds.begin() + i);
-                i--;
+                std::string uri = request.getUri();
+                if(uri == "/")
+                    return Response(404);
+                Utils::logger("Aplicar metodo " + it->first, LOG);
+                return response;
+            }
+            else
+            {
+                Utils::logger("Method is not allowed", ERROR);
+                return Response(405);
             }
         }
     }
+    response.setStatusCode(404);
+    Utils::logger("This method was not found", ERROR);
+    //response.setBody("This method was not found");
+    return response;
 }
 
 
-int Server::acceptConnection()
+void Server::generateReponse(const std::string& request)
 {
-    int connect_sock = accept(_sock, (sockaddr *)&_socketaddr, &_addrlen);
-    if (connect_sock < 0)
+    bool isBrowser = false;
+    (void)isBrowser;
+    try
     {
-        //No esta listo (esta modo-noblcoking) puede seguir otras tareas
-     /*    if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return -1; */
-       Utils::exceptWithError(ERROR_SOCKET_ACCEPT);
-    }  
-
-    if (fcntl(connect_sock, F_SETFL, O_NONBLOCK) < 0) 
-        Utils::exceptWithError("Error setting socket to non-blocking");
-        
-    return connect_sock;
-}
-
-
-//Meter cliente
-void Server::handleConnection(int &client_fd)
-{
-    int bytesReceived = 0;
-    char buffer[BUFFER_SIZE] = {0};
-        
-    bytesReceived = recv(client_fd, buffer, BUFFER_SIZE, 0);
-    if (bytesReceived < 0)
-    {
-        //**PREGUNTAR** No esta listo (esta modo-noblcoking) puede seguir otras tareas
-        /* if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return;   */          
-        //Utils::exceptWithError(ERROR_SOCKET_READ);
-        close(client_fd);
-        Utils::log(ERROR_SOCKET_READ, RED);
-        return ;
-    } 
-    if (bytesReceived == 0) 
-    {
-        close(client_fd);
-        std::cout << "Conexión cerrada por el cliente, socket: " << client_fd << std::endl; 
-        return ;
+        //std::cout << request << std::endl;
+        Request req(request);
+        if(req.getBody().size() > this->_maxBodySize)
+        {
+            this->_response = Response(413);
+            this->_response.setBody("The size of the request body exceeds the allowed limit");
+            Utils::logger("Request body exceeds the allowed limit", ERROR);
+            return ;
+        } 
+        if(req.getHeader("User-Agent") != "")
+            isBrowser = true;
+        this->_response = hadleRequest(req);
     }
-    std::cout << MAGENTA << "Mensaje del cliente en el socket "  << client_fd << ": " << buffer << std::endl << RESET;
-    //CLientev variable request => buffer para parselo a request y luego al response
-    Request req(buffer);
+    catch(const std::exception& e)
+    {
+        Utils::logger(e.what(), ERROR);        
+        this->_response = Response(404);
+    }
+    if(this->_response.getStatusCode() >= 400)
+    {
+        putErrorPage(this->_response);
+       /*  if(isBrowser)
+            this->_response.setBody(buildErrorPage();
+        else
+            this->_response.setBody(_response.getStatusMsg()); */
+    }
 }
 
-
-void Server::sendResponse(int &client_fd)
+void Server::putErrorPage(Response &response)
 {
-    unsigned long bytesSenT;
-
-    bytesSenT = write(client_fd, _server_message.c_str(), _server_message.size());
-    if (bytesSenT == _server_message.size())
-        Utils::log("Response sent successfully.", GREEN);
+    std::string path;
+    std::string body;
+    try
+    {
+        path = this->_errorPages.at(response.getStatusCode());
+    }
+    catch(const std::exception& e)
+    {
+        Utils::logger("Page not found for this status error", ERROR);
+    }
+    if(!path.size())
+    {
+        std::cout << "ENTRA2 " << std::endl;
+        std::cout << "HOLA" << std::endl;
+        body = response.buildErrorPage();
+    }
     else
     {
-        //Utils::exceptWithError("Failed to send response.");
-        Utils::log("Failed to send response", RED);
-        return ;
+        std::ifstream file(path.c_str());
+        std::stringstream ss;
+        std::cout << path << std::endl;
+        if(file.good())
+        {
+            std::cout << "ENTRA " << std::endl;
+            ss << file.rdbuf();
+            file.close();
+            body = ss.str();
+        }
+        else
+        {
+            std::cout << "ENTRA3 " << std::endl;
+            Utils::logger("Path can not opened", ERROR);
+            body = response.buildErrorPage();    
+        }
     }
-    close(client_fd);
+    response.setBody(body);
 }

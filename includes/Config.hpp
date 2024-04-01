@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/02/27 18:40:52 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 17:48:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "outputMacros.hpp"
 # include "Utils.hpp"
 # include "Socket.hpp"
+# include "Cgi.hpp"
 
 
 class Config
@@ -26,8 +27,6 @@ class Config
         Config(const Config &src);
         ~Config(void);
 
-        bool        isValid;
-        //Quitar en un futuro
         uint16_t GetPort(void);
         std::vector<uint16_t>  GetPorts(void);
         in_addr_t   GetHost(void);
@@ -37,8 +36,7 @@ class Config
         std::string GetIndex(void);
         std::string GetRedirect(void);
         
-        std::string GetCgiPass(void);
-        std::string GetCgiExtension(void);
+        std::vector<Cgi> GetCgis(void);
 
         bool        GetAutoindex(void);
         std::vector<bool> GetAllowMethods(void);
@@ -46,6 +44,7 @@ class Config
 
         std::vector<Config>       GetLocations(void);
         std::map<int, std::string>  GetErrorPages(void);
+        Config *GetParent(void);
 
         void   SetPort(std::string port);
         void   SetHost(std::string host);
@@ -62,11 +61,15 @@ class Config
         void   SetAllowMethods(std::string allow_methods);
         void   SetCgiPass(std::string cgi_pass);
         void   SetCgiExtension(std::string cgi_extension);
-
+        void   SetRootAsLocation(std::string location);
 
         void  PrintConfig(void);
+        void  ClearLocations(void);
+        bool  IsValid(void);
+        void  SetParent(Config *parent);
 
     private:
+        Config *_parent;
         std::vector<uint16_t>  _ports;
         uint16_t     _port;
         in_addr_t    _host;
@@ -76,8 +79,7 @@ class Config
         std::string  _index;
         std::string  _redirect;
 
-        std::string  _cgi_pass;
-        std::string  _cgi_extension;
+        std::vector<Cgi> _cgis;
         bool         _autoindex;
         std::vector<bool> _allow_methods;
         
