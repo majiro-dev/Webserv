@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:56:16 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/30 18:37:10 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Request
         //void parseBody();
         std::string getHeader(std::string find);
         std::string getMethod();
+        std::string getUri();
         std::string getBody();
         std::string getProtocol();
 };

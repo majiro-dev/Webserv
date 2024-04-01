@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/27 01:37:05 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 17:43:57 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,15 @@ Server::Server(Config config):
     this->_host = config.GetHost();
     this->_maxBodySize = config.GetClientMaxBodySize();
     this->_allowMethods = config.GetAllowMethods();
+    std::cout << "ROOT:" << config.GetRoot() << std::endl;
+    std::cout << "INDEX:" << config.GetIndex() << std::endl;
+    std::vector<Config> locations = config.GetLocations();
+    std::vector<Config>::iterator it = locations.begin();
+    std::cout << "LOCATIONS : " << std::endl;
+    for(; it != locations.end(); it++)
+    {
+        it->PrintConfig();
+    }
     checkErrorPage();
     addSocketsServer();
     ss << "New server started => " << '[' << this->_name << ']';
@@ -117,6 +126,23 @@ void Server::addSocketsServer()
     }
 }
 
+void Server::checkErrorPage()
+{
+    std::map<int, std::string> errorPages = _config.GetErrorPages();
+    std::map<int, std::string>::iterator it = errorPages.begin();
+    
+    for(; it != errorPages.end(); it++)
+    {
+        if(it->first < 0)
+        {
+            Utils::logger("Invalid status code for the error page", ERROR);
+            it++;
+        }
+        this->_errorPages.insert(std::make_pair(it->first, it->second));
+        Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
+    }
+}
+
 
 Response Server::hadleRequest(Request &request)
 {
@@ -136,6 +162,9 @@ Response Server::hadleRequest(Request &request)
         {
             if(it->second)
             {
+                std::string uri = request.getUri();
+                if(uri == "/")
+                    return Response(404);
                 Utils::logger("Aplicar metodo " + it->first, LOG);
                 return response;
             }
@@ -152,24 +181,6 @@ Response Server::hadleRequest(Request &request)
     return response;
 }
 
-void Server::checkErrorPage()
-{
-    std::map<int, std::string> errorPages = _config.GetErrorPages();
-    std::map<int, std::string>::iterator it = errorPages.begin();
-    
-    for(; it != errorPages.end(); it++)
-    {
-        if(it->first < 0)
-        {
-            Utils::logger("Invalid status code for the error page", ERROR);
-            it++;
-        }
-        this->_errorPages.insert(std::make_pair(it->first, it->second));
-        Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
-    }
-}
-
-
 
 void Server::generateReponse(const std::string& request)
 {
@@ -177,15 +188,15 @@ void Server::generateReponse(const std::string& request)
     (void)isBrowser;
     try
     {
+        //std::cout << request << std::endl;
         Request req(request);
-        std::cout << this->_maxBodySize << std::endl;
-       /*  if(req.getBody().size() > this->_maxBodySize)
+        if(req.getBody().size() > this->_maxBodySize)
         {
             this->_response = Response(413);
             this->_response.setBody("The size of the request body exceeds the allowed limit");
             Utils::logger("Request body exceeds the allowed limit", ERROR);
             return ;
-        } */
+        } 
         if(req.getHeader("User-Agent") != "")
             isBrowser = true;
         this->_response = hadleRequest(req);
@@ -197,7 +208,6 @@ void Server::generateReponse(const std::string& request)
     }
     if(this->_response.getStatusCode() >= 400)
     {
-        std::cout << "Pepe" << std::endl;
         putErrorPage(this->_response);
        /*  if(isBrowser)
             this->_response.setBody(buildErrorPage();
@@ -220,6 +230,7 @@ void Server::putErrorPage(Response &response)
     }
     if(!path.size())
     {
+        std::cout << "ENTRA2 " << std::endl;
         std::cout << "HOLA" << std::endl;
         body = response.buildErrorPage();
     }
@@ -227,15 +238,17 @@ void Server::putErrorPage(Response &response)
     {
         std::ifstream file(path.c_str());
         std::stringstream ss;
-
+        std::cout << path << std::endl;
         if(file.good())
         {
+            std::cout << "ENTRA " << std::endl;
             ss << file.rdbuf();
             file.close();
             body = ss.str();
         }
         else
         {
+            std::cout << "ENTRA3 " << std::endl;
             Utils::logger("Path can not opened", ERROR);
             body = response.buildErrorPage();    
         }

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:29:30 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:20:09 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int Cluster::acceptConnection(unsigned int sock, int idxServer, sockaddr_in serv
     inet_ntop(AF_INET, &(servSockAdrr.sin_addr), clientIP, INET_ADDRSTRLEN);
     uint16_t clientPort = ntohs(servSockAdrr.sin_port);
     
-    Utils::logger("New Connection from " + std::string(clientIP) + ":" + std::to_string(clientPort), INFO);
+    Utils::logger("New Connection from " + std::string(clientIP) + ":" + Utils::IntToString(clientPort), INFO);
     return 0;
 }
 
