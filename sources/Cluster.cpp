@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/27 17:20:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 18:17:32 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int Cluster::acceptConnection(unsigned int sock, int idxServer, sockaddr_in serv
     
     char clientIP[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(servSockAdrr.sin_addr), clientIP, INET_ADDRSTRLEN);
-    uint16_t clientPort = ntohs(servSockAdrr.sin_port);
+    //uint16_t clientPort = ntohs(servSockAdrr.sin_port);
     
     Utils::logger("New Connection from " + std::string(clientIP) + ":" + Utils::IntToString(clientPort), INFO);
     return 0;

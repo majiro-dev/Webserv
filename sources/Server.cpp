@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:43:57 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 18:16:52 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,14 @@ Response Server::getReponse()
 
 void Server::removeClient(Client *client)
 {
-    std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
+   /* std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
     if(it != this->_clients.end())
     {
         close(client->getSocket());
         delete *it;
         this->_clients.erase(it);
-    }
+    }*/
+    (void)client;
 }
 
 void Server::addClient(Client *client)

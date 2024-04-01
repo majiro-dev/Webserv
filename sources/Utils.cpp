@@ -183,12 +183,12 @@ static std::string logDataTine()
 {
     std::stringstream ss;
 
-    std::time_t currentTime = std::time(nullptr);
+    std::time_t currentTime = std::time(NULL);
 
     std::tm* localTime = std::localtime(&currentTime);
 
     ss << localTime->tm_year + 1900 << '-' << localTime->tm_mon + 1 << '-' << localTime->tm_mday << ' ';
-    ss << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    //ss << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
     return ss.str();
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/25 19:48:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/03/27 17:16:30 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ int main(int argc, char **argv)
     if (!manager.parseConfig())
         return (1);
 
-    std::list<Config> configs = manager.getConfigs();
+    /*std::list<Config> configs = manager.getConfigs();
     Cluster cluster(configs); 
     signal(SIGINT, handleSignal);
     cluster.init();
-    cluster.run();
+    cluster.run();*/
     //Server server = Server(config);
     
     return (0);

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/27 15:59:47 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 17:48:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ class Config
         std::string GetIndex(void);
         std::string GetRedirect(void);
         
-        std::string GetCgiPass(void);
-        std::string GetCgiExtension(void);
+        std::vector<Cgi> GetCgis(void);
 
         bool        GetAutoindex(void);
         std::vector<bool> GetAllowMethods(void);
@@ -81,8 +80,6 @@ class Config
         std::string  _redirect;
 
         std::vector<Cgi> _cgis;
-        std::string  _cgi_pass;
-        std::string  _cgi_extension;
         bool         _autoindex;
         std::vector<bool> _allow_methods;
         

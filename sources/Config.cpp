@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/28 14:05:12 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 17:49:02 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ Config::Config(const Config &src)
     this->_error_pages = src._error_pages;
     this->_allow_methods = src._allow_methods;
     this->_autoindex = src._autoindex;
-    this->_cgi_pass = src._cgi_pass;
-    this->_cgi_extension = src._cgi_extension;
     this->_error_pages = src._error_pages;
     return ;
 }
@@ -98,14 +96,9 @@ std::map<int, std::string> Config::GetErrorPages(void)
     return (this->_error_pages);
 }
 
-std::string Config::GetCgiPass(void)
+std::vector<Cgi> Config::GetCgis(void)
 {
-    return (this->_cgi_pass);
-}
-
-std::string Config::GetCgiExtension(void)
-{
-    return (this->_cgi_extension);
+    return (this->_cgis);
 }
 
 std::string Config::GetRedirect(void)
