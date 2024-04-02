@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 18:16:52 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 00:52:47 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,7 @@ Server::Server(Config config):
     this->_host = config.GetHost();
     this->_maxBodySize = config.GetClientMaxBodySize();
     this->_allowMethods = config.GetAllowMethods();
-    std::cout << "ROOT:" << config.GetRoot() << std::endl;
-    std::cout << "INDEX:" << config.GetIndex() << std::endl;
-    std::vector<Config> locations = config.GetLocations();
-    std::vector<Config>::iterator it = locations.begin();
-    std::cout << "LOCATIONS : " << std::endl;
-    for(; it != locations.end(); it++)
-    {
-        it->PrintConfig();
-    }
+    this->_locations = config.GetLocations();
     checkErrorPage();
     addSocketsServer();
     ss << "New server started => " << '[' << this->_name << ']';
@@ -80,13 +72,13 @@ Response Server::getReponse()
 
 void Server::removeClient(Client *client)
 {
-   /* std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
+    std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
     if(it != this->_clients.end())
     {
         close(client->getSocket());
         delete *it;
         this->_clients.erase(it);
-    }*/
+    }
     (void)client;
 }
 
@@ -144,12 +136,46 @@ void Server::checkErrorPage()
     }
 }
 
+Config *Server::getLocation(Request &request)
+{
+    std::string req_path = request.getUri();
+    std::string location = "";
+    size_t len = 0;
+    Config *loc = NULL;
+
+    std::vector<Config>::iterator it = this->_locations.begin();
+
+    for(; it != this->_locations.end(); it++)
+    {
+        location = it->GetRoot().find_last_of('/');
+        len = location.size();
+        std::cout << "Location: " << location << std::endl;
+        if(location[len - 1] == '/')
+        {
+            len -= 1;
+            location = location.substr(0, len);
+        }
+        std::cout << "Location2: " << location << std::endl;
+        std::cout << "Req_paht: " << req_path << std::endl;
+        req_path = req_path.substr(0, len);
+        std::cout << "Req_paht2: " << req_path << std::endl;
+        if(location.compare(req_path))
+        {
+            if(loc == NULL)
+                loc = &(*it);
+        }
+    }
+    return loc;
+}
+
+
 
 Response Server::hadleRequest(Request &request)
 {
     //Cambiar con la configuracion
     Response response;
-
+    Config *conf = this->getLocation(request);
+    conf->PrintConfig();
     std::map<std::string, bool> allowedMethods;
     allowedMethods.insert(std::make_pair("GET", this->_allowMethods[0]));
     allowedMethods.insert(std::make_pair("POST", this->_allowMethods[1]));

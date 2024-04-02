@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/01 18:17:32 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 23:51:51 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int Cluster::acceptConnection(unsigned int sock, int idxServer, sockaddr_in serv
     
     char clientIP[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(servSockAdrr.sin_addr), clientIP, INET_ADDRSTRLEN);
-    //uint16_t clientPort = ntohs(servSockAdrr.sin_port);
+    uint16_t clientPort = ntohs(servSockAdrr.sin_port);
     
     Utils::logger("New Connection from " + std::string(clientIP) + ":" + Utils::IntToString(clientPort), INFO);
     return 0;
@@ -139,13 +139,13 @@ void Cluster::checkClientSockets()
                     this->_pollfds.erase(this->_pollfds.begin() + k);
                     break; 
                 }
-                if (this->_pollfds[k].revents & (POLLNVAL) && this->_pollfds[k].fd == clients[j]->getSocket())
+               /*  if (this->_pollfds[k].revents & (POLLNVAL) && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     Utils::logger("Client socket is not open", ERROR);
                     this->_servers[i]->removeClient(clients[j]);
                     this->_pollfds.erase(this->_pollfds.begin() + k);
                     break; 
-                }
+                } */
                 if (this->_pollfds[k].revents & POLLIN && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     int val_recv;
