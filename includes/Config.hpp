@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 22:03:54 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 12:54:47 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ class Config
         std::map<int, std::string>  GetErrorPages(void);
         Config *GetParent(void);
 
+        std::string GetLocationName(void);
+
         void   SetPort(std::string port);
         void   SetHost(std::string host);
         void   SetServerName(std::string server_name);
@@ -69,6 +71,8 @@ class Config
         bool  IsValid(void);
         void  SetParent(Config *parent);
 
+        void  SetLocationName(std::string locationName);
+
     private:
         Config *_parent;
         std::vector<uint16_t>  _ports;
@@ -83,6 +87,8 @@ class Config
         std::vector<Cgi> _cgis;
         bool         _autoindex;
         std::vector<bool> _allow_methods;
+        
+        std::string _LocationName;
         
         std::vector<Config>         _locations;
         std::map<int, std::string>  _error_pages;

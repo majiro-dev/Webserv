@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 22:07:39 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 12:55:10 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -499,4 +499,14 @@ void Config::SetParent(Config *parent)
 Config *Config::GetParent(void)
 {
     return (this->_parent);
+}
+
+void Config::SetLocationName(std::string locationName)
+{
+    this->_LocationName = locationName;
+}
+
+std::string Config::GetLocationName(void)
+{
+    return (this->_LocationName);
 }
