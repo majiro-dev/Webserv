@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 00:52:47 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/02 22:33:12 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ Server::Server(Config config):
     this->_maxBodySize = config.GetClientMaxBodySize();
     this->_allowMethods = config.GetAllowMethods();
     this->_locations = config.GetLocations();
+   /*  std::vector<Config>::iterator it = this->_locations.begin();
+    for(; it != this->_locations.end(); *it++)
+    {
+        std::cout << "QPQP: " << it->GetRoot() << std::endl;
+    } */
     checkErrorPage();
     addSocketsServer();
     ss << "New server started => " << '[' << this->_name << ']';
@@ -132,7 +137,7 @@ void Server::checkErrorPage()
             it++;
         }
         this->_errorPages.insert(std::make_pair(it->first, it->second));
-        Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
+        //Utils::logger("Add with code " + Utils::IntToString(it->first) + " the page with the root" + it->second, INFO);
     }
 }
 
@@ -147,9 +152,11 @@ Config *Server::getLocation(Request &request)
 
     for(; it != this->_locations.end(); it++)
     {
-        location = it->GetRoot().find_last_of('/');
+        std::cout << "IT: " << it->GetRoot() << std::endl;
+        location = it->GetRoot().substr(it->GetRoot().find_last_of('/'));
         len = location.size();
         std::cout << "Location: " << location << std::endl;
+        //std::cout << "Location: " << len << std::endl;
         if(location[len - 1] == '/')
         {
             len -= 1;
@@ -158,8 +165,9 @@ Config *Server::getLocation(Request &request)
         std::cout << "Location2: " << location << std::endl;
         std::cout << "Req_paht: " << req_path << std::endl;
         req_path = req_path.substr(0, len);
+        //std::cout << "Req_paht: " << req_path << std::endl;
         std::cout << "Req_paht2: " << req_path << std::endl;
-        if(location.compare(req_path))
+        if(location.compare(req_path) == 0)
         {
             if(loc == NULL)
                 loc = &(*it);
@@ -168,39 +176,49 @@ Config *Server::getLocation(Request &request)
     return loc;
 }
 
+std::string getFilePath(Config *location, Request &request)
+{
+    size_t len = location->GetRoot().find_last_of('/');
+    std::string root = location->GetRoot().substr(0, len);
+    std::string path = request.getUri();
+    std::cout << "ROOT: " << root << std::endl;
+    std::cout << "PATH_UNIT: " << path << std::endl;
+    
+    if(!path.size())
+        return root;
+    if(root[root.size() - 1] != '/')
+        root += "/";
+    if(path[0] == '/')
+        root += path.substr(1);
+    else
+        root + path;
+    return root;
+} 
+
 
 
 Response Server::hadleRequest(Request &request)
 {
     //Cambiar con la configuracion
     Response response;
-    Config *conf = this->getLocation(request);
-    conf->PrintConfig();
-    std::map<std::string, bool> allowedMethods;
+    Config *location = this->getLocation(request);
+    //std::string path = getFilePath(location, request);
+    if(location == NULL)
+    {
+        std::cout << "No entro" << std::endl;
+        return Response(404);
+    }
+    //conf->PrintConfig();
+   /*  std::map<std::string, bool> allowedMethods;
     allowedMethods.insert(std::make_pair("GET", this->_allowMethods[0]));
     allowedMethods.insert(std::make_pair("POST", this->_allowMethods[1]));
-    allowedMethods.insert(std::make_pair("DELETE", this->_allowMethods[2]));
+    allowedMethods.insert(std::make_pair("DELETE", this->_allowMethods[2])); */
 
-    std::map<std::string, bool>::iterator it = allowedMethods.begin();
-
-    for(; it != allowedMethods.end(); it++)
+    if(request.getMethod() == "GET")
     {
-        if(it->first == request.getMethod())
-        {
-            if(it->second)
-            {
-                std::string uri = request.getUri();
-                if(uri == "/")
-                    return Response(404);
-                Utils::logger("Aplicar metodo " + it->first, LOG);
-                return response;
-            }
-            else
-            {
-                Utils::logger("Method is not allowed", ERROR);
-                return Response(405);
-            }
-        }
+        std::cout << "Entro" << std::endl;
+        //response = Methods::HandleGet(path, *location);
+        return response;
     }
     response.setStatusCode(404);
     Utils::logger("This method was not found", ERROR);
@@ -253,30 +271,29 @@ void Server::putErrorPage(Response &response)
     }
     catch(const std::exception& e)
     {
-        Utils::logger("Page not found for this status error", ERROR);
+        Utils::logger("ERROR PAGE Page not found for this status error", ERROR);
     }
     if(!path.size())
     {
-        std::cout << "ENTRA2 " << std::endl;
-        std::cout << "HOLA" << std::endl;
+        std::cout << "ERROR PAGE ENTRA2 " << std::endl;
+        std::cout << "ERROR PAGE HOLA" << std::endl;
         body = response.buildErrorPage();
     }
     else
     {
         std::ifstream file(path.c_str());
         std::stringstream ss;
-        std::cout << path << std::endl;
         if(file.good())
         {
-            std::cout << "ENTRA " << std::endl;
+            std::cout << "ERROR PAGE ENTRA " << std::endl;
             ss << file.rdbuf();
             file.close();
             body = ss.str();
         }
         else
         {
-            std::cout << "ENTRA3 " << std::endl;
-            Utils::logger("Path can not opened", ERROR);
+            //std::cout << "ENTRA3 " << std::endl;
+            Utils::logger("ERROR PAGE Path can not opened", ERROR);
             body = response.buildErrorPage();    
         }
     }

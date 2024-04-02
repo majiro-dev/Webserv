@@ -5,14 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2024/04/02 17:24:56 by cmorales         ###   ########.fr       */
-=======
-/*   Updated: 2024/04/01 23:35:16 by cmorales         ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Created: 2024/04/02 17:27:51 by cmorales          #+#    #+#             */
+/*   Updated: 2024/04/02 17:27:55 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../includes/Manager.hpp"
 
