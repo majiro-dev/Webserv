@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Manager.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 12:58:48 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 17:24:56 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ bool	Manager::parseConfig()
 		if (it->IsValid() == false)
 		{
 			Utils::log("Invalid config", RED);
-			it->PrintConfig();
+			//it->PrintConfig();
 			valid = false;
 		}
 	}
-	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+	//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
 }
 

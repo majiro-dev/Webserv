@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/27 01:17:10 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/01 23:43:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Server
         std::vector<uint16_t>       _sockets;
         std::vector<sockaddr_in>    _sockaddrs;
         std::vector<uint16_t>       _ports;
+        std::vector<Config>         _locations;
         in_addr_t                   _host;
         std::string                 _name;
         size_t                      _maxBodySize;
@@ -48,6 +49,7 @@ class Server
         std::vector<sockaddr_in> getSockaddrs();
         std::vector<Client *> getClients();
         Config getConfig();
+        Config *getLocation(Request &request);
         Response getReponse();
 
         Response hadleRequest(Request &request);

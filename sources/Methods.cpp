@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 20:38:26 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/01 23:34:41 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ void Methods::HandleGet(std::string path, std::string &response, int &status, Co
     std::string body = "";
     std::string line;
     std::ifstream file(path.c_str());
-
+    std::vector<Cgi> cgis = config.GetCgis();
     if (Cgi::IsCgi(path))
     {
         Cgi cgi;
-        for (std::vector<Cgi>::iterator it = config.GetCgis().begin(); it != config.GetCgis().end(); it++)
+        for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {
             if (it->GetCgiExtension() == path.substr(path.find_last_of('.')))
             {
