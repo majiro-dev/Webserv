@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 22:53:23 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 22:57:18 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				location->SetLocationName(locationPath(locationLine));
 				if (location->GetLocationName() == "/")
 					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
-				std::cout << "full root: " << location->GetRoot() << std::endl;
 				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
