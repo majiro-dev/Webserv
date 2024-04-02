@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 22:07:20 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/02 12:58:48 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ std::string locationPath(std::string path)
 {
 	std::string location = path.substr(path.find("location ") + 9);
 	location = location.substr(0, location.find(" "));
-	if (location == "/")
-		location = "";
+	//if (location == "/")
+	//	location = "";
 	return location;
 }
 
@@ -86,8 +86,9 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				Config *location = new Config(*config);
 				location->ClearLocations();
 				_parseLocationBlock(file, line, location);
-				if (location->GetRoot() != config->GetRoot())
-					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				//if (location->GetRoot() != config->GetRoot())
+				//	location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				location->SetLocationName(locationPath(locationLine));
 				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
