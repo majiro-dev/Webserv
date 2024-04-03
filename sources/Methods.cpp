@@ -6,20 +6,12 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 18:00:37 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:55:09 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
 
-static bool isDir(const std::string &path)
-{
-    struct stat info;
-
-    if(stat(path.c_str(), &info) != 0)
-        return false;
-    return S_ISDIR(info.st_mode);
-}
 
 Response Methods::HandleGet(std::string path, Config &location)
 {
@@ -50,12 +42,17 @@ Response Methods::HandleGet(std::string path, Config &location)
         }
         return Response(500);
     }
-    if(isDir(path))
+    if(Utils::DirIsValid(path))
     {
-        std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
-        if(path[path.size()] == '/')
+        //std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
+        if(location.GetAutoindex() == true)
         {
-            std::cout <<"Entra" << std::endl;
+            body = AutoIndex::GetAutoIndex(path);
+            response.setBody(body);
+            return response;
+        }
+        if(path[path.size() - 1] == '/')
+        {
             path += location.GetIndex();
         }
         else
@@ -63,7 +60,7 @@ Response Methods::HandleGet(std::string path, Config &location)
             path += "/";
             path += location.GetIndex();
         }
-        std::cout << "PATH: " << path << std::endl;
+        //std::cout << "PATH: " << path << std::endl;
     }
     std::ifstream file(path.c_str());
     if (file.is_open())

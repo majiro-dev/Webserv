@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/02 17:33:32 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:30:04 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void Cluster::checkClientSockets()
                     int val_recv;
                     val_recv = clients[j]->handleRecv();
                     if(val_recv == 0)
-                        this->_servers[i]->generateReponse(clients[j]->getRequest());
+                        this->_servers[i]->generateResponse(clients[j]->getRequest());
                     //if(val_recv == -2)
                         //Crear response pagina error
                     if(val_recv < 0)

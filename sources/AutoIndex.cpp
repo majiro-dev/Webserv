@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   AutoIndex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 10:39:45 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/03 18:47:57 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "AutoIndex.hpp"
+#include "../includes/AutoIndex.hpp"
 #include <string>
 #include <cstring>
 #include <cstdio>

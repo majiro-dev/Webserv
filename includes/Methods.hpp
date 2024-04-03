@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:38:42 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 17:58:39 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:50:39 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "Config.hpp"
+#include "AutoIndex.hpp"
 #include "Utils.hpp"
 
 class Methods

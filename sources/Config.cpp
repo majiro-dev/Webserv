@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 12:55:10 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/03 23:02:08 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,6 +359,7 @@ void Config::PrintConfig(void)
     std::cout << "GET: " << this->_allow_methods[0] << std::endl;
     std::cout << "POST: " << this->_allow_methods[1] << std::endl;
     std::cout << "DELETE: " << this->_allow_methods[2] << std::endl;
+    std::cout << "LOCATION NAME: " << this->_LocationName << std::endl;
 
     std::vector<Cgi>::iterator it4 = this->_cgis.begin();
     while (it4 != this->_cgis.end())

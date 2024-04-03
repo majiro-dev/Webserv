@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 17:56:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 22:30:18 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class Server
         Response getReponse();
 
         Response hadleRequest(Request &request);
-        void generateReponse(const std::string& request);
+        void generateResponse(const std::string& request);
 
         void checkErrorPage();
         void putErrorPage(Response &response);

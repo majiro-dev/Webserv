@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 18:13:59 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 23:09:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Server::Server(Config config):
     this->_ports = config.GetPorts();
     this->_host = config.GetHost();
     this->_maxBodySize = config.GetClientMaxBodySize();
-    this->_allowMethods = config.GetAllowMethods();
+    //REVISAR: this->_allowMethods = config.GetAllowMethods();
     this->_locations = config.GetLocations();
     checkErrorPage();
     addSocketsServer();
@@ -136,71 +136,76 @@ void Server::checkErrorPage()
     }
 }
 
-
-static std::string getDir(const std::string uri)
+bool checkAllowMethods(Config *location, std::string& method)
 {
-    size_t slash = uri.find('/');
-    size_t slash2 = uri.find('/', slash + 1);
+    std::map<std::string, bool> allowedMethods;
 
-    if(slash2 != std::string::npos)
+    allowedMethods.insert(std::make_pair("GET", location->GetAllowMethods()[0]));
+    allowedMethods.insert(std::make_pair("POST", location->GetAllowMethods()[1]));
+    allowedMethods.insert(std::make_pair("DELETE", location->GetAllowMethods()[2]));
+    for(std::map<std::string, bool>::iterator it = allowedMethods.begin(); it != allowedMethods.end(); it++)
     {
-        std::cout << "CC" << std::endl;
-        std::cout << RED << uri.substr(0, slash2) << std::endl << RESET;
+        if(it->first == method)
+        {
+            if(it->second)
+                return true;
+        }
     }
-    else
-        std::cout << RED << uri << std::endl << RESET;
-    return "";
+    return false;
 }
+
 
 Config *Server::getLocation(Request &request)
 {
-    std::string req_path = request.getUri();
     std::string location = "";
-    std::string w = getDir(req_path);
-    size_t len = 0;
+    //int len = 0;
     Config *loc = NULL;
 
     std::vector<Config>::iterator it = this->_locations.begin();
 
     for(; it != this->_locations.end(); it++)
     {
-        std::cout << "IT: " << it->GetRoot() << std::endl;
+        std::string req_path = request.getUri();
+        std::cout << "ROOT: " << it->GetRoot() << std::endl;
+        std::cout << "NAME: " << it->GetLocationName() << std::endl;
         location = it->GetRoot().substr(it->GetRoot().find_last_of('/'));
-        len = location.size();
+       /*  len = location.size();
         std::cout << std::endl << "LEN: " << len << std::endl;
         std::cout << "Location: " << location << std::endl;
         std::cout << "PATH_REQ: " << req_path << std::endl << std::endl;
-      /*   if(location[len - 1] == '/')
+         if(location[len - 1] == '/')
         {
-            std::cout << "Entra barra" << std::endl;
             len -= 1;
             location = location.substr(0, len);
-        } */
-        //std::cout << "Location2: " << location << std::endl;
-        //std::cout << "Req_paht: " << req_path << std::endl;
-        //req_path = req_path.substr(0, len);
+            std::cout << "Location2: " << location << std::endl;
+        } 
+        req_path = req_path.substr(0, len);
+        std::cout << "Req_paht2: " << req_path << std::endl;
         if(location.compare(req_path) == 0)
         {
             std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
-            if(loc == NULL)
-                loc = &(*it);
-        }
+             loc = &(*it);
+        }*/
     }
     return loc;
 }
 
 std::string getFilePath(Config *location, Request &request)
 {
+    (void)request;
     size_t len = location->GetRoot().find_last_of('/');
     std::string root = location->GetRoot().substr(0, len);
-    std::string path = request.getUri();
-    //std::cout << "ROOT: " << root << std::endl;
-    //std::cout << "PATH_UNIT: " << path << std::endl;
+    std::string path = location->GetIndex();
+    std::cout << "ROOT: " << root << std::endl;
+    std::cout << "PATH_UNIT: " << path << std::endl;
     
     if(!path.size())
         return root;
     if(root[root.size() - 1] != '/')
+    {
+        std::cout << GREEN << root[root.size() - 1] << std::endl << RESET;
         root += "/";
+    }
     if(path[0] == '/')
         root += path.substr(1);
     else
@@ -215,21 +220,18 @@ Response Server::hadleRequest(Request &request)
     //Cambiar con la configuracion
     Response response;
     Config *location = this->getLocation(request);
+    //location->PrintConfig();
     if(location == NULL)
     {
+        //CAMBIAR
         std::cout << "No entro" << std::endl;
         return Response(404);
     }
     std::string path = getFilePath(location, request);
-    //conf->PrintConfig();
-   /*  std::map<std::string, bool> allowedMethods;
-    allowedMethods.insert(std::make_pair("GET", this->_allowMethods[0]));
-    allowedMethods.insert(std::make_pair("POST", this->_allowMethods[1]));
-    allowedMethods.insert(std::make_pair("DELETE", this->_allowMethods[2])); */
 
     if(request.getMethod() == "GET")
     {
-        std::cout << "Entro" << std::endl;
+        std::cout << std::endl << "Entro" << std::endl;
         response = Methods::HandleGet(path, *location);
         return response;
     }
@@ -240,7 +242,7 @@ Response Server::hadleRequest(Request &request)
 }
 
 
-void Server::generateReponse(const std::string& request)
+void Server::generateResponse(const std::string& request)
 {
     bool isBrowser = false;
     (void)isBrowser;
