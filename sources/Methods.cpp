@@ -6,20 +6,27 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 20:10:56 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/03 18:00:37 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
 
-Response Methods::HandleGet(std::string path, Config &config)
+static bool isDir(const std::string &path)
+{
+    struct stat info;
+
+    if(stat(path.c_str(), &info) != 0)
+        return false;
+    return S_ISDIR(info.st_mode);
+}
+
+Response Methods::HandleGet(std::string path, Config &location)
 {
     std::cout << "PATH: " << path << std::endl;
-    
     std::string body = "";
     std::string line;
-    std::ifstream file(path.c_str());
-    std::vector<Cgi> cgis = config.GetCgis();
+    std::vector<Cgi> cgis = location.GetCgis();
     Response response;
     
     if (Cgi::IsCgi(path))
@@ -43,8 +50,25 @@ Response Methods::HandleGet(std::string path, Config &config)
         }
         return Response(500);
     }
+    if(isDir(path))
+    {
+        std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
+        if(path[path.size()] == '/')
+        {
+            std::cout <<"Entra" << std::endl;
+            path += location.GetIndex();
+        }
+        else
+        {
+            path += "/";
+            path += location.GetIndex();
+        }
+        std::cout << "PATH: " << path << std::endl;
+    }
+    std::ifstream file(path.c_str());
     if (file.is_open())
     {
+        
         std::cout << "ENTRA2" << std::endl;
         while (getline(file, line))
         {
@@ -60,6 +84,7 @@ Response Methods::HandleGet(std::string path, Config &config)
         //response = "File not found";
         return Response(404);
     }
+    return response;
 }
 
 void Methods::HandleDelete(std::string path, std::string &response, int &status)
