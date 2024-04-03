@@ -6,20 +6,25 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 23:34:41 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/02 20:10:56 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
 
-void Methods::HandleGet(std::string path, std::string &response, int &status, Config &config)
+Response Methods::HandleGet(std::string path, Config &config)
 {
+    std::cout << "PATH: " << path << std::endl;
+    
     std::string body = "";
     std::string line;
     std::ifstream file(path.c_str());
     std::vector<Cgi> cgis = config.GetCgis();
+    Response response;
+    
     if (Cgi::IsCgi(path))
     {
+        std::cout << "ENTRA1" << std::endl;
         Cgi cgi;
         for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {
@@ -30,33 +35,30 @@ void Methods::HandleGet(std::string path, std::string &response, int &status, Co
             }
         }
         if (cgi.GetCgiPath().empty())
-        {
-            status = 500;
-            return;
-        }
+            return Response(500);
         if (cgi.ExecuteCgi(NULL, NULL))
         {
-            response = cgi.GetResult();
-            status = 200;
-            return;
+            response.setBody(cgi.GetResult());
+            return response;
         }
-        status = 500;
-        return;
+        return Response(500);
     }
     if (file.is_open())
     {
+        std::cout << "ENTRA2" << std::endl;
         while (getline(file, line))
         {
             body += line + "\n";
         }
         file.close();
-        response = body;
-        status = 200;
+        response.setBody(body);
+        return response;
     }
     else
     {
-        response = "File not found";
-        status = 404;
+        std::cout << "ENTRA3" << std::endl;
+        //response = "File not found";
+        return Response(404);
     }
 }
 

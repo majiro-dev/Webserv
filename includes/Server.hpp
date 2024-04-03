@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 23:43:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/02 17:56:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "Request.hpp"
 # include "Client.hpp"
 # include "Response.hpp"
+# include "Methods.hpp"
 # include "Utils.hpp"
 
 class Server

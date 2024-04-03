@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../includes/Manager.hpp"
 
 Manager::Manager(std::string path)

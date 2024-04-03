@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/01 23:51:51 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/02 17:33:32 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,13 +139,13 @@ void Cluster::checkClientSockets()
                     this->_pollfds.erase(this->_pollfds.begin() + k);
                     break; 
                 }
-               /*  if (this->_pollfds[k].revents & (POLLNVAL) && this->_pollfds[k].fd == clients[j]->getSocket())
+                if (this->_pollfds[k].revents & (POLLNVAL) && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     Utils::logger("Client socket is not open", ERROR);
                     this->_servers[i]->removeClient(clients[j]);
                     this->_pollfds.erase(this->_pollfds.begin() + k);
                     break; 
-                } */
+                }
                 if (this->_pollfds[k].revents & POLLIN && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     int val_recv;
