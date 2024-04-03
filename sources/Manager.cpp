@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/02 17:27:51 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/02 17:27:55 by cmorales         ###   ########.fr       */
+/*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
+/*   Updated: 2024/04/02 22:57:18 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				//if (location->GetRoot() != config->GetRoot())
 				//	location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
 				location->SetLocationName(locationPath(locationLine));
+				if (location->GetLocationName() == "/")
+					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
 				location->SetParent(config);
 				config->AddLocation(*location);
 				delete location;
