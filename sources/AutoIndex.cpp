@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 10:31:34 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/03 10:38:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ std::string AutoIndex::GetAutoIndex(std::string path)
         html = header;
         DIR *dir;
         struct dirent *ent;
-        if ((dir = opendir(path.c_str())) != NULL) {
-            while ((ent = readdir(dir)) != NULL) {
+        if ((dir = opendir(path.c_str())) != NULL) 
+        {
+            while ((ent = readdir(dir)) != NULL) 
+            {
                 html += "<a href=\"";
                 html += ent->d_name;
                 html += "\">";
@@ -36,7 +38,9 @@ std::string AutoIndex::GetAutoIndex(std::string path)
                 html += "</a><br>";
             }
             closedir(dir);
-        } else {
+        } 
+        else 
+        {
             html += "Error opening directory";
         }
         html += footer;
