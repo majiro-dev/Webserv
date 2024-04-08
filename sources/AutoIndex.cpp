@@ -6,11 +6,11 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 10:39:45 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/05 13:32:19 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "AutoIndex.hpp"
+#include "../includes/AutoIndex.hpp"
 #include <string>
 #include <cstring>
 #include <cstdio>
