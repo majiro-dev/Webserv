@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/08 17:37:06 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 18:09:54 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,13 @@ int Client::handleRecv()
         return -1;
     } 
     this->_request += buffer;
+    std::cout << this->_request << std::endl;
     size_t pos = this->_request.find("\r\n\r\n");
-    if(pos == std::string::npos)
+  /*   if(pos == std::string::npos)
     {
         this->_finishReq = false;
         return 1;
-    }
+    } */
     
     size_t contentPos = this->_request.find("Content-Length: ");
     if(contentPos != std::string::npos)

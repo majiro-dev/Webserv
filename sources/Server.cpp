@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 12:04:15 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 18:07:48 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
 {
     try
     {
-        //std::cout << request << std::endl;
+        std::cout << request << std::endl;
         Request req(request);
         Config *location = this->getLocation(req);
         if(location == NULL)
@@ -289,6 +289,10 @@ Response Server::hadleRequest(Request &request, Config *location)
     if(request.getMethod() == "GET")
     {
         response = Methods::HandleGet(path, *location);
+    }
+    else if(request.getMethod() == "DELETE")
+    {
+        response = Methods::HandleDelete(path, *location);
     }
     else
     {
