@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/04 00:17:26 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 21:08:25 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ Config::Config(const Config &src)
     this->_autoindex = src._autoindex;
     this->_error_pages = src._error_pages;
     this->_LocationName = src._LocationName;
+    for (std::vector<Cgi>::const_iterator it = src._cgis.begin(); it != src._cgis.end(); it++)
+    {
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(it->GetCgiPath());
+        cgi->SetCgiExtension(it->GetCgiExtension());
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    }
     return ;
 }
 

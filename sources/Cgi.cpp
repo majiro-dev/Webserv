@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/16 14:22:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:50:47 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ Cgi::~Cgi(void)
 {
 }
 
+Cgi::Cgi(Cgi const & src)
+{
+    this->cgiPath = src.GetCgiPath();
+    this->cgiExtension = src.GetCgiExtension();
+}
+
 void    Cgi::SetCgiPath(std::string path)
 {
     this->cgiPath = path;
@@ -34,12 +40,12 @@ void    Cgi::SetCgiExtension(std::string extension)
     this->cgiExtension = extension;
 }
 
-std::string Cgi::GetCgiPath(void)
+std::string Cgi::GetCgiPath(void) const
 {
     return (this->cgiPath);
 }
 
-std::string Cgi::GetCgiExtension(void)
+std::string Cgi::GetCgiExtension(void) const
 {
     return (this->cgiExtension);
 }
@@ -101,7 +107,7 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
     return (false);
 }
 
-std::string Cgi::GetResult(void)
+std::string Cgi::GetResult(void) const
 {
     return (this->result);
 } 
