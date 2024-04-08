@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 20:10:56 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 14:01:36 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,50 @@ Response Methods::HandleGet(std::string path, Config &config)
     }
 }
 
-void Methods::HandleDelete(std::string path, std::string &response, int &status)
+Response Methods::HandleDelete(std::string path, Config &config)
 {
+    Response response;
+
+    std::ifstream file(path.c_str());
+    if (!file.is_open())
+        return Response(404);
     if (remove(path.c_str()) == 0)
-    {
-        response = "File deleted";
-        status = 200;
-    }
-    else
-    {
-        response = "File not found";
-        status = 404;
-    }
+        return response;
+    return Response(500);
+
+    (void)config;
 }
 
+Response Methods::HandlePost(std::string path, std::string requestText, Config &config)
+{
+    Response response;
+    std::string filename;
+    std::string extension;
+    size_t startPos;
+    size_t endPos;
 
+    while (true)
+    {
+        startPos = requestText.find("filename=\"", endPos) + 10;
+        endPos = requestText.find("\"", startPos);
+        if (startPos == std::string::npos || endPos == std::string::npos)
+            break;
+        filename = requestText.substr(startPos, endPos - startPos);
+        // std::cout << "FILENAME: " << filename << std::endl;
+        extension = filename.substr(filename.find_last_of('.'));
+        // std::cout << "EXTENSION: " << extension << std::endl;
+        if (filename.empty() || extension.empty())
+            return Response(400); //Bad Request
+        startPos = requestText.find("\r\n\r\n", endPos) + 4;
+        endPos = requestText.find("\r\n------", startPos);
+        if (startPos == std::string::npos || endPos == std::string::npos)
+            return Response(400);
+        std::ofstream file(path + filename + extension);
+        if (!file.is_open())
+            return Response(500);
+        file << requestText.substr(startPos, endPos);
+        file.close();
+        return response;
+    }
+
+}
