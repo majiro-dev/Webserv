@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/26 16:32:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/05 13:29:57 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <sys/stat.h>
+# include <algorithm>
+# include <iomanip>
 
 # include "outputMacros.hpp"
 
