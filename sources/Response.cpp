@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/27 01:18:49 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 00:41:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@ Response::Response()
     : _statusCode(200), _protocol(HTTP_PROTOCOL), _body("")
 {
     init_code_message();
+    init_mime_types();
 }
 
 Response::Response(unsigned int code)
     : _statusCode(code), _protocol(HTTP_PROTOCOL), _body("")
 {
     init_code_message();
+    init_mime_types();
     std::map<unsigned int, std::string>::iterator it = this->_code_msgs.find(code);
     if(it == this->_code_msgs.end())
         this->_statusCode = 500;
@@ -56,8 +58,26 @@ void Response::init_code_message()
     this->_code_msgs.insert(std::make_pair(404, "Not Found"));
     this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
     this->_code_msgs.insert(std::make_pair(413, "Exceeds Body Limit"));
-    this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
     this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
+}
+
+void Response::init_mime_types()
+{
+    this->_mime_types.insert(std::make_pair("default", "text/html"));
+    this->_mime_types.insert(std::make_pair(".html", "text/html"));
+    this->_mime_types.insert(std::make_pair(".htm", "text/html"));
+    this->_mime_types.insert(std::make_pair(".css", "text/css"));
+    this->_mime_types.insert(std::make_pair(".bmp", "image/bmp"));
+    this->_mime_types.insert(std::make_pair(".gif", "image/gif"));
+    this->_mime_types.insert(std::make_pair(".ico", "image/x-icon"));
+    this->_mime_types.insert(std::make_pair(".jpg", "image/jpeg"));
+    this->_mime_types.insert(std::make_pair(".jpeg", "image/jpeg"));
+    this->_mime_types.insert(std::make_pair(".png", "image/png"));
+    this->_mime_types.insert(std::make_pair(".txt", "text/plain"));
+    this->_mime_types.insert(std::make_pair(".avi", "video/x-msvideo"));
+    this->_mime_types.insert(std::make_pair(".mp4", "video/mp4"));
+    this->_mime_types.insert(std::make_pair(".mp3", "audio/mp3"));
+    this->_mime_types.insert(std::make_pair(".pdf", "application/pdf"));
 }
 
 void Response::setStatusCode(const unsigned int newCode)
@@ -84,6 +104,16 @@ std::string Response::getStatusMsg()
     it = this->_code_msgs.find(this->getStatusCode());
     if(it == this->_code_msgs.end())
         return "";
+    return it->second;
+}
+
+std::string Response::getMimeType(const std::string &key)
+{
+    std::map<std::string, std::string>::iterator it;
+
+    it = this->_mime_types.find(key);
+    if(it == this->_mime_types.end())
+        return this->_mime_types["default"];
     return it->second;
 }
 
@@ -121,7 +151,7 @@ std::string Response::build_response()
     
     //setBody(getStatusMsg(this->_statusCode));
 
-    this->addHeaders("Content-Type", "text/html");
+    //this->addHeaders("Content-Type", "text/html");
 
     ss << getProtocol() << ' ' << getStatusCode() << ' ' << getStatusMsg() << "\r\n";
     for(it = this->_headers.begin(); it != this->_headers.end(); it++){
@@ -131,4 +161,8 @@ std::string Response::build_response()
     if(this->_body.size())
         ss << this->_body;
     return ss.str();
+}
+void Response::setFile(std::string &file)
+{
+    this->_file = file;
 }

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:30:03 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 17:37:06 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ Client::Client()
 {
 }
 
-Client::Client(int fd)
-   : _fd(fd)
+Client::Client(int fd, sockaddr_in socketaddr)
+   : _fd(fd), _socketaddr(socketaddr)
 {
 }
 
@@ -122,4 +122,9 @@ int Client::sendResponse(Response res)
 std::string Client::getRequest()
 {
     return this->_request;
+}
+
+sockaddr_in Client::getSocketaddr()
+{
+    return this->_socketaddr;
 }

@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 18:47:57 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 11:22:35 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,19 @@
 
 std::string AutoIndex::GetAutoIndex(std::string path)
 {
+    std::cout << "PATHINDEx: " << path << std::endl;
     std::string html;
     std::string title = "Index of " + path;
-    std::string header = "<html><head><title>" + title + "</title></head><body><h1>" + title + "</h1><hr><pre>";
-    std::string footer = "</pre><hr></body></html>";
+    std::string header = "<html><head><title>" + title + "</title><style>\
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }\
+                        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: #999494; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }\
+                        h1 { color: #000; text-align: center; margin-bottom: 20px; }\
+                        .file-list { list-style: none; padding: 0; }\
+                        .file-item { background-color: #f9f9f9; padding: 10px; margin-bottom: 5px; border-radius: 5px; }\
+                        .file-link { color: #007bff; text-decoration: none; }\
+                        .file-link:hover { text-decoration: underline; }\
+                        </style></head><body><div class=\"container\"><h1>" + title + "</h1><div class=\"file-list\">";
+    std::string footer = "</div></div></body></html>";
 
     html = header;
     DIR *dir;
@@ -31,17 +40,17 @@ std::string AutoIndex::GetAutoIndex(std::string path)
     {
         while ((ent = readdir(dir)) != NULL) 
         {
-            html += "<a href=\"";
+            html += "<div class=\"file-item\"><a class=\"file-link\" href=\"";
             html += ent->d_name;
             html += "\">";
             html += ent->d_name;
-            html += "</a><br>";
+            html += "</a></div>";
         }
         closedir(dir);
     } 
     else 
     {
-        html += "Error opening directory";
+        html += "<p>Error opening directory</p>";
     }
     html += footer;
     return html;

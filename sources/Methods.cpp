@@ -6,16 +6,15 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 22:55:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 00:41:50 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
 
 
-Response Methods::HandleGet(std::string path, Config &location)
+Response Methods::HandleGet(std::string &path, Config &location)
 {
-    std::cout << "PATH: " << path << std::endl;
     std::string body = "";
     std::string line;
     std::vector<Cgi> cgis = location.GetCgis();
@@ -60,7 +59,6 @@ Response Methods::HandleGet(std::string path, Config &location)
             path += "/";
             path += location.GetIndex();
         }
-        //std::cout << "PATH: " << path << std::endl;
     }
     std::ifstream file(path.c_str());
     if (file.is_open())

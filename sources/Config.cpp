@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 23:02:08 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/04 00:17:26 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ Config::Config(const Config &src)
     this->_allow_methods = src._allow_methods;
     this->_autoindex = src._autoindex;
     this->_error_pages = src._error_pages;
+    this->_LocationName = src._LocationName;
     return ;
 }
 

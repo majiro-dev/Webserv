@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 23:09:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/08 12:04:15 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ Server::Server(Config config):
     this->_ports = config.GetPorts();
     this->_host = config.GetHost();
     this->_maxBodySize = config.GetClientMaxBodySize();
-    //REVISAR: this->_allowMethods = config.GetAllowMethods();
     this->_locations = config.GetLocations();
-    checkErrorPage();
     addSocketsServer();
     ss << "New server started => " << '[' << this->_name << ']';
     Utils::logger(ss.str(), INFO);
@@ -70,6 +68,11 @@ Response Server::getReponse()
     return this->_response;
 }
 
+std::string Server::getName()
+{
+    return this->_name;
+}
+
 void Server::removeClient(Client *client)
 {
     std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
@@ -101,7 +104,6 @@ void Server::addSocketsServer()
             Utils::exceptWithError("Error failed to set socket options");
             
         memset(&sockaddr, 0, sizeof(sockaddr));
-        //**ECHAR UN OJO EXCEPTCION CON BIND => SEGMENTATION FAULT
         sockaddr.sin_family = AF_INET;
         sockaddr.sin_addr.s_addr = this->_host;
         sockaddr.sin_port = htons(this->_ports[i]);
@@ -119,9 +121,10 @@ void Server::addSocketsServer()
     }
 }
 
-void Server::checkErrorPage()
+void Server::addErrorPage(Config &config)
 {
-    std::map<int, std::string> errorPages = _config.GetErrorPages();
+    this->_errorPages.clear();
+    std::map<int, std::string> errorPages = config.GetErrorPages();
     std::map<int, std::string>::iterator it = errorPages.begin();
     
     for(; it != errorPages.end(); it++)
@@ -136,7 +139,7 @@ void Server::checkErrorPage()
     }
 }
 
-bool checkAllowMethods(Config *location, std::string& method)
+bool checkAllowMethods(Config *location, const std::string& method)
 {
     std::map<std::string, bool> allowedMethods;
 
@@ -147,7 +150,7 @@ bool checkAllowMethods(Config *location, std::string& method)
     {
         if(it->first == method)
         {
-            if(it->second)
+            if(it->second == true)
                 return true;
         }
     }
@@ -158,34 +161,36 @@ bool checkAllowMethods(Config *location, std::string& method)
 Config *Server::getLocation(Request &request)
 {
     std::string location = "";
-    //int len = 0;
+    unsigned long len = 0;
     Config *loc = NULL;
-
+    unsigned long other_loc = 0;
     std::vector<Config>::iterator it = this->_locations.begin();
 
     for(; it != this->_locations.end(); it++)
     {
         std::string req_path = request.getUri();
-        std::cout << "ROOT: " << it->GetRoot() << std::endl;
-        std::cout << "NAME: " << it->GetLocationName() << std::endl;
-        location = it->GetRoot().substr(it->GetRoot().find_last_of('/'));
-       /*  len = location.size();
+        location = it->GetLocationName();
+        len = location.size();
         std::cout << std::endl << "LEN: " << len << std::endl;
         std::cout << "Location: " << location << std::endl;
         std::cout << "PATH_REQ: " << req_path << std::endl << std::endl;
-         if(location[len - 1] == '/')
+        if(location[len - 1] == '/')
         {
             len -= 1;
             location = location.substr(0, len);
-            std::cout << "Location2: " << location << std::endl;
+            std::cout << "Location2: " << location[len - 1] << std::endl;
         } 
         req_path = req_path.substr(0, len);
         std::cout << "Req_paht2: " << req_path << std::endl;
         if(location.compare(req_path) == 0)
         {
             std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
-             loc = &(*it);
-        }*/
+            if(loc == NULL || len > other_loc)
+            {
+                other_loc = len;
+                loc = &(*it);
+            }
+        }
     }
     return loc;
 }
@@ -193,93 +198,120 @@ Config *Server::getLocation(Request &request)
 std::string getFilePath(Config *location, Request &request)
 {
     (void)request;
-    size_t len = location->GetRoot().find_last_of('/');
-    std::string root = location->GetRoot().substr(0, len);
-    std::string path = location->GetIndex();
-    std::cout << "ROOT: " << root << std::endl;
-    std::cout << "PATH_UNIT: " << path << std::endl;
-    
+    size_t len = location->GetLocationName().size();
+    std::string root = location->GetRoot();
+    std::string path = request.getUri();
+    std::cout << "CC: " << path << std::endl;
+    std::cout << "CC: " << root << std::endl;
+    std::cout << "CC: " << location->GetLocationName() << std::endl;
+    /* if(path < root)
+        len--; */
+    path = path.substr(len);
     if(!path.size())
         return root;
     if(root[root.size() - 1] != '/')
-    {
-        std::cout << GREEN << root[root.size() - 1] << std::endl << RESET;
         root += "/";
-    }
-    if(path[0] == '/')
+   /*  if(path[0] == '/')
         root += path.substr(1);
-    else
-        root + path;
+    else */
+    std::cout << "CC: " << path << std::endl;
+    std::cout << "CC: " << root << std::endl;
+    root += path;
+        
     return root;
-} 
+}
 
-
-
-Response Server::hadleRequest(Request &request)
+void Server::generateResponse(const std::string& request, sockaddr_in socketaddr)
 {
-    //Cambiar con la configuracion
-    Response response;
-    Config *location = this->getLocation(request);
-    //location->PrintConfig();
-    if(location == NULL)
+    try
     {
-        //CAMBIAR
-        std::cout << "No entro" << std::endl;
-        return Response(404);
-    }
-    std::string path = getFilePath(location, request);
+        //std::cout << request << std::endl;
+        Request req(request);
+        Config *location = this->getLocation(req);
+        if(location == NULL)
+        {
+            //CAMBIAR
+            std::cout << "No entro" << std::endl;
+            Utils::exceptWithError("No location");
+        }
+        addErrorPage(*location);
+            
+        char clientSock[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &(socketaddr.sin_addr), clientSock, INET_ADDRSTRLEN);
+        uint16_t clientPort = ntohs(socketaddr.sin_port);
 
+        Utils::logger(std::string(clientSock) + ":" + Utils::IntToString(clientPort) + " -> " + req.getMethod() + " " + req.getUri(), INFO);
+        this->_response = hadleRequest(req, location);
+    }
+    catch(const std::exception& e)
+    {
+        Utils::logger(e.what(), ERROR);   
+        this->_response = Response(404);
+        addErrorPage(this->_config);
+    }
+    if(this->_response.getStatusCode() >= 400)
+        putErrorPage(this->_response);
+}
+
+std::string giveContenType(Response &response, std::string path)
+{
+    std::string mime_type;
+    size_t len = path.find(".");
+
+    if((int)len == -1)
+        return response.getMimeType("default");
+    path = path.substr(len);
+    //std::cout << "PATH: " << path << std::endl; 
+    mime_type = response.getMimeType(path);
+    //std::cout << "MIME: " << mime_type << std::endl; 
+    return mime_type;
+}
+
+Response Server::hadleRequest(Request &request, Config *location)
+{
+    Response response;
+    
+    //location->PrintConfig();
+    if(checkAllowMethods(location, request.getMethod()) == false)
+    {
+        Utils::logger("Method is not allowed", ERROR);
+        return Response(405);
+    }
+    if(request.getBody().size() > location->GetClientMaxBodySize())
+        {
+            response.setStatusCode(413);
+            this->_response.setBody("The size of the request body exceeds the allowed limit");
+            Utils::logger("Request body exceeds the allowed limit", ERROR);
+            return response;
+    } 
+    std::string path = getFilePath(location, request);
+    std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
     if(request.getMethod() == "GET")
     {
-        std::cout << std::endl << "Entro" << std::endl;
         response = Methods::HandleGet(path, *location);
-        return response;
     }
-    response.setStatusCode(404);
-    Utils::logger("This method was not found", ERROR);
+    else
+    {
+        response.setStatusCode(404);
+        Utils::logger("This method was not found", ERROR);
+    }
+    response.addHeaders("Content-type", giveContenType(response, path));
+    response.addHeaders("Connection", "close");
+	response.addHeaders("Server", this->_name);
     //response.setBody("This method was not found");
     return response;
 }
 
 
-void Server::generateResponse(const std::string& request)
-{
-    bool isBrowser = false;
-    (void)isBrowser;
-    try
-    {
-        //std::cout << request << std::endl;
-        Request req(request);
-        if(req.getBody().size() > this->_maxBodySize)
-        {
-            this->_response = Response(413);
-            this->_response.setBody("The size of the request body exceeds the allowed limit");
-            Utils::logger("Request body exceeds the allowed limit", ERROR);
-            return ;
-        } 
-        if(req.getHeader("User-Agent") != "")
-            isBrowser = true;
-        this->_response = hadleRequest(req);
-    }
-    catch(const std::exception& e)
-    {
-        Utils::logger(e.what(), ERROR);        
-        this->_response = Response(404);
-    }
-    if(this->_response.getStatusCode() >= 400)
-    {
-        putErrorPage(this->_response);
-       /*  if(isBrowser)
-            this->_response.setBody(buildErrorPage();
-        else
-            this->_response.setBody(_response.getStatusMsg()); */
-    }
-}
 
 void Server::putErrorPage(Response &response)
 {
     std::string path;
     std::string body;
+    for(std::map<int, std::string>::iterator it = _errorPages.begin(); it!= _errorPages.end(); it++)
+    {
+        std::cout << it->first << " " << it->second << std::endl;
+    }
     try
     {
         path = this->_errorPages.at(response.getStatusCode());
@@ -296,9 +328,10 @@ void Server::putErrorPage(Response &response)
     }
     else
     {
+        path = path.substr(0, path.size() -1);
         std::ifstream file(path.c_str());
         std::stringstream ss;
-        if(file.good())
+        if(file.is_open())
         {
             std::cout << "ERROR PAGE ENTRA " << std::endl;
             ss << file.rdbuf();
@@ -313,4 +346,5 @@ void Server::putErrorPage(Response &response)
         }
     }
     response.setBody(body);
+    response.addHeaders("Content-type", "text/html");
 }

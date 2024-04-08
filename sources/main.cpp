@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 23:33:55 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:49:02 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ int main(int argc, char **argv)
     std::list<Config> configs = manager.getConfigs();
     Cluster cluster(configs); 
     signal(SIGINT, handleSignal);
-    cluster.init();
-    cluster.run();
+    if(cluster.init() == true)
+        cluster.run();
+    
     //Server server = Server(config);
     
     return (0);
