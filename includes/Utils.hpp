@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/05 13:29:57 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:53:59 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ class Utils
 	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);
 	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static void logger(const std::string &msg, int mode);
+	
+	static std::string slashCleaner(const std::string path);
 };
 
 class MyError : public std::exception

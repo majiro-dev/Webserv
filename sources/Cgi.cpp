@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 20:50:47 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:12:48 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ Cgi::Cgi(Cgi const & src)
 {
     this->cgiPath = src.GetCgiPath();
     this->cgiExtension = src.GetCgiExtension();
+    this->result = src.GetResult();
 }
 
 void    Cgi::SetCgiPath(std::string path)
@@ -54,12 +55,17 @@ std::string Cgi::GetCgiExtension(void) const
 
 bool Cgi::IsCgi(std::string path)
 {
-    if (path.find(".php") != std::string::npos)
-        return (true);
-    if (path.find(".py") != std::string::npos)
-        return (true);
-    if (path.find(".sh") != std::string::npos)
-        return (true);
+    std::string valids[] = {".sh", ".py"};
+    
+    if (path.find_last_of('.') != std::string::npos)
+    {
+        std::string extension = path.substr(path.find_last_of('.'));
+        for (unsigned int i = 0; i < sizeof(valids) / sizeof(valids[0]); i++)
+        {
+            if (extension == valids[i])
+                return (true);
+        }
+    }
     return (false);
 }
 
@@ -74,8 +80,12 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
     pid = fork();
     if (pid == 0)
     {
-        if (chdir(this->cgiPath.c_str()) == -1)//change directory of the child process for relative path file access
+        if (chdir(this->cgiPath.c_str()) == -1)
+        {
+            //change directory of the child process for relative path file access
+            std::cout << "could not change directory to " << this->cgiPath << std::endl;
             return (false);
+        }
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
