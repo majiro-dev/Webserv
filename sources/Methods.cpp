@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 16:30:16 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/09 18:01:06 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ Response Methods::HandleGet(std::string &path, Config &location)
         }
         if (cgi.GetCgiPath().empty())
             return Response(500);
-        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), path);
-        //std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
+        std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
         if (cgi.ExecuteCgi(args, NULL))
         {
             std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;

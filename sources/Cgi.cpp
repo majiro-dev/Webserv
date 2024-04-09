@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 16:12:48 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/09 18:06:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
     int fd[2];
     int status;
 
+    std::cout << "EXECUTING CGI" << std::endl;
+
     if (pipe(fd) == -1)
         return (false);
     pid = fork();
@@ -95,16 +97,19 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
         alarm(0);
         exit(EXIT_FAILURE);
     }
-    else if (pid < 0)
-        return (false);
+    //else if (pid < 0)
+     //   return (false);
     else
     {
+        std::cout << "PARENT PROCESS" << std::endl;
         close(fd[1]);
         char buffer[4096];
         int bytesRead;
         while ((bytesRead = read(fd[0], buffer, 4096)) > 0)
         {
             this->result.append(buffer, bytesRead);
+            std::cout <<"CGI RESULT ASSIGNED:";
+            std::cout << this->result << std::endl;
         }
         close(fd[0]);
         waitpid(pid, &status, 0);
