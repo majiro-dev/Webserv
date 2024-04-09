@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/08 18:09:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:55:33 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,12 @@ int Client::handleRecv()
         return -1;
     } 
     this->_request += buffer;
-    std::cout << this->_request << std::endl;
     size_t pos = this->_request.find("\r\n\r\n");
-  /*   if(pos == std::string::npos)
+    if(pos == std::string::npos)
     {
         this->_finishReq = false;
         return 1;
-    } */
+    }
     
     size_t contentPos = this->_request.find("Content-Length: ");
     if(contentPos != std::string::npos)
@@ -87,7 +86,6 @@ int Client::handleRecv()
     }
     else if(this->_request.find("Transfer-Encoding: chunked") != std::string::npos)
     {
-        std::cout << "HOAL" << std::endl;
         if(this->_request.substr(_request.size() - 5) == "0\r\n\r\n")
             this->_finishReq = true;
         else
@@ -107,6 +105,7 @@ int Client::sendResponse(Response res)
 {
     unsigned long bytesSenT;
     std::string response = res.build_response();
+    //std::cout << res.getBody() << std::endl;
     bytesSenT = write(this->getSocket(), response.c_str(), response.size());
     if (bytesSenT == response.size())
         Utils::logger("Response sent successfully.", LOG);
@@ -115,6 +114,7 @@ int Client::sendResponse(Response res)
         Utils::logger("Failed to send response", ERROR);
         return -1;
     }
+    
     close(this->getSocket());
     return 0;
 }

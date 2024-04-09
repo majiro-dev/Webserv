@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:38:42 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 14:06:00 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/08 18:52:54 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Methods
     public:
         static Response HandleGet(std::string &path, Config &config);
         static Response HandlePost(std::string path, std::string requestText, Config &config);
-        static Response HandleDelete(std::string path, Config &config);
+        static Response HandleDelete(std::string path);
 };
 
 #endif

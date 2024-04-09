@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/08 18:13:51 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:00:42 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,26 @@ void sendPart(int sock, const char* part) {
 std::string buildHttpRequest(int contentOption) {
     if (contentOption == 1) {
         // Mensaje con Content-Length
+        return "GET /manu HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "Content-Length: 11\r\n"
+               "\r\n"
+               "Hola mundoo";
+    }
+    if (contentOption == 2) {
+        // Mensaje con Content-Length
+        return "DELETE http://localhost:8080/ HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    if (contentOption == 3) {
+        // Mensaje con Content-Length
         return "DELETE /hola HTTP/1.1\r\n"
-               "\r\n\r\n";
-    } else {
+               "Host: example.com\r\n";
+    } 
+    else {
         // Mensaje con Transfer-Encoding: chunked
-        return "POST / HTTP/1.1\r\n"
+        return "GET / HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "Transfer-Encoding: chunked\r\n"
                "\r\n"

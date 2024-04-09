@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 18:02:57 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 20:14:16 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,16 @@ Response Methods::HandleGet(std::string &path, Config &location)
             path += location.GetIndex();
         }
     }
-    std::ifstream file(path.c_str());
+    std::ifstream file(path.c_str(), std::ios::binary);
     if (file.is_open())
     {
         
         std::cout << "ENTRA2" << std::endl;
-        while (getline(file, line))
-        {
-            body += line + "\n";
-        }
+        std::ostringstream ss;
+        ss << file.rdbuf();
         file.close();
+        body = ss.str();
         response.setBody(body);
-        return response;
     }
     else
     {
@@ -82,7 +80,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
     return response;
 }
 
-Response Methods::HandleDelete(std::string path, Config &config)
+Response Methods::HandleDelete(std::string path)
 {
     Response response;
 
@@ -93,7 +91,6 @@ Response Methods::HandleDelete(std::string path, Config &config)
         return response;
     return Response(500);
 
-    (void)config;
 }
 
 Response Methods::HandlePost(std::string path, std::string requestText, Config &config)

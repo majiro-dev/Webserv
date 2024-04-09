@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/04 00:17:26 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:31:39 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Config::Config(void)
     this->_index = "";
     this->_client_max_body_size = 0;
     this->_autoindex = false;
+    this->_redirect = "";
     this-> _allow_methods.resize(3);
     for (int i = 0; i < 3; i++)
         this->_allow_methods[i] = 0;
@@ -42,6 +43,7 @@ Config::Config(const Config &src)
     this->_autoindex = src._autoindex;
     this->_error_pages = src._error_pages;
     this->_LocationName = src._LocationName;
+    this->_redirect = src._redirect;
     return ;
 }
 
@@ -411,12 +413,12 @@ bool Config::IsValid(void)
     }
     if (this->_redirect != "")
     {
-        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
+        /* if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
         {
             std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
             Utils::log(error, RED);
             return (false);
-        }
+        } */
     }
     if (this->_ports.size() != 0)
     {
@@ -450,15 +452,6 @@ bool Config::IsValid(void)
         if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
         {
             std::string error = "Invalid index file: " + this->_root + "/" + this->_index;
-            Utils::log(error, RED);
-            return (false);
-        }
-    }
-    if (this->_redirect != "")
-    {
-        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
-        {
-            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
             Utils::log(error, RED);
             return (false);
         }

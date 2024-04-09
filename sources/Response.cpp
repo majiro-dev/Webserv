@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/08 00:41:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 00:14:42 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ Response& Response::operator=(const Response& src)
 void Response::init_code_message()
 {
     this->_code_msgs.insert(std::make_pair(200, "OK"));
+    this->_code_msgs.insert(std::make_pair(301, "Moved Permanently"));
     this->_code_msgs.insert(std::make_pair(400, "Bad Request"));
     this->_code_msgs.insert(std::make_pair(404, "Not Found"));
     this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
@@ -148,10 +149,6 @@ std::string Response::build_response()
 {
     std::stringstream ss;
     std::multimap<std::string, std::string>::iterator it;
-    
-    //setBody(getStatusMsg(this->_statusCode));
-
-    //this->addHeaders("Content-Type", "text/html");
 
     ss << getProtocol() << ' ' << getStatusCode() << ' ' << getStatusMsg() << "\r\n";
     for(it = this->_headers.begin(); it != this->_headers.end(); it++){

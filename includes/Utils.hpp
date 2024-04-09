@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/05 13:29:57 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:05:42 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ class Utils
 	static std::vector<std::string> Tokenize(const std::string &str, const std::string &delimiters);
 	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static void logger(const std::string &msg, int mode);
+	static std::string giveDate();
 };
 
 class MyError : public std::exception

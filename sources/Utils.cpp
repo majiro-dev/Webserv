@@ -193,6 +193,43 @@ static std::string logDataTine()
     return ss.str();
 }
 
+
+static std::string getMonthName(int month) {
+    static const char* monthNames[] = { "Invalid", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+    if (month >= 1 && month <= 12) {
+        return monthNames[month];
+    } else {
+        return "Invalid";
+    }
+}
+
+static std::string getDayOfWeekName(int dayOfWeek) {
+    static const char* dayNames[] = { "Sun", "Mon", "Tue", "Wed", 
+                                        "Thu", "Fri", "Sat", };
+
+    if (dayOfWeek >= 0 && dayOfWeek <= 6) {
+        return dayNames[dayOfWeek];
+    } else {
+        return "Invalid";
+    }
+}
+
+std::string Utils::giveDate()
+{
+    std::stringstream ss;
+
+    std::time_t currentTime = std::time(NULL);
+
+    std::tm* localTime = std::localtime(&currentTime);
+
+    ss << getDayOfWeekName(localTime->tm_wday) << ',' << localTime->tm_mday << ' '  << getMonthName(localTime->tm_mon) <<  ' ' << localTime->tm_year + 1900;
+    ss << ' ' << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    return ss.str();
+}
+
+
 void Utils::logger(const std::string &msg, int mode)
 {
     std::stringstream ss;

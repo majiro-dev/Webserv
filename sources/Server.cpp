@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 18:07:48 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 00:11:09 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,20 +171,20 @@ Config *Server::getLocation(Request &request)
         std::string req_path = request.getUri();
         location = it->GetLocationName();
         len = location.size();
-        std::cout << std::endl << "LEN: " << len << std::endl;
-        std::cout << "Location: " << location << std::endl;
-        std::cout << "PATH_REQ: " << req_path << std::endl << std::endl;
+        //std::cout << std::endl << "LEN: " << len << std::endl;
+        //std::cout << "Location: " << location << std::endl;
+        //std::cout << "PATH_REQ: " << req_path << std::endl << std::endl;
         if(location[len - 1] == '/')
         {
             len -= 1;
             location = location.substr(0, len);
-            std::cout << "Location2: " << location[len - 1] << std::endl;
+            //std::cout << "Location2: " << location[len - 1] << std::endl;
         } 
         req_path = req_path.substr(0, len);
-        std::cout << "Req_paht2: " << req_path << std::endl;
+        //std::cout << "Req_paht2: " << req_path << std::endl;
         if(location.compare(req_path) == 0)
         {
-            std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
+            //std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
             if(loc == NULL || len > other_loc)
             {
                 other_loc = len;
@@ -201,9 +201,9 @@ std::string getFilePath(Config *location, Request &request)
     size_t len = location->GetLocationName().size();
     std::string root = location->GetRoot();
     std::string path = request.getUri();
-    std::cout << "CC: " << path << std::endl;
-    std::cout << "CC: " << root << std::endl;
-    std::cout << "CC: " << location->GetLocationName() << std::endl;
+    //std::cout << "CC: " << path << std::endl;
+    //std::cout << "CC: " << root << std::endl;
+    //std::cout << "CC: " << location->GetLocationName() << std::endl;
     /* if(path < root)
         len--; */
     path = path.substr(len);
@@ -211,12 +211,12 @@ std::string getFilePath(Config *location, Request &request)
         return root;
     if(root[root.size() - 1] != '/')
         root += "/";
-   /*  if(path[0] == '/')
+    if(path[0] == '/')
         root += path.substr(1);
-    else */
-    std::cout << "CC: " << path << std::endl;
-    std::cout << "CC: " << root << std::endl;
-    root += path;
+    else 
+        root += path;
+    //std::cout << "CC: " << path << std::endl;
+    //std::cout << "CC: " << root << std::endl;
         
     return root;
 }
@@ -225,7 +225,7 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
 {
     try
     {
-        std::cout << request << std::endl;
+        //std::cout << request << std::endl;
         Request req(request);
         Config *location = this->getLocation(req);
         if(location == NULL)
@@ -239,8 +239,8 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
         char clientSock[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &(socketaddr.sin_addr), clientSock, INET_ADDRSTRLEN);
         uint16_t clientPort = ntohs(socketaddr.sin_port);
-
         Utils::logger(std::string(clientSock) + ":" + Utils::IntToString(clientPort) + " -> " + req.getMethod() + " " + req.getUri(), INFO);
+            
         this->_response = hadleRequest(req, location);
     }
     catch(const std::exception& e)
@@ -284,24 +284,34 @@ Response Server::hadleRequest(Request &request, Config *location)
             Utils::logger("Request body exceeds the allowed limit", ERROR);
             return response;
     } 
+	response.addHeaders("Server", this->_name);
+    std::string redirect = location->GetRedirect();
+    if(!redirect.empty())
+    {
+        response.setStatusCode(301);
+        response.addHeaders("Date", Utils::giveDate());
+        response.addHeaders("Location", redirect);
+        return response;
+    }
     std::string path = getFilePath(location, request);
     std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
     if(request.getMethod() == "GET")
     {
         response = Methods::HandleGet(path, *location);
+        response.addHeaders("Content-type", giveContenType(response, path));
+
     }
     else if(request.getMethod() == "DELETE")
     {
-        response = Methods::HandleDelete(path, *location);
+        response = Methods::HandleDelete(path);
     }
     else
     {
         response.setStatusCode(404);
         Utils::logger("This method was not found", ERROR);
     }
-    response.addHeaders("Content-type", giveContenType(response, path));
+    response.addHeaders("Date", Utils::giveDate());
     response.addHeaders("Connection", "close");
-	response.addHeaders("Server", this->_name);
     //response.setBody("This method was not found");
     return response;
 }
@@ -322,14 +332,10 @@ void Server::putErrorPage(Response &response)
     }
     catch(const std::exception& e)
     {
-        Utils::logger("ERROR PAGE Page not found for this status error", ERROR);
+        Utils::logger("Page not found for this status error", ERROR);
     }
     if(!path.size())
-    {
-        std::cout << "ERROR PAGE ENTRA2 " << std::endl;
-        std::cout << "ERROR PAGE HOLA" << std::endl;
         body = response.buildErrorPage();
-    }
     else
     {
         path = path.substr(0, path.size() -1);
@@ -337,15 +343,13 @@ void Server::putErrorPage(Response &response)
         std::stringstream ss;
         if(file.is_open())
         {
-            std::cout << "ERROR PAGE ENTRA " << std::endl;
             ss << file.rdbuf();
             file.close();
             body = ss.str();
         }
         else
         {
-            //std::cout << "ENTRA3 " << std::endl;
-            Utils::logger("ERROR PAGE Path can not opened", ERROR);
+            Utils::logger("PAGE Path can not opened", ERROR);
             body = response.buildErrorPage();    
         }
     }
