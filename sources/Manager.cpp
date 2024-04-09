@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 21:04:37 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:03:30 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool	Manager::parseConfig()
 			//it->PrintConfig();
 			valid = false;
 		}
-		it->PrintConfig();
+		//it->PrintConfig();
 	}
 	//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
