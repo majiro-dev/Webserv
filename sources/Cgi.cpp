@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 20:13:20 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:14:45 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool Cgi::IsCgi(std::string path)
 
 extern char **environ;
 
-bool Cgi::ExecuteCgi(char **env, char **argv)
+bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
 {
     pid_t pid;
     int fd[2];
@@ -88,7 +88,9 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
     pid = fork();
     if (pid == 0)
     {
-        if (chdir(dirPath.c_str()) == -1)
+        //if (chdir(dirPath.c_str()) == -1)
+        std::cout << "PROJECT PATH: " << projectPath << std::endl;
+        if (chdir(projectPath.c_str()) == -1)
         {
             //change directory of the child process for relative path file access
             std::cout << "could not change directory to " << this->cgiPath << std::endl;
@@ -152,4 +154,4 @@ bool Cgi::ExecuteCgi(char **env, char **argv)
 std::string Cgi::GetResult(void) const
 {
     return (this->result);
-} 
+}

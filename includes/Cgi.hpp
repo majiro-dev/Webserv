@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:02:49 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 20:50:25 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:14:10 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Cgi
         std::string GetResult(void) const;
 
         static bool IsCgi(std::string path);
-        bool ExecuteCgi(char **env, char **argv);
+        bool ExecuteCgi(char **env, char **argv, std::string projectPath);
 
     private:
         std::string cgiPath;

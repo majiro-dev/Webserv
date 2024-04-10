@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 19:02:29 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:11:35 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Config::Config(const Config &src)
         delete cgi;
     }
     this->_redirect = src._redirect;
+    this->_projectPath = src._projectPath;
     return ;
 }
 
@@ -513,4 +514,14 @@ void Config::SetLocationName(std::string locationName)
 std::string Config::GetLocationName(void)
 {
     return (this->_LocationName);
+}
+
+void Config::SetProjectPath(std::string projectPath)
+{
+    this->_projectPath = projectPath;
+}
+
+std::string Config::GetProjectPath(void)
+{
+    return (this->_projectPath);
 }

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 19:03:30 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:10:47 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
 							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
-							"return "};
+							"return ", "project_path" };
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
@@ -107,7 +107,7 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 	void (Config::*setters[])(std::string) = {&Config::SetPort, &Config::SetHost, &Config::SetServerName,
 				&Config::SetRoot, &Config::SetClientMaxBodySize, &Config::SetAutoindex, &Config::AddErrorPage,
 				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension, 
-				&Config::SetRedirect};
+				&Config::SetRedirect, &Config::SetProjectPath};
 	(config->*setters[i])(value);
 	//std::cout << "Assigned " << value << " to " << i << std::endl;
 	//Utils::log("BREAKPOINTE TEST");
