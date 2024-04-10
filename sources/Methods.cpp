@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 20:14:16 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 17:39:51 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
 
+char **makeArgs (std::string exepath, std::string filepath)
+{
+    char **args = new char*[3];
+    args[0] = strdup(exepath.c_str());
+    args[1] = strdup(filepath.c_str());
+    args[2] = NULL;
+    return args;
+}
 
 Response Methods::HandleGet(std::string &path, Config &location)
 {
@@ -20,12 +28,16 @@ Response Methods::HandleGet(std::string &path, Config &location)
     std::vector<Cgi> cgis = location.GetCgis();
     Response response;
     
+    std::cout << "RRPATH: " << path << std::endl;
     if (Cgi::IsCgi(path))
     {
         std::cout << "ENTRA1" << std::endl;
         Cgi cgi;
+        std::cout << "CGIS SIZE: " << cgis.size() << std::endl;
         for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {
+            std::cout << "EXTENSION: " << it->GetCgiExtension() << std::endl;
+            std::cout << "PATH: " << it->GetCgiPath() << std::endl;
             if (it->GetCgiExtension() == path.substr(path.find_last_of('.')))
             {
                 cgi = *it;
@@ -33,12 +45,19 @@ Response Methods::HandleGet(std::string &path, Config &location)
             }
         }
         if (cgi.GetCgiPath().empty())
-            return Response(500);
-        if (cgi.ExecuteCgi(NULL, NULL))
         {
+            std::cout << "NO CGI PATH" << std::endl;
+            return Response(500);
+        }
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
+        std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
+        if (cgi.ExecuteCgi(NULL, args))
+        {
+            std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;
             response.setBody(cgi.GetResult());
             return response;
         }
+        std::cout << "CGI ERROR" << std::endl; 
         return Response(500);
     }
     if(Utils::DirIsValid(path))

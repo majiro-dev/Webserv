@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/09 17:31:39 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:02:29 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,14 @@ Config::Config(const Config &src)
     this->_autoindex = src._autoindex;
     this->_error_pages = src._error_pages;
     this->_LocationName = src._LocationName;
+    for (std::vector<Cgi>::const_iterator it = src._cgis.begin(); it != src._cgis.end(); it++)
+    {
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(it->GetCgiPath());
+        cgi->SetCgiExtension(it->GetCgiExtension());
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    }
     this->_redirect = src._redirect;
     return ;
 }
@@ -258,8 +266,8 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    try
-    {
+    //try
+    //{
         std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
         if (tokens.size() != 2)
         {
@@ -268,21 +276,21 @@ void Config::SetCgiPass(std::string cgi_pass)
         }
         for (size_t i = 1; i < tokens.size(); i++)
         {
-            if (Utils::DirIsValid(tokens[i]) == false)
-            {
-                std::string error = "Invalid cgi directory: " + tokens[i];
-                Utils::exceptWithError(error);
-            }
+            //if (Utils::DirIsValid(tokens[i]) == false)
+            //{
+            //    std::string error = "Invalid cgi directory: " + tokens[i];
+            //    Utils::exceptWithError(error);
+            //}
             Cgi *cgi = new Cgi();
             cgi->SetCgiPath(tokens[i]);
             this->_cgis.push_back(*cgi);
             delete cgi;
-        }
+        } /*
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-    }
+    }*/
     
 }
 
@@ -461,9 +469,10 @@ bool Config::IsValid(void)
     {
         for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
         {
-            if (Utils::DirIsValid(it->GetCgiPath()) == false)
+            //check if cgi path is a valid file
+            if (Utils::FileIsReadable(it->GetCgiPath()) == false)
             {
-                std::string error = "Invalid cgi directory: " + it->GetCgiPath();
+                std::string error = "Invalid cgi path" + it->GetCgiPath();
                 Utils::log(error, RED);
                 return (false);
             }

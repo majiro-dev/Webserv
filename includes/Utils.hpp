@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/08 19:05:42 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:53:59 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ class Utils
 	static char **MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 	static void logger(const std::string &msg, int mode);
 	static std::string giveDate();
+	
+	static std::string slashCleaner(const std::string path);
 };
 
 class MyError : public std::exception
