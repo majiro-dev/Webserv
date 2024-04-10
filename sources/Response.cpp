@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/10 00:14:42 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 11:49:01 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,19 @@ Response& Response::operator=(const Response& src)
 void Response::init_code_message()
 {
     this->_code_msgs.insert(std::make_pair(200, "OK"));
+    this->_code_msgs.insert(std::make_pair(201, "Created"));
+    this->_code_msgs.insert(std::make_pair(202, "Acepted"));
+    this->_code_msgs.insert(std::make_pair(300, "Multiple Choices"));
     this->_code_msgs.insert(std::make_pair(301, "Moved Permanently"));
     this->_code_msgs.insert(std::make_pair(400, "Bad Request"));
+    this->_code_msgs.insert(std::make_pair(401, "Unauthorized"));
+    this->_code_msgs.insert(std::make_pair(402, "Payment Required"));
+    this->_code_msgs.insert(std::make_pair(403, "Forbiddent"));
     this->_code_msgs.insert(std::make_pair(404, "Not Found"));
     this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
     this->_code_msgs.insert(std::make_pair(413, "Exceeds Body Limit"));
     this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
+    this->_code_msgs.insert(std::make_pair(505, "HTTP Version Not Supported"));
 }
 
 void Response::init_mime_types()

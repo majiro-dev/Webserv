@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/05 13:32:19 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 12:10:19 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 std::string AutoIndex::GetAutoIndex(std::string path)
 {
-    std::cout << "PATHINDEx: " << path << std::endl;
     std::string html;
     std::string title = "Index of " + path;
     std::string header = "<html><head><title>" + title + "</title><style>\

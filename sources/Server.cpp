@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 00:11:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 11:52:23 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,11 @@ std::string giveContenType(Response &response, std::string path)
 Response Server::hadleRequest(Request &request, Config *location)
 {
     Response response;
-    
+    if(request.getProtocol() != "HTTP/1.1")
+    {
+        Utils::logger("Invalid protocol", ERROR);
+        return Response(505);
+    }
     //location->PrintConfig();
     if(checkAllowMethods(location, request.getMethod()) == false)
     {
