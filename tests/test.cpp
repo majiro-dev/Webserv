@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/10 17:58:03 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:23:10 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
-        return "GET /tours/hola.sh HTTP/1.1\r\n"
+        return "GET /tours/hola.py HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     } 

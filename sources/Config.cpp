@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 19:11:35 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:41:28 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,10 +270,10 @@ void Config::SetCgiPass(std::string cgi_pass)
     //try
     //{
         std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-        if (tokens.size() != 2)
+        if (tokens.size() < 2)
         {
             std::string error = "Invalid cgi directory: " + cgi_pass;
-            Utils::exceptWithError(error);
+            Utils::log(error, RED);
         }
         for (size_t i = 1; i < tokens.size(); i++)
         {
