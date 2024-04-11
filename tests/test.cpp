@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/11 19:08:42 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:36:05 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ std::string buildHttpRequest(int contentOption) {
         return "GET /tours/hola.py HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
-    } 
+    }
     else if (contentOption == 0) {
         // Mensaje con Content-Length
         return "GET /manu HTTP/1.1\r\n"
@@ -72,17 +72,22 @@ std::string buildHttpRequest(int contentOption) {
                "\r\n"
                "Hola mundoo";
     }
-    if (contentOption == 2) {
+    else if (contentOption == 2) {
         // Mensaje con Content-Length
         return "DELETE http://localhost:8080/ HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
-    if (contentOption == 3) {
+    else if (contentOption == 3) {
         // Mensaje con Content-Length
         return "DELETE /hola HTTP/1.1\r\n"
                "Host: example.com\r\n";
-    } 
+    }
+    else if (contentOption == 4) {
+        return "GET /tours/hola.sh HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
     else {
         // Mensaje con Transfer-Encoding: chunked
         return "GET / HTTP/1.1\r\n"
@@ -123,8 +128,9 @@ int main(int argc, char const **argv) {
     }
 
     // Enviar la solicitud en partes
-    std::string part1 = buildHttpRequest(1).c_str();
-    
+    //std::string part1 = buildHttpRequest(1).c_str();
+    int contentOption = argc > 1 ? atoi(argv[1]) : 0;
+    std::string part1 = buildHttpRequest(contentOption);
     const char *part2 = "0\r\n\r\n";
 
     sendPart(sock, part1.c_str());
