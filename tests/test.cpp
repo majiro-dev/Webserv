@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/10 18:19:15 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:32:13 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,40 @@
 #include <vector>
 #include <poll.h>
 
-
-
 #define PORT 8080
+
+char *getFileBuffer(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char *buffer = (char *)malloc(fileSize + 1);
+    if (buffer == NULL) {
+        std::cerr << "Error al reservar memoria para el archivo" << std::endl;
+        return NULL;
+    }
+    fread(buffer, 1, fileSize, file);
+    fclose(file);
+    buffer[fileSize] = '\0';
+    return buffer;
+}
+
+std::string getFileContentLength(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    fclose(file);
+    return std::to_string(fileSize + 10000).c_str();
+}
 
 void sendPart(int sock, const char* part) {
     send(sock, part, strlen(part), 0);
@@ -37,31 +68,27 @@ void sendPart(int sock, const char* part) {
 
 std::string buildHttpRequest(int contentOption) {
 
-    if (contentOption == 1) {
-        //GET request for hello.sh in the /tours location
-        return "GET /tours/hola.sh HTTP/1.1\r\n"
-               "Host: example.com\r\n"
-               "\r\n";
-    } 
-    else if (contentOption == 0) {
-        // Mensaje con Content-Length
+    if (contentOption == 0) {
+        // GET Request con contenido
         return "GET /manu HTTP/1.1\r\n"
-               "Host: example.com\r\n"
-               "Content-Length: 11\r\n"
-               "\r\n"
-               "Hola mundoo";
+            "Host: example.com\r\n"
+            "Content-Length: 11\r\n"
+            "\r\n"
+            "Hola mundoo";
     }
-    if (contentOption == 2) {
-        // Mensaje con Content-Length
-        return "DELETE http://localhost:8080/ HTTP/1.1\r\n"
-               "Host: example.com\r\n"
-               "\r\n";
+    else if (contentOption == 1) {
+        // POST Request con archivo HTML
+        return "POST /testpost HTTP/1.1\r\n"
+            "Host: example.com\r\n"
+            "Content-Type: text/html\r\n"
+            "Content-Length: " + getFileContentLength("data/testWroteHtml.html") + "\r\n"
+            "\r\n" + std::string(getFileBuffer("data/testWroteHtml.html")) + "\r\n";
     }
-    if (contentOption == 3) {
-        // Mensaje con Content-Length
+    else if (contentOption == 2) {
+        // DELETE Request
         return "DELETE /hola HTTP/1.1\r\n"
                "Host: example.com\r\n";
-    } 
+    }
     else {
         // Mensaje con Transfer-Encoding: chunked
         return "GET / HTTP/1.1\r\n"
@@ -102,11 +129,28 @@ int main(int argc, char const **argv) {
     }
 
     // Enviar la solicitud en partes
-    std::string part1 = buildHttpRequest(1).c_str();
+    if (strcmp(argv[1], "GET") == 0) {
+        std::string part1 = buildHttpRequest(0);
+        sendPart(sock, part1.c_str());
+    }
+    else if (strcmp(argv[1], "POST") == 0) {
+        std::string part1 = buildHttpRequest(1);
+        sendPart(sock, part1.c_str());
+    }
+    else if (strcmp(argv[1], "DELETE") == 0) {
+        std::string part1 = buildHttpRequest(3);
+        sendPart(sock, part1.c_str());
+    }
+    else {
+        std::cerr << "Error: introduce como segundo argumento el request que quieres testear (GET, POST, DELETE)" << std::endl;
+        return -1;
+    }
     
-    const char *part2 = "0\r\n\r\n";
+    //std::string part1 = buildHttpRequest(1).c_str();
+    
+    //const char *part2 = "0\r\n\r\n";
 
-    sendPart(sock, part1.c_str());
+    //sendPart(sock, part1.c_str());
     //sendPart(sock, part2);
 
     // Leer y mostrar la respuesta del servidor
