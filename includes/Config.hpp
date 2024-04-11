@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/02 12:54:47 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 18:52:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Config
         Config *GetParent(void);
 
         std::string GetLocationName(void);
+        std::string GetProjectPath(void);
 
         void   SetPort(std::string port);
         void   SetHost(std::string host);
@@ -72,6 +73,7 @@ class Config
         void  SetParent(Config *parent);
 
         void  SetLocationName(std::string locationName);
+        void  SetProjectPath(std::string projectPath);
 
     private:
         Config *_parent;
@@ -89,6 +91,7 @@ class Config
         std::vector<bool> _allow_methods;
         
         std::string _LocationName;
+        std::string _projectPath;
         
         std::vector<Config>         _locations;
         std::map<int, std::string>  _error_pages;

@@ -39,7 +39,7 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
-        return "GET path/YoupiBanane/hola.sh HTTP/1.1\r\n"
+        return "GET /tours/hola.sh HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     } 

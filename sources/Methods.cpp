@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 12:03:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:15:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
         }
         char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
         std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
-        if (cgi.ExecuteCgi(NULL, args))
+        if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
         {
             std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;
             response.setBody(cgi.GetResult());
