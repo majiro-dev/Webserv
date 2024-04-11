@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/11 18:23:10 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:08:42 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,27 @@
 
 
 #define PORT 8080
+
+char *getFileBuffer(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char *buffer = (char *)malloc(fileSize + 1);
+    if (buffer == NULL) {
+        std::cerr << "Error al reservar memoria para el archivo" << std::endl;
+        return NULL;
+    }
+    fread(buffer, 1, fileSize, file);
+    fclose(file);
+    buffer[fileSize] = '\0';
+    return buffer;
+}
+
 
 void sendPart(int sock, const char* part) {
     send(sock, part, strlen(part), 0);

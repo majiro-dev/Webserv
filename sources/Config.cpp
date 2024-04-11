@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 18:41:28 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:56:16 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -518,7 +518,7 @@ std::string Config::GetLocationName(void)
 
 void Config::SetProjectPath(std::string projectPath)
 {
-    this->_projectPath = projectPath;
+    this->_projectPath = _trim(projectPath);
 }
 
 std::string Config::GetProjectPath(void)
