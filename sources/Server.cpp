@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 11:52:23 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/11 11:41:03 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,7 @@ Response Server::hadleRequest(Request &request, Config *location)
         return response;
     }
     std::string path = getFilePath(location, request);
-    std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
+    //std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
     if(request.getMethod() == "GET")
     {
         response = Methods::HandleGet(path, *location);
@@ -326,10 +326,10 @@ void Server::putErrorPage(Response &response)
 {
     std::string path;
     std::string body;
-    for(std::map<int, std::string>::iterator it = _errorPages.begin(); it!= _errorPages.end(); it++)
+  /*   for(std::map<int, std::string>::iterator it = _errorPages.begin(); it!= _errorPages.end(); it++)
     {
         std::cout << it->first << " " << it->second << std::endl;
-    }
+    } */
     try
     {
         path = this->_errorPages.at(response.getStatusCode());

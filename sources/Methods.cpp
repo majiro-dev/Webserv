@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 17:39:51 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 12:03:24 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ Response Methods::HandleGet(std::string &path, Config &location)
     std::string line;
     std::vector<Cgi> cgis = location.GetCgis();
     Response response;
-    
-    std::cout << "RRPATH: " << path << std::endl;
+    path = Utils::slashCleaner(path);
+    //std::cout << "RRPATH: " << path << std::endl;
     if (Cgi::IsCgi(path))
     {
-        std::cout << "ENTRA1" << std::endl;
+        //std::cout << "ENTRA1" << std::endl;
         Cgi cgi;
         std::cout << "CGIS SIZE: " << cgis.size() << std::endl;
         for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
@@ -62,6 +62,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
     }
     if(Utils::DirIsValid(path))
     {
+        
         //std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
         if(location.GetAutoindex() == true)
         {
@@ -76,6 +77,8 @@ Response Methods::HandleGet(std::string &path, Config &location)
         else
         {
             path += "/";
+            std::cout << location.GetIndex() << std::endl;
+            std::cout << location.GetLocationName() << std::endl;
             path += location.GetIndex();
         }
     }
@@ -83,7 +86,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
     if (file.is_open())
     {
         
-        std::cout << "ENTRA2" << std::endl;
+        //std::cout << "ENTRA2" << std::endl;
         std::ostringstream ss;
         ss << file.rdbuf();
         file.close();
@@ -92,7 +95,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
     }
     else
     {
-        std::cout << "ENTRA3" << std::endl;
+        //std::cout << "ENTRA3" << std::endl;
         //response = "File not found";
         return Response(404);
     }

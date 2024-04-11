@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/09 19:00:42 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/10 18:19:15 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
-        return "GET /tours/hello.sh HTTP/1.1\r\n"
+        return "GET path/YoupiBanane/hola.sh HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     } 
