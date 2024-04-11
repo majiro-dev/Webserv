@@ -8,7 +8,7 @@
 <body>
     <h1>Upload a File</h1>
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="file">
+        <input type="file" id="fileInput" name="file" accept=".json,.txt,.css,.html,.xml">
         <button type="button" onclick="uploadFile()">Upload</button>
     </form>
 
@@ -20,7 +20,7 @@
             formData.append('file', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'YOUR_SERVER_ENDPOINT_HERE', true);
+            xhr.open('POST', '/your-server-endpoint', true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     alert('File uploaded successfully!');

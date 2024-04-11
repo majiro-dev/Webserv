@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 19:15:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:40:44 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,50 +115,72 @@ Response Methods::HandleDelete(std::string path)
 
 }
 
-Response Methods::HandlePost(std::string path, std::string requestText, Config &config)
+std::string GetExtension(std::string contentType) {
+    if (contentType == "application/json")
+        return ".json";
+    else if (contentType == "text/plain")
+        return ".txt";
+    else if (contentType == "text/css")
+        return ".css";
+    else if (contentType == "text/html")
+        return ".html";
+    else if (contentType == "text/xml")
+        return ".xml";
+    return "";
+}
+
+Response CreateFile(std::string path, Request request) 
 {
-    Response response;
-    std::string filename;
-    std::string extension;
-    size_t startPos = 0;
-    size_t endPos = 0;
-
-    while (true)
-    {
-        startPos = requestText.find("filename=\"", endPos);
-        if (startPos == std::string::npos)
-            break;
-            
-        startPos += 10;
-        endPos = requestText.find("\"", startPos);
-        if (endPos == std::string::npos)
-            break;
-
-        filename = requestText.substr(startPos, endPos - startPos);
-        extension = filename.substr(filename.find_last_of('.'));
-        if (filename.empty() || extension.empty())
-            return Response(400); // Bad Request
-
-        startPos = requestText.find("\r\n\r\n", endPos);
-        if (startPos == std::string::npos)
-            return Response(400);
-        startPos += 4;
-        endPos = requestText.find("\r\n------", startPos);
-        if (endPos == std::string::npos)
-            return Response(400);
-
-        std::string fullPath = path + filename + extension;
-        std::ofstream file(fullPath.c_str());
-        if (!file.is_open())
-            return Response(500);
-
-        file << requestText.substr(startPos, endPos - startPos);
-        file.close();
-        endPos = requestText.find("\r\n------", endPos);
-        if (endPos == std::string::npos || requestText.find("filename=\"", endPos) == std::string::npos)
-            break;
+    std::string contentType = request.getHeader("Content-Type");
+    std::string extension = GetExtension(contentType);
+    
+    if (extension.empty()) {
+        return Response(400);
     }
 
-    return response;
-    (void)config;
+    std::string newPath = path + extension;
+    std::ofstream file(newPath, std::ios::app);
+    
+    if (!file.is_open()) {
+        return Response(500);
+    }
+
+    try {
+        std::string requestBody = request.getBody();
+        file << requestBody;
+        file.close();
+        std::cout << "File written successfully" << std::endl;
+        return Response(200);
+    } catch (const std::exception &e) {
+        std::cerr << "Error writing to file: " << e.what() << std::endl;
+        return Response(500);
+    }
+}
+
+Response Methods::HandlePost(std::string path, Request request) {
+    std::string contentType = request.getHeader("Content-Type");
+    std::cout << "Content-Type: " << contentType << std::endl;
+    if (contentType.empty() || request.getHeader("Content-Length").empty()) {
+        std::cerr << "Error: Missing Content-Type or Content-Length header" << std::endl;
+        return Response(400);
+    }
+
+    std::string extension = GetExtension(contentType);
+    std::cout << "Extension: " << extension << std::endl;
+    if (extension.empty()) {
+        std::cerr << "Error: Unsupported Content-Type" << std::endl;
+        return Response(400);
+    }
+
+    if (access(path.c_str(), F_OK) == -1) {
+        std::string newPath = path + extension;
+        std::ofstream createFile(newPath);
+        if (!createFile.is_open()) {
+            std::cerr << "Error: Failed to create file" << std::endl;
+            return Response(500);
+        }
+        createFile.close();
+    }
+
+    return CreateFile(path, request);
 }

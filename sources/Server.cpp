@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 11:41:03 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/11 18:41:05 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,10 @@ Response Server::hadleRequest(Request &request, Config *location)
         response = Methods::HandleGet(path, *location);
         response.addHeaders("Content-type", giveContenType(response, path));
 
+    }
+    else if (request.getMethod() == "POST")
+    {
+        response = Methods::HandlePost(path, request);
     }
     else if(request.getMethod() == "DELETE")
     {

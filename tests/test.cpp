@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/10 18:19:15 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:32:13 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,40 @@
 #include <vector>
 #include <poll.h>
 
-
-
 #define PORT 8080
+
+char *getFileBuffer(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char *buffer = (char *)malloc(fileSize + 1);
+    if (buffer == NULL) {
+        std::cerr << "Error al reservar memoria para el archivo" << std::endl;
+        return NULL;
+    }
+    fread(buffer, 1, fileSize, file);
+    fclose(file);
+    buffer[fileSize] = '\0';
+    return buffer;
+}
+
+std::string getFileContentLength(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        std::cerr << "Error al abrir el archivo" << std::endl;
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    fclose(file);
+    return std::to_string(fileSize + 10000).c_str();
+}
 
 char *getFileBuffer(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -67,10 +98,10 @@ std::string buildHttpRequest(int contentOption) {
     else if (contentOption == 0) {
         // Mensaje con Content-Length
         return "GET /manu HTTP/1.1\r\n"
-               "Host: example.com\r\n"
-               "Content-Length: 11\r\n"
-               "\r\n"
-               "Hola mundoo";
+            "Host: example.com\r\n"
+            "Content-Length: 11\r\n"
+            "\r\n"
+            "Hola mundoo";
     }
     else if (contentOption == 2) {
         // Mensaje con Content-Length
@@ -133,7 +164,7 @@ int main(int argc, char const **argv) {
     std::string part1 = buildHttpRequest(contentOption);
     const char *part2 = "0\r\n\r\n";
 
-    sendPart(sock, part1.c_str());
+    //sendPart(sock, part1.c_str());
     //sendPart(sock, part2);
 
     // Leer y mostrar la respuesta del servidor
