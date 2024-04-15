@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
 /*   Updated: 2024/04/15 12:02:02 by cmorales         ###   ########.fr       */
@@ -50,6 +50,8 @@ class Request
         std::string getUri();
         std::string getBody();
         std::string getProtocol();
+        std::string getResource();
+        std::multimap<std::string, std::string> getQuerys();
 };
 
 #endif

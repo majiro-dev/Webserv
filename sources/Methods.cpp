@@ -3,21 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 12:54:39 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:50:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
+#include "../includes/Response.hpp"
 
-char **makeArgs (std::string exepath, std::string filepath)
+
+
+char **makeArgs (std::string exepath, std::string filepath, std::multimap<std::string, std::string> querys)
 {
-    char **args = new char*[3];
+    char **args = new char*[querys.size() + 3];
     args[0] = strdup(exepath.c_str());
     args[1] = strdup(filepath.c_str());
-    args[2] = NULL;
+    int i = 2;
+    for (std::multimap<std::string, std::string>::iterator it = querys.begin(); it != querys.end(); it++)
+    {
+        args[i] = strdup((it->second).c_str());
+        i++;
+    }
+    args[i] = NULL;
     return args;
 }
 
@@ -29,7 +38,7 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
     Response response;
     path = Utils::slashCleaner(path);
     //std::cout << "RRPATH: " << path << std::endl;
-    if (Cgi::IsCgi(path))
+    if (Cgi::IsCgi(path) && cgis.size() > 0)
     {
         //std::cout << "ENTRA1" << std::endl;
         Cgi cgi;
@@ -49,8 +58,11 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
             std::cout << "NO CGI PATH" << std::endl;
             return Response(500);
         }
-        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
-        std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path), req.getQuerys());
+        for (int i = 0; args[i] != NULL; i++)
+        {
+            std::cout << "ARGS: " << args[i] << std::endl;
+        }
         if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
         {
             std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;
@@ -66,7 +78,7 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
         //std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
         if(location.GetAutoindex() == true)
         {
-            body = AutoIndex::GetAutoIndex(path, location.GetLocationName(), req.getUri());
+            body = AutoIndex::GetAutoIndex(path, location.GetLocationName(), req.getResource());
             response.setBody(body);
             return response;
         }
