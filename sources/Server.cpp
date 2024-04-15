@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 11:56:00 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:18:33 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ Config *Server::getLocation(Request &request)
 
     for(; it != this->_locations.end(); it++)
     {
-        std::string req_path = request.getUri();
+        std::string req_path = request.getResource();
         location = it->GetLocationName();
         len = location.size();
         //std::cout << std::endl << "LEN: " << len << std::endl;
@@ -201,7 +201,7 @@ std::string getFilePath(Config *location, Request &request)
     size_t len = location->GetLocationName().size();
     //location->PrintConfig();
     std::string root = location->GetRoot();
-    std::string path = request.getUri();
+    std::string path = request.getResource();
     //std::cout << "CC: " << path << std::endl;
     //std::cout << "CC: " << root << std::endl;
     //std::cout << "CC: " << location->GetLocationName() << std::endl;
@@ -228,6 +228,8 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
     {
         //std::cout << request << std::endl;
         Request req(request);
+
+        req.print();
         Config *location = this->getLocation(req);
         if(location == NULL)
         {
@@ -240,7 +242,7 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
         char clientSock[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &(socketaddr.sin_addr), clientSock, INET_ADDRSTRLEN);
         uint16_t clientPort = ntohs(socketaddr.sin_port);
-        Utils::logger(std::string(clientSock) + ":" + Utils::IntToString(clientPort) + " -> " + req.getMethod() + " " + req.getUri(), INFO);
+        Utils::logger(std::string(clientSock) + ":" + Utils::IntToString(clientPort) + " -> " + req.getMethod() + " " + req.getResource(), INFO);
             
         this->_response = hadleRequest(req, location);
     }

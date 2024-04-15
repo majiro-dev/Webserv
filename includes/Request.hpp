@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 11:55:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:25:49 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Request
         void parseHeader(std::string line);
         void parseBody();
     public:
-        static void parseQuerys(std::string &uri);
+        void parseQuerys(std::string &uri);
         Request();
         Request(const std::string &msg);
         ~Request();
@@ -50,6 +50,8 @@ class Request
         std::string getUri();
         std::string getBody();
         std::string getProtocol();
+        std::string getResource();
+        std::multimap<std::string, std::string> getQuerys();
 };
 
 #endif

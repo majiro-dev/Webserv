@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/14 18:47:25 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:54:09 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
-        return "GET data/tours/cmr/hola.py HTTP/1.1\r\n"
+        return "GET /tours/hola.py?hola=mam&fdfdfdfe=4 HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
@@ -90,6 +90,16 @@ std::string buildHttpRequest(int contentOption) {
     }
     else if (contentOption == 5) {
         return "GET /tours/hola.php HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    else if (contentOption == 6) {
+                return "GET /tours/Math.py?first=5&second=10 HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    else  if (contentOption == 7) {
+                return "GET /tours/print.sh?hola=mam HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
@@ -134,8 +144,8 @@ int main(int argc, char const **argv) {
 
     // Enviar la solicitud en partes
     //std::string part1 = buildHttpRequest(1).c_str();
-    int contentOption = argc > 1 ? atoi(argv[1]) : 0;
-    std::string part1 = buildHttpRequest(contentOption);
+    int contentOption = argc -1;
+    std::string part1 = buildHttpRequest(5);
     const char *part2 = "0\r\n\r\n";
 
     sendPart(sock, part1.c_str());
