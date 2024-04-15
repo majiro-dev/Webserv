@@ -168,8 +168,10 @@ void Request::parseBody()
         if(!checkNumString(headerSize))
             Utils::exceptWithError("Content-Length value is not a number");
         int size = Utils::StringToInt(headerSize);
+        std::cout << "Content-Length: " << size << std::endl;
         if(size < 0)
             Utils::exceptWithError("Content-Length value is an invalid number");
+        std::cout << "Body size: " << this->_body.size() << std::endl;
         if((size_t)size < this->_body.size())
             Utils::exceptWithError("Content-Length is smaller than body");
     }

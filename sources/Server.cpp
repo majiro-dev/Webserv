@@ -312,7 +312,7 @@ Response Server::hadleRequest(Request &request, Config *location)
     }
     else if (request.getMethod() == "POST")
     {
-        response = Methods::HandlePost(path, request);
+        response = Methods::HandlePost(path, request, *location);
     }
     else if(request.getMethod() == "DELETE")
     {

@@ -139,6 +139,10 @@ std::string GetExtension(std::string contentType) {
         return ".html";
     else if (contentType == "text/xml")
         return ".xml";
+    else if (contentType == "text/sh")
+        return ".sh";
+    else if (contentType == "text/py")
+        return ".py";
     return "";
 }
 
@@ -150,9 +154,8 @@ Response CreateFile(std::string path, Request request)
     if (extension.empty()) {
         return Response(400);
     }
-
-    std::string newPath = path + extension;
-    std::ofstream file(newPath, std::ios::app);
+    
+    std::ofstream file(path);
     
     if (!file.is_open()) {
         return Response(500);
@@ -162,7 +165,6 @@ Response CreateFile(std::string path, Request request)
         std::string requestBody = request.getBody();
         file << requestBody;
         file.close();
-        std::cout << "File written successfully" << std::endl;
         return Response(200);
     } catch (const std::exception &e) {
         std::cerr << "Error writing to file: " << e.what() << std::endl;
@@ -170,24 +172,24 @@ Response CreateFile(std::string path, Request request)
     }
 }
 
-Response Methods::HandlePost(std::string path, Request request) {
-    std::string contentType = request.getHeader("Content-Type");
+Response Methods::HandlePost(std::string path, Request requestText, Config &location) {
+    std::vector<Cgi> cgis = location.GetCgis();
+    Response response;
+    std::string contentType = requestText.getHeader("Content-Type");
     std::cout << "Content-Type: " << contentType << std::endl;
-    if (contentType.empty() || request.getHeader("Content-Length").empty()) {
+    if (contentType.empty() || requestText.getHeader("Content-Length").empty()) {
         std::cerr << "Error: Missing Content-Type or Content-Length header" << std::endl;
         return Response(400);
     }
 
     std::string extension = GetExtension(contentType);
-    std::cout << "Extension: " << extension << std::endl;
     if (extension.empty()) {
         std::cerr << "Error: Unsupported Content-Type" << std::endl;
         return Response(400);
     }
 
     if (access(path.c_str(), F_OK) == -1) {
-        std::string newPath = path + extension;
-        std::ofstream createFile(newPath);
+        std::ofstream createFile(path);
         if (!createFile.is_open()) {
             std::cerr << "Error: Failed to create file" << std::endl;
             return Response(500);
@@ -195,5 +197,38 @@ Response Methods::HandlePost(std::string path, Request request) {
         createFile.close();
     }
 
-    return CreateFile(path, request);
+    CreateFile(path, requestText);
+
+    path = Utils::slashCleaner(path);
+    if (Cgi::IsCgi(path)) {
+        Cgi cgi;
+        std::cout << "CGIS SIZE: " << cgis.size() << std::endl;
+        for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
+        {
+            std::cout << "EXTENSION: " << it->GetCgiExtension() << std::endl;
+            std::cout << "PATH: " << it->GetCgiPath() << std::endl;
+            if (it->GetCgiExtension() == path.substr(path.find_last_of('.')))
+            {
+                cgi = *it;
+                break;
+            }
+        }
+        if (cgi.GetCgiPath().empty())
+        {
+            std::cout << "NO CGI PATH" << std::endl;
+            return Response(500);
+        }
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
+        std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
+        if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
+        {
+            std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;
+            response.setBody(cgi.GetResult());
+            return response;
+        }
+        std::cout << "CGI ERROR" << std::endl; 
+        return Response(500);
+    }
+
+    return CreateFile(path, requestText);
 }
