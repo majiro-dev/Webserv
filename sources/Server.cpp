@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 11:59:56 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:40:31 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ Config *Server::getLocation(Request &request)
         //std::cout << "Req_paht2: " << req_path << std::endl;
         if(location.compare(req_path) == 0)
         {
-            //std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
+            std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
             if(loc == NULL || len > other_loc)
             {
                 other_loc = len;
@@ -199,6 +199,7 @@ std::string getFilePath(Config *location, Request &request)
 {
     (void)request;
     size_t len = location->GetLocationName().size();
+    //location->PrintConfig();
     std::string root = location->GetRoot();
     std::string path = request.getUri();
     //std::cout << "CC: " << path << std::endl;
@@ -298,10 +299,10 @@ Response Server::hadleRequest(Request &request, Config *location)
         return response;
     }
     std::string path = getFilePath(location, request);
-    //std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
+    std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
     if(request.getMethod() == "GET")
     {
-        response = Methods::HandleGet(path, *location);
+        response = Methods::HandleGet(path, *location, request);
         response.addHeaders("Content-type", giveContenType(response, path));
 
     }

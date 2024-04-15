@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 19:11:35 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/14 18:41:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ Config::Config(void)
     this-> _allow_methods.resize(3);
     for (int i = 0; i < 3; i++)
         this->_allow_methods[i] = 0;
+    this->_projectPath = "";
     return ;
 }
 
@@ -270,10 +271,10 @@ void Config::SetCgiPass(std::string cgi_pass)
     //try
     //{
         std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-        if (tokens.size() != 2)
+        if (tokens.size() < 2)
         {
             std::string error = "Invalid cgi directory: " + cgi_pass;
-            Utils::exceptWithError(error);
+            Utils::log(error, RED);
         }
         for (size_t i = 1; i < tokens.size(); i++)
         {
@@ -420,14 +421,11 @@ bool Config::IsValid(void)
             return (false);
         }
     }
-    if (this->_redirect != "")
+    if (this->_projectPath == "" || !Utils::DirIsValid(this->_projectPath))
     {
-        /* if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
-        {
-            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
-            Utils::log(error, RED);
-            return (false);
-        } */
+        std::string error = "Invalid project path: " + this->_projectPath;
+        Utils::log(error, RED);
+        return (false);
     }
     if (this->_ports.size() != 0)
     {
@@ -518,7 +516,7 @@ std::string Config::GetLocationName(void)
 
 void Config::SetProjectPath(std::string projectPath)
 {
-    this->_projectPath = projectPath;
+    this->_projectPath = _trim(projectPath);
 }
 
 std::string Config::GetProjectPath(void)

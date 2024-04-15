@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 12:08:16 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:41:34 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include <iostream>
 #include <vector>
 #include <poll.h>
+
+
 
 #define PORT 8080
 
@@ -85,9 +87,25 @@ std::string buildHttpRequest(int contentOption) {
             "\r\n" + std::string(getFileBuffer("data/tours/hola.sh")) + "\r\n";
     }
     else if (contentOption == 2) {
-        // DELETE Request
+        // Mensaje con Content-Length
+        return "DELETE http://localhost:8080/ HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    else if (contentOption == 3) {
+        // Mensaje con Content-Length
         return "DELETE /hola HTTP/1.1\r\n"
                "Host: example.com\r\n";
+    }
+    else if (contentOption == 4) {
+        return "GET /tours/hola.sh HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    else if (contentOption == 5) {
+        return "GET /tours/hola.php HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
     }
     else {
         // Mensaje con Transfer-Encoding: chunked
@@ -129,28 +147,12 @@ int main(int argc, char const **argv) {
     }
 
     // Enviar la solicitud en partes
-    if (strcmp(argv[1], "GET") == 0) {
-        std::string part1 = buildHttpRequest(0);
-        sendPart(sock, part1.c_str());
-    }
-    else if (strcmp(argv[1], "POST") == 0) {
-        std::string part1 = buildHttpRequest(1);
-        sendPart(sock, part1.c_str());
-    }
-    else if (strcmp(argv[1], "DELETE") == 0) {
-        std::string part1 = buildHttpRequest(3);
-        sendPart(sock, part1.c_str());
-    }
-    else {
-        std::cerr << "Error: introduce como segundo argumento el request que quieres testear (GET, POST, DELETE)" << std::endl;
-        return -1;
-    }
-    
     //std::string part1 = buildHttpRequest(1).c_str();
-    
-    //const char *part2 = "0\r\n\r\n";
+    int contentOption = argc > 1 ? atoi(argv[1]) : 0;
+    std::string part1 = buildHttpRequest(contentOption);
+    const char *part2 = "0\r\n\r\n";
 
-    //sendPart(sock, part1.c_str());
+    sendPart(sock, part1.c_str());
     //sendPart(sock, part2);
 
     // Leer y mostrar la respuesta del servidor

@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 12:15:38 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:40:49 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char **makeArgs (std::string exepath, std::string filepath)
     return args;
 }
 
-Response Methods::HandleGet(std::string &path, Config &location)
+Response Methods::HandleGet(std::string &path, Config &location, Request &req)
 {
     std::string body = "";
     std::string line;
@@ -66,7 +66,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
         //std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
         if(location.GetAutoindex() == true)
         {
-            body = AutoIndex::GetAutoIndex(path);
+            body = AutoIndex::GetAutoIndex(path, location.GetLocationName(), req.getUri());
             response.setBody(body);
             return response;
         }
@@ -82,6 +82,7 @@ Response Methods::HandleGet(std::string &path, Config &location)
             path += location.GetIndex();
         }
     }
+    path = Utils::slashCleaner(path);
     std::ifstream file(path.c_str(), std::ios::binary);
     if (file.is_open())
     {

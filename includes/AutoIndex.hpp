@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AutoIndex.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:02:24 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/03 10:32:17 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/14 20:23:27 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 class AutoIndex
 {
     public:
-        static std::string  GetAutoIndex(std::string path);
+        static std::string  GetAutoIndex(std::string path, const std::string &locationPath, std::string uri);
 };
 
 #endif
