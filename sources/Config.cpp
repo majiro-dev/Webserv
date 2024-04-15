@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:49:02 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/14 18:41:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ Config::Config(void)
     this->_index = "";
     this->_client_max_body_size = 0;
     this->_autoindex = false;
+    this->_redirect = "";
     this-> _allow_methods.resize(3);
     for (int i = 0; i < 3; i++)
         this->_allow_methods[i] = 0;
+    this->_projectPath = "";
     return ;
 }
 
@@ -41,14 +43,25 @@ Config::Config(const Config &src)
     this->_allow_methods = src._allow_methods;
     this->_autoindex = src._autoindex;
     this->_error_pages = src._error_pages;
+    this->_LocationName = src._LocationName;
+    for (std::vector<Cgi>::const_iterator it = src._cgis.begin(); it != src._cgis.end(); it++)
+    {
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(it->GetCgiPath());
+        cgi->SetCgiExtension(it->GetCgiExtension());
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    }
+    this->_redirect = src._redirect;
+    this->_projectPath = src._projectPath;
     return ;
 }
 
 Config::~Config(void)
 {
-    this->_locations.clear();
+    /*this->_locations.clear();
     this->_cgis.clear();
-    return ;
+    this->_error_pages.clear();*/
 }
 
 uint16_t Config::GetPort(void)
@@ -255,31 +268,31 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    try
-    {
+    //try
+    //{
         std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-        if (tokens.size() != 2)
+        if (tokens.size() < 2)
         {
             std::string error = "Invalid cgi directory: " + cgi_pass;
-            Utils::exceptWithError(error);
+            Utils::log(error, RED);
         }
         for (size_t i = 1; i < tokens.size(); i++)
         {
-            if (Utils::DirIsValid(tokens[i]) == false)
-            {
-                std::string error = "Invalid cgi directory: " + tokens[i];
-                Utils::exceptWithError(error);
-            }
+            //if (Utils::DirIsValid(tokens[i]) == false)
+            //{
+            //    std::string error = "Invalid cgi directory: " + tokens[i];
+            //    Utils::exceptWithError(error);
+            //}
             Cgi *cgi = new Cgi();
             cgi->SetCgiPath(tokens[i]);
             this->_cgis.push_back(*cgi);
             delete cgi;
-        }
+        } /*
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-    }
+    }*/
     
 }
 
@@ -359,6 +372,7 @@ void Config::PrintConfig(void)
     std::cout << "GET: " << this->_allow_methods[0] << std::endl;
     std::cout << "POST: " << this->_allow_methods[1] << std::endl;
     std::cout << "DELETE: " << this->_allow_methods[2] << std::endl;
+    std::cout << "LOCATION NAME: " << this->_LocationName << std::endl;
 
     std::vector<Cgi>::iterator it4 = this->_cgis.begin();
     while (it4 != this->_cgis.end())
@@ -407,14 +421,11 @@ bool Config::IsValid(void)
             return (false);
         }
     }
-    if (this->_redirect != "")
+    if (this->_projectPath == "" || !Utils::DirIsValid(this->_projectPath))
     {
-        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
-        {
-            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
-            Utils::log(error, RED);
-            return (false);
-        }
+        std::string error = "Invalid project path: " + this->_projectPath;
+        Utils::log(error, RED);
+        return (false);
     }
     if (this->_ports.size() != 0)
     {
@@ -452,23 +463,15 @@ bool Config::IsValid(void)
             return (false);
         }
     }
-    if (this->_redirect != "")
-    {
-        if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
-        {
-            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
-            Utils::log(error, RED);
-            return (false);
-        }
-    }
 
     if (this->_cgis.size() != 0)
     {
         for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
         {
-            if (Utils::DirIsValid(it->GetCgiPath()) == false)
+            //check if cgi path is a valid file
+            if (Utils::FileIsReadable(it->GetCgiPath()) == false)
             {
-                std::string error = "Invalid cgi directory: " + it->GetCgiPath();
+                std::string error = "Invalid cgi path" + it->GetCgiPath();
                 Utils::log(error, RED);
                 return (false);
             }
@@ -487,6 +490,10 @@ bool Config::IsValid(void)
     return (true);
 }
 
+void Config::_reParse(void)
+{
+}
+
 void Config::SetParent(Config *parent)
 {
     this->_parent = parent;
@@ -495,4 +502,24 @@ void Config::SetParent(Config *parent)
 Config *Config::GetParent(void)
 {
     return (this->_parent);
+}
+
+void Config::SetLocationName(std::string locationName)
+{
+    this->_LocationName = locationName;
+}
+
+std::string Config::GetLocationName(void)
+{
+    return (this->_LocationName);
+}
+
+void Config::SetProjectPath(std::string projectPath)
+{
+    this->_projectPath = _trim(projectPath);
+}
+
+std::string Config::GetProjectPath(void)
+{
+    return (this->_projectPath);
 }

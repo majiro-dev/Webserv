@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:38:42 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:43:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:54:51 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,19 @@
 
 #include "Utils.hpp"
 #include "Request.hpp"
+#include "Response.hpp"
 #include "Config.hpp"
+#include "AutoIndex.hpp"
 #include "Utils.hpp"
+#include "fstream"
+
 
 class Methods
 {
     public:
-        static void HandleGet(std::string path, std::string &response, int &status, Config &config); 
-        static void HandleDelete(std::string path, std::string &response, int &status);
-        static void HandlePost(std::string path, std::string &response, int &status);
+        static Response HandleGet(std::string &path, Config &config, Request &req);
+        static Response HandlePost(std::string path, Request requestText);
+        static Response HandleDelete(std::string path);
 };
 
 #endif

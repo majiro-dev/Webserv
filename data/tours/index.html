@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabla de Precios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4; /* Color de fondo */
+            color: #333333; /* Color del texto */
+        }
+        .pricing-table {
+            max-width: 800px; /* Ancho máximo de la tabla */
+            margin: 50px auto; /* Centrar la tabla */
+            border-collapse: collapse; /* Colapsar bordes de la tabla */
+            border-radius: 10px; /* Bordes redondeados */
+            overflow: hidden; /* Evitar que los bordes redondeados se corten */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra para resaltar la tabla */
+        }
+        .pricing-table th, .pricing-table td {
+            padding: 20px; /* Espaciado interno de celda */
+            border-bottom: 1px solid #dddddd; /* Borde inferior */
+        }
+        .pricing-table th {
+            background-color: #4287f5; /* Color de fondo del encabezado */
+            color: #ffffff; /* Color del texto del encabezado */
+            font-weight: bold; /* Negrita */
+        }
+        .pricing-table td {
+            background-color: #ffffff; /* Color de fondo de las celdas */
+        }
+        .pricing-table .highlight {
+            background-color: #ffcc00; /* Color de fondo destacado */
+            font-weight: bold; /* Negrita */
+        }
+    </style>
+</head>
+<body>
+    <table class="pricing-table">
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Características</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Basic</td>
+                <td>5 GB de almacenamiento<br>10 cuentas de correo</td>
+                <td>$10/mes</td>
+            </tr>
+            <tr class="highlight">
+                <td>Pro</td>
+                <td>10 GB de almacenamiento<br>20 cuentas de correo<br>Soporte pr

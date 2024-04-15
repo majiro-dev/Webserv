@@ -6,23 +6,47 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:54:49 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:50:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Methods.hpp"
+#include "../includes/Response.hpp"
 
-void Methods::HandleGet(std::string path, std::string &response, int &status, Config &config)
+
+
+char **makeArgs (std::string exepath, std::string filepath, std::multimap<std::string, std::string> querys)
+{
+    char **args = new char*[querys.size() + 3];
+    args[0] = strdup(exepath.c_str());
+    args[1] = strdup(filepath.c_str());
+    int i = 2;
+    for (std::multimap<std::string, std::string>::iterator it = querys.begin(); it != querys.end(); it++)
+    {
+        args[i] = strdup((it->second).c_str());
+        i++;
+    }
+    args[i] = NULL;
+    return args;
+}
+
+Response Methods::HandleGet(std::string &path, Config &location, Request &req)
 {
     std::string body = "";
     std::string line;
-    std::ifstream file(path.c_str());
-
-    if (Cgi::IsCgi(path))
+    std::vector<Cgi> cgis = location.GetCgis();
+    Response response;
+    path = Utils::slashCleaner(path);
+    //std::cout << "RRPATH: " << path << std::endl;
+    if (Cgi::IsCgi(path) && cgis.size() > 0)
     {
+        //std::cout << "ENTRA1" << std::endl;
         Cgi cgi;
-        for (std::vector<Cgi>::iterator it = config.GetCgis().begin(); it != config.GetCgis().end(); it++)
+        std::cout << "CGIS SIZE: " << cgis.size() << std::endl;
+        for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {
+            std::cout << "EXTENSION: " << it->GetCgiExtension() << std::endl;
+            std::cout << "PATH: " << it->GetCgiPath() << std::endl;
             if (it->GetCgiExtension() == path.substr(path.find_last_of('.')))
             {
                 cgi = *it;
@@ -31,46 +55,145 @@ void Methods::HandleGet(std::string path, std::string &response, int &status, Co
         }
         if (cgi.GetCgiPath().empty())
         {
-            status = 500;
-            return;
+            std::cout << "NO CGI PATH" << std::endl;
+            return Response(500);
         }
-        if (cgi.ExecuteCgi(NULL, NULL))
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path), req.getQuerys());
+        for (int i = 0; args[i] != NULL; i++)
         {
-            response = cgi.GetResult();
-            status = 200;
-            return;
+            std::cout << "ARGS: " << args[i] << std::endl;
         }
-        status = 500;
-        return;
+        if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
+        {
+            std::cout << "CGI RESULT: " << cgi.GetResult() << std::endl;
+            response.setBody(cgi.GetResult());
+            return response;
+        }
+        std::cout << "CGI ERROR" << std::endl; 
+        return Response(500);
     }
+    if(Utils::DirIsValid(path))
+    {
+        
+        //std::cout << "DIRECTORIO" << path[path.size() - 1] << std::endl;
+        if(location.GetAutoindex() == true)
+        {
+            body = AutoIndex::GetAutoIndex(path, location.GetLocationName(), req.getResource());
+            response.setBody(body);
+            return response;
+        }
+        if(path[path.size() - 1] == '/')
+        {
+            path += location.GetIndex();
+        }
+        else
+        {
+            path += "/";
+            std::cout << location.GetIndex() << std::endl;
+            std::cout << location.GetLocationName() << std::endl;
+            path += location.GetIndex();
+        }
+    }
+    path = Utils::slashCleaner(path);
+    std::ifstream file(path.c_str(), std::ios::binary);
     if (file.is_open())
     {
-        while (getline(file, line))
-        {
-            body += line + "\n";
-        }
+        
+        //std::cout << "ENTRA2" << std::endl;
+        std::ostringstream ss;
+        ss << file.rdbuf();
         file.close();
-        response = body;
-        status = 200;
+        body = ss.str();
+        response.setBody(body);
     }
     else
     {
-        response = "File not found";
-        status = 404;
+        //std::cout << "ENTRA3" << std::endl;
+        //response = "File not found";
+        return Response(404);
     }
+    return response;
 }
 
-void Methods::HandleDelete(std::string path, std::string &response, int &status)
+Response Methods::HandleDelete(std::string path)
 {
+    Response response;
+
+    std::ifstream file(path.c_str());
+    if (!file.is_open())
+        return Response(404);
     if (remove(path.c_str()) == 0)
-    {
-        response = "File deleted";
-        status = 200;
+        return response;
+    return Response(500);
+
+}
+
+std::string GetExtension(std::string contentType) {
+    if (contentType == "application/json")
+        return ".json";
+    else if (contentType == "text/plain")
+        return ".txt";
+    else if (contentType == "text/css")
+        return ".css";
+    else if (contentType == "text/html")
+        return ".html";
+    else if (contentType == "text/xml")
+        return ".xml";
+    return "";
+}
+
+Response CreateFile(std::string path, Request request) 
+{
+    std::string contentType = request.getHeader("Content-Type");
+    std::string extension = GetExtension(contentType);
+    
+    if (extension.empty()) {
+        return Response(400);
     }
-    else
-    {
-        response = "File not found";
-        status = 404;
+
+    std::string newPath = path + extension;
+    std::ofstream file(newPath, std::ios::app);
+    
+    if (!file.is_open()) {
+        return Response(500);
+    }
+
+    try {
+        std::string requestBody = request.getBody();
+        file << requestBody;
+        file.close();
+        std::cout << "File written successfully" << std::endl;
+        return Response(200);
+    } catch (const std::exception &e) {
+        std::cerr << "Error writing to file: " << e.what() << std::endl;
+        return Response(500);
     }
 }
 
+Response Methods::HandlePost(std::string path, Request request) {
+    std::string contentType = request.getHeader("Content-Type");
+    std::cout << "Content-Type: " << contentType << std::endl;
+    if (contentType.empty() || request.getHeader("Content-Length").empty()) {
+        std::cerr << "Error: Missing Content-Type or Content-Length header" << std::endl;
+        return Response(400);
+    }
+
+    std::string extension = GetExtension(contentType);
+    std::cout << "Extension: " << extension << std::endl;
+    if (extension.empty()) {
+        std::cerr << "Error: Unsupported Content-Type" << std::endl;
+        return Response(400);
+    }
+
+    if (access(path.c_str(), F_OK) == -1) {
+        std::string newPath = path + extension;
+        std::ofstream createFile(newPath);
+        if (!createFile.is_open()) {
+            std::cerr << "Error: Failed to create file" << std::endl;
+            return Response(500);
+        }
+        createFile.close();
+    }
+
+    return CreateFile(path, request);
+}

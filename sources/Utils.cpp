@@ -188,9 +188,46 @@ static std::string logDataTine()
     std::tm* localTime = std::localtime(&currentTime);
 
     ss << localTime->tm_year + 1900 << '-' << localTime->tm_mon + 1 << '-' << localTime->tm_mday << ' ';
-    //ss << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    ss << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
     return ss.str();
 }
+
+
+static std::string getMonthName(int month) {
+    static const char* monthNames[] = { "Invalid", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+    if (month >= 1 && month <= 12) {
+        return monthNames[month];
+    } else {
+        return "Invalid";
+    }
+}
+
+static std::string getDayOfWeekName(int dayOfWeek) {
+    static const char* dayNames[] = { "Sun", "Mon", "Tue", "Wed", 
+                                        "Thu", "Fri", "Sat", };
+
+    if (dayOfWeek >= 0 && dayOfWeek <= 6) {
+        return dayNames[dayOfWeek];
+    } else {
+        return "Invalid";
+    }
+}
+
+std::string Utils::giveDate()
+{
+    std::stringstream ss;
+
+    std::time_t currentTime = std::time(NULL);
+
+    std::tm* localTime = std::localtime(&currentTime);
+
+    ss << getDayOfWeekName(localTime->tm_wday) << ',' << localTime->tm_mday << ' '  << getMonthName(localTime->tm_mon) <<  ' ' << localTime->tm_year + 1900;
+    ss << ' ' << localTime->tm_hour << ':' << localTime->tm_min << ':' << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+    return ss.str();
+}
+
 
 void Utils::logger(const std::string &msg, int mode)
 {
@@ -240,4 +277,17 @@ std::string Utils::Uint16ToString(uint16_t number)
     std::stringstream ss;
     ss << number;
     return ss.str();
+}
+
+std::string Utils::slashCleaner(const std::string path)
+{
+    //cleans all duplicate slashes from a path until there are no / beside each other
+    std::string newPath = path;
+    size_t found = newPath.find("//");
+    while (found != std::string::npos)
+    {
+        newPath.replace(found, 2, "/");
+        found = newPath.find("//");
+    }
+    return newPath;
 }

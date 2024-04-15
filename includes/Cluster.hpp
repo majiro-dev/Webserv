@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:40 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/26 00:18:05 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/04 22:46:12 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Cluster
         int acceptConnection(unsigned int sock, int idxServer, sockaddr_in servSockAdrr);
         void checkServerSockets();
         void checkClientSockets();
-        void init();
+        bool init();
         void run();
 };
 

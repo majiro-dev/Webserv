@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/01 18:17:32 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/08 00:27:15 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Cluster::~Cluster()
     }
 }
 
-void Cluster::init()
+bool Cluster::init()
 {
     size_t servers = this->_configs.size();
     //ModIFICAR PARA EL MAIN SE TERMINE EL BUCLE
@@ -40,8 +40,9 @@ void Cluster::init()
     catch(const std::exception& e)
     {
         Utils::logger(e.what(), ERROR);
+        return false;
     }
-    
+    return true;
 }
 
 
@@ -63,13 +64,17 @@ int Cluster::acceptConnection(unsigned int sock, int idxServer, sockaddr_in serv
         Utils::logger("Error failed setting socket to non-blocking", ERROR);
         return -1;
     }
-    this->_servers[idxServer]->addClient(new Client(connect_sock));
+    this->_servers[idxServer]->addClient(new Client(connect_sock, socketaddr));
     
-    char clientIP[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &(servSockAdrr.sin_addr), clientIP, INET_ADDRSTRLEN);
-    //uint16_t clientPort = ntohs(servSockAdrr.sin_port);
+    char serverIP[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(socketaddr.sin_addr), serverIP, INET_ADDRSTRLEN);
+    uint16_t serverPort = ntohs(servSockAdrr.sin_port);
+    uint16_t clientPort = ntohs(socketaddr.sin_port);
     
-    Utils::logger("New Connection from " + std::string(clientIP) + ":" + Utils::IntToString(clientPort), INFO);
+    std::string msg;
+    msg = this->_servers[idxServer]->getName() + ":" + Utils::IntToString(serverPort);
+    msg += " has accepted new client " +  std::string(serverIP) + ":" +  Utils::IntToString(clientPort);
+    Utils::logger(msg , INFO);
     return 0;
 }
 
@@ -151,7 +156,10 @@ void Cluster::checkClientSockets()
                     int val_recv;
                     val_recv = clients[j]->handleRecv();
                     if(val_recv == 0)
-                        this->_servers[i]->generateReponse(clients[j]->getRequest());
+                    {
+                        //std::cout << GREEN << clients[j]->getRequest() << RESET << std::endl;
+                        this->_servers[i]->generateResponse(clients[j]->getRequest(), clients[j]->getSocketaddr());
+                    }
                     //if(val_recv == -2)
                         //Crear response pagina error
                     if(val_recv < 0)

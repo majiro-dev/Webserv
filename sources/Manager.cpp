@@ -6,9 +6,10 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/28 14:02:41 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 19:10:47 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../includes/Manager.hpp"
 
@@ -24,10 +25,10 @@ Manager::Manager(void)
 
 Manager::~Manager(void)
 {
-	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
+	/*for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 	{
 		_configs.erase(it);
-	}
+	}*/
 }
 
 bool	Manager::parseConfig()
@@ -47,16 +48,15 @@ bool	Manager::parseConfig()
 	}
 	for (std::list<Config>::iterator it = _configs.begin(); it != _configs.end(); it++)
 	{
-		//it->PrintConfig();
 		if (it->IsValid() == false)
 		{
 			Utils::log("Invalid config", RED);
-			it->PrintConfig();
+			//it->PrintConfig();
 			valid = false;
 		}
 		//it->PrintConfig();
 	}
-	Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
+	//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
 }
 
@@ -64,6 +64,8 @@ std::string locationPath(std::string path)
 {
 	std::string location = path.substr(path.find("location ") + 9);
 	location = location.substr(0, location.find(" "));
+	//if (location == "/")
+	//	location = "";
 	return location;
 }
 
@@ -71,7 +73,7 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 {
 	std::string toFind[] = {"listen ", "host ", "server_name ", "root ", "client_max_body_size ",
 							"autoIndex " , "error_page ", "index ", "allow_methods ", "cgi_pass ", "cgi_extension ",
-							"return "};
+							"return ", "project_path" };
 	while (std::getline(*file, *line))
 	{
 		if (line->find("}") != std::string::npos)
@@ -86,7 +88,10 @@ void 	Manager::_parseServerBlock(std::ifstream *file, std::string *line, Config 
 				Config *location = new Config(*config);
 				location->ClearLocations();
 				_parseLocationBlock(file, line, location);
-				if (location->GetRoot() != config->GetRoot())
+				//if (location->GetRoot() != config->GetRoot())
+				//	location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
+				location->SetLocationName(locationPath(locationLine));
+				if (location->GetLocationName() == "/")
 					location->SetRootAsLocation(location->GetRoot() + locationPath(locationLine));
 				location->SetParent(config);
 				config->AddLocation(*location);
@@ -102,7 +107,7 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 	void (Config::*setters[])(std::string) = {&Config::SetPort, &Config::SetHost, &Config::SetServerName,
 				&Config::SetRoot, &Config::SetClientMaxBodySize, &Config::SetAutoindex, &Config::AddErrorPage,
 				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension, 
-				&Config::SetRedirect};
+				&Config::SetRedirect, &Config::SetProjectPath};
 	(config->*setters[i])(value);
 	//std::cout << "Assigned " << value << " to " << i << std::endl;
 	//Utils::log("BREAKPOINTE TEST");

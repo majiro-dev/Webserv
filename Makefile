@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+         #
+#    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/03/14 19:51:38 by cmorales         ###   ########.fr        #
+#    Updated: 2024/04/12 12:05:05 by manujime         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,5 +54,8 @@ re: fclean all
 
 r: re
 	@./$(NAME) tests/conf/server.conf
+
+l: re
+	@./$(NAME) tests/conf/server_linux.conf
 
 .PHONY: all clean fclean re

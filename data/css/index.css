@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    position: relative;
+    color: #eee;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../image/fondo.jpg'); /* Ruta a tu imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden; /* Para recortar cualquier desbordamiento de la imagen */
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 81%); /* Fondo gris semi-transparente */
+    z-index: -1; /* Coloca la capa debajo de la imagen de fondo */
+}
+
+.container {
+    text-align: center;
+    position: relative; /* Asegura que el contenido esté por encima del fondo */
+    z-index: 1;
+}
+
+.title {
+    font-size: 6rem;
+    color: transparent;
+    background: linear-gradient(349deg, #3b3b3b, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 50vh;
+}
+
+.subtitle {
+    font-size: 2rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.github-link {
+    font-size: 1.2rem;
+    color: #bbb;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.github-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}

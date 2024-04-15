@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/03/30 18:36:56 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:26:23 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,9 @@ int Request::parseFirstLine(std::string &req)
         if(s_len != std::string::npos)
         {
             this->_uri = req.substr(f_len + 1, s_len - f_len -1);
-            parseUri();
+            parseQuerys(this->_uri);
             if(s_len != std::string::npos)
-            {
                 this->_protocol = req.substr(s_len + 1);
-                 if(this->_protocol != "HTTP/1.1")
-                    Utils::exceptWithError("Invalid protocol");
-            }
             return 0;
         }
     }
@@ -110,7 +106,7 @@ void Request::parseHeader(std::string line)
 }
 
 //Mejorarlo****
-void Request::parseUri()
+void Request::parseQuerys(std::string &uri)
 {
     std::string key;
     std::string value;
@@ -119,13 +115,16 @@ void Request::parseUri()
     size_t len = 0;
     size_t equal = 0;
     
-    len = this->_uri.find('?');
+    len = uri.find('?');
     if(len == std::string::npos)
+    {
+        this->_resource = uri;
         return ;
+    }
     //Obtener recursos
-    this->_resource = this->_uri.substr(0, len);
+    this->_resource = uri.substr(0, len);
     //Obtner cadenas de consultas
-    querys = this->_uri.substr(len + 1);
+    querys = uri.substr(len + 1);
     
     len = querys.find('&');
     while(len != std::string::npos)
@@ -199,6 +198,11 @@ std::string Request::getUri()
     return this->_uri;    
 }
 
+std::string Request::getResource()
+{
+    return this->_resource;    
+}
+
 std::string Request::getBody()
 {
     return this->_body; 
@@ -209,6 +213,10 @@ std::string Request::getProtocol()
     return this->_protocol;
 }
 
+std::multimap<std::string, std::string> Request::getQuerys()
+{
+    return this->_querys;
+}
 
 void Request::print()
 {
@@ -235,3 +243,4 @@ void Request::print()
     std::cout << "BODY: " << this->_body << std::endl;
     std::cout << "================== Request-end ==================" << std::endl;
 }
+

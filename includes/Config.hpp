@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/01 17:48:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/10 18:52:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Config
     public:
         Config(void);
         Config(const Config &src);
+        //Config &operator=(const Config &src);
         ~Config(void);
 
         uint16_t GetPort(void);
@@ -45,6 +46,9 @@ class Config
         std::vector<Config>       GetLocations(void);
         std::map<int, std::string>  GetErrorPages(void);
         Config *GetParent(void);
+
+        std::string GetLocationName(void);
+        std::string GetProjectPath(void);
 
         void   SetPort(std::string port);
         void   SetHost(std::string host);
@@ -68,6 +72,9 @@ class Config
         bool  IsValid(void);
         void  SetParent(Config *parent);
 
+        void  SetLocationName(std::string locationName);
+        void  SetProjectPath(std::string projectPath);
+
     private:
         Config *_parent;
         std::vector<uint16_t>  _ports;
@@ -83,6 +90,9 @@ class Config
         bool         _autoindex;
         std::vector<bool> _allow_methods;
         
+        std::string _LocationName;
+        std::string _projectPath;
+        
         std::vector<Config>         _locations;
         std::map<int, std::string>  _error_pages;
 
@@ -90,6 +100,8 @@ class Config
 
         std::string  _trim(std::string str);
         std::pair<int, std::string> _errorPageTrim(std::string str);
+
+        void _reParse(void);
 };
 
 #endif
