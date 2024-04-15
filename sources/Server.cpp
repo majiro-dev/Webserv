@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 18:41:05 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 11:59:56 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ Response Server::hadleRequest(Request &request, Config *location)
     }
     else if (request.getMethod() == "POST")
     {
-        response = Methods::HandlePost(path, request);
+        response = Methods::HandlePost(path, request, *location);
     }
     else if(request.getMethod() == "DELETE")
     {

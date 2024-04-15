@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/11 20:32:13 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:08:16 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char *getFileBuffer(const char *filename) {
 }
 
 std::string getFileContentLength(const char *filename) {
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         std::cerr << "Error al abrir el archivo" << std::endl;
         return NULL;
@@ -57,7 +57,8 @@ std::string getFileContentLength(const char *filename) {
     long fileSize = ftell(file);
     fseek(file, 0, SEEK_SET);
     fclose(file);
-    return std::to_string(fileSize + 10000).c_str();
+    std::cout << "File size: " << fileSize << std::endl;
+    return std::to_string(fileSize + 2).c_str();
 }
 
 void sendPart(int sock, const char* part) {
@@ -70,19 +71,18 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 0) {
         // GET Request con contenido
-        return "GET /manu HTTP/1.1\r\n"
+        return "GET /testpost.txt HTTP/1.1\r\n"
             "Host: example.com\r\n"
-            "Content-Length: 11\r\n"
-            "\r\n"
-            "Hola mundoo";
+            "Content-Length: " + getFileContentLength("data/testWroteFile.txt") + "\r\n"
+            "\r\n" + std::string(getFileBuffer("data/testWroteFile.txt")) + "\r\n";;
     }
     else if (contentOption == 1) {
         // POST Request con archivo HTML
-        return "POST /testpost HTTP/1.1\r\n"
+        return "POST /hola.sh HTTP/1.1\r\n"
             "Host: example.com\r\n"
-            "Content-Type: text/html\r\n"
-            "Content-Length: " + getFileContentLength("data/testWroteHtml.html") + "\r\n"
-            "\r\n" + std::string(getFileBuffer("data/testWroteHtml.html")) + "\r\n";
+            "Content-Type: text/sh\r\n"
+            "Content-Length: " + getFileContentLength("data/tours/hola.sh") + "\r\n"
+            "\r\n" + std::string(getFileBuffer("data/tours/hola.sh")) + "\r\n";
     }
     else if (contentOption == 2) {
         // DELETE Request
