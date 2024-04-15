@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 11:55:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:45:46 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Request
         void parseHeader(std::string line);
         void parseBody();
     public:
-        static void parseQuerys(std::string &uri);
+        void parseQuerys(std::string &uri);
         Request();
         Request(const std::string &msg);
         ~Request();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/09 19:55:33 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:19:32 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,14 @@ int Client::handleRecv()
         return -1;
     } 
     this->_request += buffer;
+
+    std::string method = _request.substr(0,  _request .find(" "));
+    if (method == "POST")
+    {
+        this->_finishReq = true;
+        return 0;
+    }
+    
     size_t pos = this->_request.find("\r\n\r\n");
     if(pos == std::string::npos)
     {

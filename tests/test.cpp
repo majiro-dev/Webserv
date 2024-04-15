@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 12:41:34 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:26:41 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ std::string buildHttpRequest(int contentOption) {
             "Host: example.com\r\n"
             "Content-Type: text/sh\r\n"
             "Content-Length: " + getFileContentLength("data/tours/hola.sh") + "\r\n"
-            "\r\n" + std::string(getFileBuffer("data/tours/hola.sh")) + "\r\n";
+            "\r\n" + std::string(getFileBuffer("data/tours/hola.sh"));
     }
     else if (contentOption == 2) {
         // Mensaje con Content-Length

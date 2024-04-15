@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 12:40:49 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:32:34 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,9 +142,8 @@ Response CreateFile(std::string path, Request request)
     if (extension.empty()) {
         return Response(400);
     }
-
-    std::string newPath = path + extension;
-    std::ofstream file(newPath, std::ios::app);
+    
+    std::ofstream file(path);
     
     if (!file.is_open()) {
         return Response(500);
@@ -185,6 +184,8 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
         }
         createFile.close();
     }
+
+    CreateFile(path, requestText);
 
     path = Utils::slashCleaner(path);
     if (Cgi::IsCgi(path)) {
