@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 19:00:48 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/14 19:23:35 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ std::string Cgi::GetCgiExtension(void) const
 
 bool Cgi::IsCgi(std::string path)
 {
-    std::string valids[] = {".sh", ".py"};
+    std::string valids[] = {".sh", ".py", ".php"};
     
     if (path.find_last_of('.') != std::string::npos)
     {
@@ -85,7 +85,7 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
         std::cout << "PROJECT PATH: " << projectPath << std::endl;
         if (chdir(projectPath.c_str()) == -1)
         {
-            std::cout << "could not change directory to " << this->cgiPath << std::endl;
+            std::cout << "could not change directory to " << projectPath << std::endl;
             return (false);
         }
         dup2(fd[0], STDIN_FILENO);

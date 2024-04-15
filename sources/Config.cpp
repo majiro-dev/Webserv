@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/11 18:56:16 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/14 18:41:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ Config::Config(void)
     this-> _allow_methods.resize(3);
     for (int i = 0; i < 3; i++)
         this->_allow_methods[i] = 0;
+    this->_projectPath = "";
     return ;
 }
 
@@ -420,14 +421,11 @@ bool Config::IsValid(void)
             return (false);
         }
     }
-    if (this->_redirect != "")
+    if (this->_projectPath == "" || !Utils::DirIsValid(this->_projectPath))
     {
-        /* if (Utils::FileIsReadable(this->_root + "/" + this->_redirect) == false)
-        {
-            std::string error = "Invalid redirect file: " + this->_root + "/" + this->_redirect;
-            Utils::log(error, RED);
-            return (false);
-        } */
+        std::string error = "Invalid project path: " + this->_projectPath;
+        Utils::log(error, RED);
+        return (false);
     }
     if (this->_ports.size() != 0)
     {

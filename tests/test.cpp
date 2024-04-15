@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/14 20:50:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/14 18:47:25 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ std::string buildHttpRequest(int contentOption) {
     }
     else if (contentOption == 4) {
         return "GET /tours/hola.sh HTTP/1.1\r\n"
+               "Host: example.com\r\n"
+               "\r\n";
+    }
+    else if (contentOption == 5) {
+        return "GET /tours/hola.php HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
