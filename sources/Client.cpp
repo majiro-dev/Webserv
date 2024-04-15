@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/09 19:55:33 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 15:10:43 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,18 +103,27 @@ int Client::handleRecv()
 
 int Client::sendResponse(Response res)
 {
-    unsigned long bytesSenT;
     std::string response = res.build_response();
-    //std::cout << res.getBody() << std::endl;
-    bytesSenT = write(this->getSocket(), response.c_str(), response.size());
-    if (bytesSenT == response.size())
-        Utils::logger("Response sent successfully.", LOG);
-    else
-    {
-        Utils::logger("Failed to send response", ERROR);
-        return -1;
+    const char* data = response.c_str();
+    size_t totalBytesSent = 0;
+    size_t bytesRemaining = response.size();
+    size_t maxChunkSize = 1024;  // Tamaño máximo de cada paquete (puedes ajustar según sea necesario)
+
+    while (bytesRemaining > 0) {
+        size_t bytesToSend = std::min(bytesRemaining, maxChunkSize);
+        ssize_t bytesSent = write(this->getSocket(), data + totalBytesSent, bytesToSend);
+        
+        if (bytesSent == -1) {
+            Utils::logger("Failed to send response", ERROR);
+            close(this->getSocket());
+            return -1;
+        }
+
+        totalBytesSent += bytesSent;
+        bytesRemaining -= bytesSent;
     }
-    
+
+    Utils::logger("Response sent successfully.", LOG);
     close(this->getSocket());
     return 0;
 }

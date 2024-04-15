@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 11:55:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 12:02:02 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Request
         void parseHeader(std::string line);
         void parseBody();
     public:
-        static void parseQuerys(std::string &uri);
+        void parseQuerys(std::string &uri);
         Request();
         Request(const std::string &msg);
         ~Request();

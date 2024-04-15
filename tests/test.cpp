@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/14 18:47:25 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:02:23 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
-        return "GET data/tours/cmr/hola.py HTTP/1.1\r\n"
+        return "GET /tours/hola.py HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }

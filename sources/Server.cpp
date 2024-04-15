@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 11:56:00 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/15 13:02:16 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,9 @@ void Server::addSocketsServer()
     {
         if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
             Utils::exceptWithError(ERROR_SOCKET_CREATE);
+        
+        if (fcntl(sock, F_SETFL, O_NONBLOCK) < 0) 
+            Utils::exceptWithError("Error setting socket to non-blocking");
 
         if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)))
             Utils::exceptWithError("Error failed to set socket options");
@@ -114,8 +117,7 @@ void Server::addSocketsServer()
         if (listen(sock, MAX_CLIENTS) < 0)
             Utils::exceptWithError(ERROR_SOCKET_LISTEN);
             
-        if (fcntl(sock, F_SETFL, O_NONBLOCK) < 0) 
-            Utils::exceptWithError("Error setting socket to non-blocking");
+        
         this->_sockets.push_back(sock);
         this->_sockaddrs.push_back(sockaddr);
     }
@@ -203,8 +205,9 @@ std::string getFilePath(Config *location, Request &request)
     std::string root = location->GetRoot();
     std::string path = request.getUri();
     //std::cout << "CC: " << path << std::endl;
-    //std::cout << "CC: " << root << std::endl;
-    //std::cout << "CC: " << location->GetLocationName() << std::endl;
+    std::cout << "CC: " << root << std::endl;
+    std::cout << "CC: " << location->GetLocationName() << std::endl;
+    std::cout << "PATH: " << path << std::endl;
     /* if(path < root)
         len--; */
     path = path.substr(len);
@@ -216,8 +219,8 @@ std::string getFilePath(Config *location, Request &request)
         root += path.substr(1);
     else 
         root += path;
-    //std::cout << "CC: " << path << std::endl;
-    //std::cout << "CC: " << root << std::endl;
+    std::cout << "CC: " << path << std::endl;
+    std::cout << "CC: " << root << std::endl;
         
     return root;
 }
@@ -226,8 +229,9 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
 {
     try
     {
-        //std::cout << request << std::endl;
+        std::cout << request << std::endl;
         Request req(request);
+        req.print();
         Config *location = this->getLocation(req);
         if(location == NULL)
         {
