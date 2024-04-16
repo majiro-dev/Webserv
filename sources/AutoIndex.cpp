@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:04:18 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/14 21:12:33 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:08:12 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@
 #include <dirent.h>
 #include "../includes/Cgi.hpp"
 
-std::string AutoIndex::GetAutoIndex(const std::string path, const std::string& locationPath, std::string uri)
+std::string AutoIndex::GetAutoIndex(const std::string path, std::string uri)
 {
-    //LIMPIAR
-    (void)locationPath;
     std::string html;
     std::string title = "Index of " + uri;
     std::string header = "<html><head><title>" + title + "</title><style>\
@@ -43,9 +41,6 @@ std::string AutoIndex::GetAutoIndex(const std::string path, const std::string& l
     {
         while ((ent = readdir(dir)) != NULL)
         {
-            std::cout << "ROOT: "  << path << std::endl;
-            std::cout << "NAME: " << ent->d_name << std::endl;
-            std::cout << "URI: " << path << std::endl;
             std::string entry_name = ent->d_name;
             std::string entry_path;
             if(uri[uri.size() - 1] == '/')

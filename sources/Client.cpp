@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 15:10:43 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:09:36 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ bool Client::getfinishReq()
 
 int Client::handleRecv()
 {
-    //std::cout << "REC: " << this->getSocket() << std::endl;
     if(this->_finishReq == true)
         return 0;
     int bytesReceived = 0;
@@ -86,10 +85,8 @@ int Client::handleRecv()
 
         if (this->_request.size() >= nRes + pos + 4) {
             this->_finishReq = true;
-            //std::cout << "Solicitud completa. Cuerpo del mensaje: " << this->_request.substr(pos + 4, nRes) << std::endl;
         } else {
             this->_finishReq = false;
-            //std::cout << "Solicitud parcial. Esperando más datos." << std::endl;
         }
     }
     else if(this->_request.find("Transfer-Encoding: chunked") != std::string::npos)
@@ -99,11 +96,8 @@ int Client::handleRecv()
         else
             this->_finishReq = false;
     }
-    else 
-    {
+    else
         this->_finishReq = true;
-        //std::cout << "Solicitud sin Content-Length. Cuerpo del mensaje: " << this->_request.substr(pos + 4) << std::endl;
-    }
     return 0;
 }
 
@@ -115,7 +109,7 @@ int Client::sendResponse(Response res)
     const char* data = response.c_str();
     size_t totalBytesSent = 0;
     size_t bytesRemaining = response.size();
-    size_t maxChunkSize = 1024;  // Tamaño máximo de cada paquete (puedes ajustar según sea necesario)
+    size_t maxChunkSize = 1024;
 
     while (bytesRemaining > 0) {
         size_t bytesToSend = std::min(bytesRemaining, maxChunkSize);
