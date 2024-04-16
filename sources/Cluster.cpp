@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/08 00:27:15 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:47:49 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,15 +157,13 @@ void Cluster::checkClientSockets()
                     val_recv = clients[j]->handleRecv();
                     if(val_recv == 0)
                     {
-                        //std::cout << GREEN << clients[j]->getRequest() << RESET << std::endl;
                         this->_servers[i]->generateResponse(clients[j]->getRequest(), clients[j]->getSocketaddr());
                     }
-                    //if(val_recv == -2)
-                        //Crear response pagina error
                     if(val_recv < 0)
                     {
                         Utils::logger(ERROR_SOCKET_READ, ERROR);
                         this->_servers[i]->removeClient(clients[j]);
+                        this->_pollfds.erase(this->_pollfds.begin() + k);
                     }
                     break;
                 }
@@ -180,9 +178,9 @@ void Cluster::checkClientSockets()
                     }
                     if(val_send == -1)
                     {
-                        close(clients[j]->getSocket());
                         this->_servers[i]->removeClient(clients[j]);
                     }
+                    this->_pollfds.erase(this->_pollfds.begin() + k);
                     break;
                 }
             }

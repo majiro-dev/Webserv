@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 13:18:33 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:55:09 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,6 @@ Server::Server(Config config):
 
 Server::~Server(void)
 {
-    for(size_t i = 0; i < this->_ports.size(); i++)
-    {
-        close(this->_ports[i]);
-    }
     for(size_t i = 0; i < this->_clients.size(); i++)
     {
         delete(this->_clients[i]);
@@ -78,11 +74,9 @@ void Server::removeClient(Client *client)
     std::vector<Client*>::iterator it = std::find(this->_clients.begin(), this->_clients.end(), client);
     if(it != this->_clients.end())
     {
-        close(client->getSocket());
         delete *it;
         this->_clients.erase(it);
     }
-    (void)client;
 }
 
 void Server::addClient(Client *client)
@@ -173,20 +167,14 @@ Config *Server::getLocation(Request &request)
         std::string req_path = request.getResource();
         location = it->GetLocationName();
         len = location.size();
-        //std::cout << std::endl << "LEN: " << len << std::endl;
-        //std::cout << "Location: " << location << std::endl;
-        //std::cout << "PATH_REQ: " << req_path << std::endl << std::endl;
         if(location[len - 1] == '/')
         {
             len -= 1;
             location = location.substr(0, len);
-            //std::cout << "Location2: " << location[len - 1] << std::endl;
         } 
         req_path = req_path.substr(0, len);
-        //std::cout << "Req_paht2: " << req_path << std::endl;
         if(location.compare(req_path) == 0)
         {
-            std::cout << CYAN << "ENTRA COMPARACION" << RESET << std::endl;
             if(loc == NULL || len > other_loc)
             {
                 other_loc = len;
@@ -199,17 +187,10 @@ Config *Server::getLocation(Request &request)
 
 std::string getFilePath(Config *location, Request &request)
 {
-    (void)request;
     size_t len = location->GetLocationName().size();
-    //location->PrintConfig();
     std::string root = location->GetRoot();
     std::string path = request.getResource();
-    //std::cout << "CC: " << path << std::endl;
-    std::cout << "CC: " << root << std::endl;
-    std::cout << "CC: " << location->GetLocationName() << std::endl;
-    std::cout << "PATH: " << path << std::endl;
-    /* if(path < root)
-        len--; */
+  
     path = path.substr(len);
     if(!path.size())
         return root;
@@ -219,8 +200,6 @@ std::string getFilePath(Config *location, Request &request)
         root += path.substr(1);
     else 
         root += path;
-    std::cout << "CC: " << path << std::endl;
-    std::cout << "CC: " << root << std::endl;
         
     return root;
 }
@@ -229,18 +208,13 @@ void Server::generateResponse(const std::string& request, sockaddr_in socketaddr
 {
     try
     {
-        std::cout << request << std::endl;
+        std::cout << std::endl << MAGENTA  << request << std::endl << RESET;
         Request req(request);
-        req.print();
         Config *location = this->getLocation(req);
         if(location == NULL)
-        {
-            //CAMBIAR
-            std::cout << "No entro" << std::endl;
             Utils::exceptWithError("No location");
-        }
         addErrorPage(*location);
-            
+
         char clientSock[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &(socketaddr.sin_addr), clientSock, INET_ADDRSTRLEN);
         uint16_t clientPort = ntohs(socketaddr.sin_port);
@@ -266,9 +240,7 @@ std::string giveContenType(Response &response, std::string path)
     if((int)len == -1)
         return response.getMimeType("default");
     path = path.substr(len);
-    //std::cout << "PATH: " << path << std::endl; 
     mime_type = response.getMimeType(path);
-    //std::cout << "MIME: " << mime_type << std::endl; 
     return mime_type;
 }
 
@@ -280,7 +252,6 @@ Response Server::hadleRequest(Request &request, Config *location)
         Utils::logger("Invalid protocol", ERROR);
         return Response(505);
     }
-    //location->PrintConfig();
     if(checkAllowMethods(location, request.getMethod()) == false)
     {
         Utils::logger("Method is not allowed", ERROR);
@@ -303,7 +274,6 @@ Response Server::hadleRequest(Request &request, Config *location)
         return response;
     }
     std::string path = getFilePath(location, request);
-    std::cout << GREEN << "PATH: " <<  path << std::endl << RESET;
     if(request.getMethod() == "GET")
     {
         response = Methods::HandleGet(path, *location, request);
@@ -325,7 +295,6 @@ Response Server::hadleRequest(Request &request, Config *location)
     }
     response.addHeaders("Date", Utils::giveDate());
     response.addHeaders("Connection", "close");
-    //response.setBody("This method was not found");
     return response;
 }
 
@@ -335,10 +304,6 @@ void Server::putErrorPage(Response &response)
 {
     std::string path;
     std::string body;
-  /*   for(std::map<int, std::string>::iterator it = _errorPages.begin(); it!= _errorPages.end(); it++)
-    {
-        std::cout << it->first << " " << it->second << std::endl;
-    } */
     try
     {
         path = this->_errorPages.at(response.getStatusCode());

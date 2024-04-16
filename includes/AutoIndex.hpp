@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 14:02:24 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/14 20:23:27 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:08:23 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 class AutoIndex
 {
     public:
-        static std::string  GetAutoIndex(std::string path, const std::string &locationPath, std::string uri);
+        static std::string  GetAutoIndex(std::string path, std::string uri);
 };
 
 #endif

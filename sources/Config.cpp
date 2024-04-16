@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/14 18:41:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:51:43 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,7 +328,6 @@ void Config::SetRootAsLocation(std::string location)
     try
     {
         this->_root = location;
-        //std::cout << "LOCATION ROOT: " << this->_root << std::endl;
         if (Utils::DirIsValid(this->_root) == false)
         {
             std::string error = "Invalid location directory: " + this->_root;

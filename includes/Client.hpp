@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:00:02 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/04 20:02:35 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:57:19 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,21 @@
 class Client
 {
     private:
-        unsigned int _fd;
-        std::string _request;
-        bool        _finishReq;
-        sockaddr_in _socketaddr;
+        unsigned int    _fd;
+        std::string     _request;
+        bool            _finishReq;
+        sockaddr_in     _socketaddr;
     public:
         Client();
         Client(int fd, sockaddr_in socketaddr);
         ~Client();
-        
         Client& operator=(const Client& src);
         
-        int handleRecv();
-        int sendResponse(Response res);
+        int         handleRecv();
+        int         sendResponse(Response res);
         
-        int getSocket();
-        bool getfinishReq();
+        int         getSocket();
+        bool        getfinishReq();
         std::string getRequest();
         sockaddr_in getSocketaddr();
 };

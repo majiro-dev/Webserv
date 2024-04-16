@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 12:15:31 by manujime          #+#    #+#             */
-/*   Updated: 2024/03/19 18:22:24 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:01:39 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Manager
 		Manager();
 		~Manager(void);
 			
-		bool	parseConfig();
+		bool				parseConfig();
 		std::list<Config>	getConfigs(void) ;
 
 	private:
