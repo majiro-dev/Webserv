@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 15:10:54 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:04:22 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,6 @@ std::string Response::buildErrorPage()
     return html.str();
 }
 
-
 std::string Response::build_response()
 {
     std::stringstream ss;
@@ -166,6 +165,7 @@ std::string Response::build_response()
         ss << this->_body;
     return ss.str();
 }
+
 void Response::setFile(std::string &file)
 {
     this->_file = file;

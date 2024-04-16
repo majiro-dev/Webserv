@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/14 18:41:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:09:40 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,7 +328,6 @@ void Config::SetRootAsLocation(std::string location)
     try
     {
         this->_root = location;
-        //std::cout << "LOCATION ROOT: " << this->_root << std::endl;
         if (Utils::DirIsValid(this->_root) == false)
         {
             std::string error = "Invalid location directory: " + this->_root;
@@ -477,15 +476,29 @@ bool Config::IsValid(void)
             }
         } 
     }
-
+    
     if (this->_locations.size() != 0)
     {
+        std::cout << "LOCATIONS SIZE: " << this->_locations.size() << std::endl;
+        int base = 0;
         for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
         {
             if (it->IsValid() == false)
                 return (false);
+            if (it->GetLocationName() == "/")
+            {
+                std::cout << "BASE: " << it->GetLocationName() << std::endl;
+                base++;
+            }
+        }
+        if (base != 1)
+        {
+            std::string error = "No base location found";
+            Utils::log(error, RED);
+            return (false);
         }
     }
+    
 
     return (true);
 }

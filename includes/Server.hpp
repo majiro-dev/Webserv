@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/05 12:02:10 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:05:51 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,39 +25,38 @@
 class Server
 {
     private:
-        Config                      _config;
-        std::vector<Client *>       _clients;
-        std::vector<uint16_t>       _sockets;
-        std::vector<sockaddr_in>    _sockaddrs;
-        std::vector<uint16_t>       _ports;
-        std::vector<Config>         _locations;
-        in_addr_t                   _host;
-        std::string                 _name;
-        size_t                      _maxBodySize;
-        Response                     _response;
-        std::map<int, std::string>  _errorPages; 
+        Config                          _config;
+        std::vector<Client *>           _clients;
+        std::vector<uint16_t>           _sockets;
+        std::vector<sockaddr_in>        _sockaddrs;
+        std::vector<uint16_t>           _ports;
+        std::vector<Config>             _locations;
+        in_addr_t                       _host;
+        std::string                     _name;
+        size_t                          _maxBodySize;
+        Response                        _response;
+        std::map<int, std::string>      _errorPages; 
         void addSocketsServer();
     public:
-        //Server(std::string ip_address, int port);
         Server(Config config);
         ~Server(void);
         
-        void removeClient(Client *client);
-        void addClient(Client *client);
+        void                        removeClient(Client *client);
+        void                        addClient(Client *client);
         
-        std::vector<uint16_t> getSockets();
-        std::vector<sockaddr_in> getSockaddrs();
-        std::vector<Client *> getClients();
-        Config getConfig();
-        Config *getLocation(Request &request);
-        Response getReponse();
-        std::string getName();
+        std::vector<uint16_t>       getSockets();
+        std::vector<sockaddr_in>    getSockaddrs();
+        std::vector<Client *>       getClients();
+        Config                      getConfig();
+        Config *                    getLocation(Request &request);
+        Response                    getReponse();
+        std::string                 getName();
 
-        Response hadleRequest(Request &request, Config *location);
-        void generateResponse(const std::string& request, sockaddr_in socketaddr);
+        Response                    hadleRequest(Request &request, Config *location);
+        void                        generateResponse(const std::string& request, sockaddr_in socketaddr);
 
-        void addErrorPage(Config &config);
-        void putErrorPage(Response &response);
+        void                        addErrorPage(Config &config);
+        void                        putErrorPage(Response &response);
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 13:26:23 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:53:10 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ void Request::parseQuerys(std::string &uri)
     len = querys.find('&');
     while(len != std::string::npos)
     {
-        std::cout << "Entrra" << std::endl;
         aux =  querys.substr(0, len);
         equal = aux.find('=');
         key = aux.substr(0, equal);

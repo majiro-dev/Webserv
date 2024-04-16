@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:02:49 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 19:14:10 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:56:33 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ class Cgi
         ~Cgi(void);
         Cgi(Cgi const & src);
 
-        void    SetCgiPath(std::string path);
-        void    SetCgiExtension(std::string extension);
+        void        SetCgiPath(std::string path);
+        void        SetCgiExtension(std::string extension);
         std::string GetCgiPath(void) const;
         std::string GetCgiExtension(void) const;
         std::string GetResult(void) const;
 
         static bool IsCgi(std::string path);
-        bool ExecuteCgi(char **env, char **argv, std::string projectPath);
+        bool        ExecuteCgi(char **env, char **argv, std::string projectPath);
 
     private:
         std::string cgiPath;

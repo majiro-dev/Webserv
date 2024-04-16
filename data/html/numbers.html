@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Number Submission</title>
+	<style>
+		body {
+			text-align: center;
+		}
+		form {
+			width: 50%;
+			margin: auto;
+		}
+	</style>
+</head>
+<body>
+	<h1>Submit Two Numbers</h1>
+	<form id="numberForm">
+		<input type="number" id="numberInput1" name="number1">
+		<input type="number" id="numberInput2" name="number2">
+		<button type="button" onclick="submitNumbers()">Submit</button>
+	</form>
+	<p id="serverResponse"></p>
+
+	<script>
+		function submitNumbers() {
+			var numberInput1 = document.getElementById('numberInput1');
+			var number1 = numberInput1.value;
+			var numberInput2 = document.getElementById('numberInput2');
+			var number2 = numberInput2.value;
+
+			var formData = new FormData();
+			formData.append('number1', number1);
+			formData.append('number2', number2);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'http://localhost:8080/tours/Math.py?number1=' + number1 + '&number2=' + number2, true);
+			xhr.onload = function () {
+				if (xhr.status === 200) {
+					document.getElementById('serverResponse').innerText = xhr.responseText;
+				} else {
+					document.getElementById('serverResponse').innerText = 'Error submitting numbers. Please try again.';
+				}
+			};
+			xhr.send(formData);
+		}
+	</script>
+</body>
+</html>

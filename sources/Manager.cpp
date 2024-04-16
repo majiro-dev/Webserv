@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Manager.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 19:27:57 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/10 19:10:47 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:51:58 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,9 @@ bool	Manager::parseConfig()
 		if (it->IsValid() == false)
 		{
 			Utils::log("Invalid config", RED);
-			//it->PrintConfig();
 			valid = false;
 		}
-		//it->PrintConfig();
 	}
-	//Utils::log("Parsed " + Utils::IntToString(_configs.size()) + " server blocks", RESET);
 	return valid;
 }
 
@@ -109,8 +106,6 @@ void 	Manager::_assignConfValues(std::string *line, Config *config, int i)
 				&Config::SetIndex, &Config::SetAllowMethods, &Config::SetCgiPass, &Config::SetCgiExtension, 
 				&Config::SetRedirect, &Config::SetProjectPath};
 	(config->*setters[i])(value);
-	//std::cout << "Assigned " << value << " to " << i << std::endl;
-	//Utils::log("BREAKPOINTE TEST");
 }
 
 void  Manager::_parseLocationBlock(std::ifstream *file, std::string *line, Config *location)
