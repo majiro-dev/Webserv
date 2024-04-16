@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:14:22 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/16 16:10:39 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,15 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
         if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
         {
             response.setBody(cgi.GetResult());
+            for (int i = 0; args[i]; i++)
+                free(args[i]);
+            free(args);
             return response;
         }
-        return Response(500);
+        for (int i = 0; args[i]; i++)
+            free(args[i]);
+        free(args);
+        return Response(404);
     }
     if(Utils::DirIsValid(path))
     {

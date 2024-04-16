@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/04 22:49:02 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:01:31 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 
 int main(int argc, char **argv)
 {
-    //atexit(leaks);
     std::string path;
     if (argc != 2)
     {
@@ -41,8 +40,6 @@ int main(int argc, char **argv)
     signal(SIGINT, handleSignal);
     if(cluster.init() == true)
         cluster.run();
-    
-    //Server server = Server(config);
     
     return (0);
 }

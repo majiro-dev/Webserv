@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 13:42:36 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 15:17:10 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,24 +69,17 @@ bool Cgi::IsCgi(std::string path)
 
 bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
 {
+    (void)env;
     pid_t pid;
     int fd[2];
     int status;
     std::string dirPath = this->cgiPath.substr(0, this->cgiPath.find_last_of('/'));
     
-    std::cout << "DIRPATH: " << dirPath << std::endl;
-    std::cout << "EXECUTING CGI" << std::endl;
-    for (int i = 0; argv[i] != NULL; i++)
-    {
-        std::cout << "ARGV: " << argv[i] << std::endl;
-    }
-
     if (pipe(fd) == -1)
         return (false);
     pid = fork();
     if (pid == 0)
     {
-        std::cout << "PROJECT PATH: " << projectPath << std::endl;
         if (chdir(projectPath.c_str()) == -1)
         {
             std::cout << "could not change directory to " << projectPath << std::endl;
@@ -108,7 +101,6 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
     }
     else
     {
-        std::cout << "PARENT PROCESS" << std::endl;
         close(fd[1]);
         fd[1] = -1;
         char buffer[4096];
@@ -122,7 +114,6 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
                 while ((bytesRead = read(fd[0], buffer, 4096)) > 0)
                 {
                     this->result.append(buffer, bytesRead);
-                    std::cout <<"CGI RESULT ASSIGNED:";
                     std::cout << this->result << std::endl;
                 }
                 close(fd[0]);
@@ -131,7 +122,6 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
         }
     }
     return (false);
-    (void)env;
 }
 
 std::string Cgi::GetResult(void) const

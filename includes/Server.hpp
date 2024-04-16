@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:05:51 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:00:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Server
         std::vector<Client *>       getClients();
         Config                      getConfig();
         Config *                    getLocation(Request &request);
-        Response                    getReponse();
+        Response                    getResponse();
         std::string                 getName();
 
         Response                    hadleRequest(Request &request, Config *location);

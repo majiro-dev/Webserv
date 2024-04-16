@@ -6,12 +6,12 @@
 #    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/04/16 10:51:17 by manujime         ###   ########.fr        #
+#    Updated: 2024/04/16 17:12:06 by manujime         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address 
+CFLAGS = -g -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 SRC_DIR = ./sources
 INC_DIR = ./includes
 OBJ_DIR = ./obj
