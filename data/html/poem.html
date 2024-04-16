@@ -4,14 +4,23 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Word Submission</title>
+	<style>
+		body {
+			text-align: center;
+		}
+	</style>
 </head>
 <body>
 	<h1>Submit Four Words</h1>
 	<form id="wordForm">
 		<input type="text" id="wordInput1" name="word1">
+		<br>
 		<input type="text" id="wordInput2" name="word2">
+		<br>
 		<input type="text" id="wordInput3" name="word3">
+		<br>
 		<input type="text" id="wordInput4" name="word4">
+		<br>
 		<button type="button" onclick="submitWords()">Submit</button>
 	</form>
 	<p id="serverResponse"></p>
@@ -28,9 +37,9 @@
 			var word4 = wordInput4.value;
 
 			if (!word1 || !word2 || !word3 || !word4) {
-            	alert('Error: All fields must be filled out.');
-            	return;
-        	}
+				alert('Error: All fields must be filled out.');
+				return;
+			}
 
 			var formData = new FormData();
 			formData.append('word1', word1);
