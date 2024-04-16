@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:09:40 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:39:32 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,17 +479,13 @@ bool Config::IsValid(void)
     
     if (this->_locations.size() != 0)
     {
-        std::cout << "LOCATIONS SIZE: " << this->_locations.size() << std::endl;
         int base = 0;
         for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
         {
             if (it->IsValid() == false)
                 return (false);
             if (it->GetLocationName() == "/")
-            {
-                std::cout << "BASE: " << it->GetLocationName() << std::endl;
                 base++;
-            }
         }
         if (base != 1)
         {
@@ -497,6 +493,22 @@ bool Config::IsValid(void)
             Utils::log(error, RED);
             return (false);
         }
+         for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+         {
+            int instances = 0;
+            std::string aux = it->GetLocationName();
+            for (std::vector<Config>::iterator it2 = this->_locations.begin(); it2 != this->_locations.end(); it2++)
+            {
+                if (it2->GetLocationName() == aux)
+                    instances++;
+            }
+            if (instances > 1)
+            {
+                std::string error = "Location " + aux + " has more than one instance";
+                Utils::log(error, RED);
+                return (false);
+            }
+         }
     }
     
 
