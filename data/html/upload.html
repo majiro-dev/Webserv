@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>File Submission</title>
+</head>
+<body>
+    <!-- Copy the body content from poem.html -->
+    <h1>Upload a File!</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" accept=".txt,.css,.html,.json,.xml,.sh,.py" />
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+    
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+    
+            reader.onload = function(e) {
+                var content = e.target.result;
+                var contentLength = content.length;
+    
+                var extension = file.name.split('.').pop();
+                var contentType = getContentType(extension);
+    
+                var xhr = new XMLHttpRequest();
+                var url = 'http://localhost:8080/uploads/' + file.name;
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Host', 'example.com');
+                xhr.setRequestHeader('Content-Type', contentType);
+                xhr.setRequestHeader('Content-Length', contentLength);
+                xhr.onload = function() {
+                if (xhr.status == 200) {
+                    alert('File uploaded successfully! :)');
+                } else {
+                    alert('Failed to upload file :(');
+                }
+            };
+                xhr.send(content);
+            };
+    
+            reader.readAsText(file);
+        });
+    
+        function getContentType(extension) {
+            switch(extension) {
+                case 'json': return 'application/json';
+                case 'txt': return 'text/plain';
+                case 'css': return 'text/css';
+                case 'html': return 'text/html';
+                case 'xml': return 'text/xml';
+                case 'sh': return 'text/sh';
+                case 'py': return 'text/py';
+                default: return 'text/plain';
+            }
+        }
+    </script>
+</body>
+</html>

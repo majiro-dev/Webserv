@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>File Deletion</title>
+</head>
+<body>
+    <!-- Copy the body content from upload.html -->
+    <h1>Delete a File!</h1>
+    <form id="deleteForm">
+        <input type="file" id="fileInput" accept=".txt,.css,.html,.json,.xml,.sh,.py" />
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+
+            var xhr = new XMLHttpRequest();
+            var url = 'http://localhost:8080/uploads/' + file.name;
+            xhr.open('DELETE', url, true);
+            xhr.setRequestHeader('Host', 'example.com');
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    alert('File deleted successfully! :)');
+                } else {
+                    alert('Failed to delete file :(');
+                }
+            };
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
