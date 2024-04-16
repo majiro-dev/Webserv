@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:39:32 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:45:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,9 +141,7 @@ void Config::SetPort(std::string port)
             Utils::exceptWithError(error);
         }
         uint16_t port_int = Utils::StringToUint16(port_str);
-        //port_int = Utils::StringToUint16(port_str);
         this->_ports.push_back(port_int);
-        //this->_port = port_int;// TODO: remove this line
     }
     catch(const std::exception& e)
     {
@@ -214,21 +212,6 @@ void Config::SetClientMaxBodySize(std::string client_max_body_size)
 
 void Config::SetIndex(std::string index)
 {
-    /*
-    try
-    {
-        std::string indexPath = this->_root + "/" + _trim(index);
-        if (Utils::FileIsReadable(indexPath) == false)
-        {
-            std::string error = "Invalid index file: " + indexPath;
-            Utils::exceptWithError(error);
-        }
-        this->_index = _trim(index);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }*/
 
     this->_index = _trim(index);
 }
@@ -268,32 +251,19 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    //try
-    //{
-        std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-        if (tokens.size() < 2)
-        {
-            std::string error = "Invalid cgi directory: " + cgi_pass;
-            Utils::log(error, RED);
-        }
-        for (size_t i = 1; i < tokens.size(); i++)
-        {
-            //if (Utils::DirIsValid(tokens[i]) == false)
-            //{
-            //    std::string error = "Invalid cgi directory: " + tokens[i];
-            //    Utils::exceptWithError(error);
-            //}
-            Cgi *cgi = new Cgi();
-            cgi->SetCgiPath(tokens[i]);
-            this->_cgis.push_back(*cgi);
-            delete cgi;
-        } /*
-    }
-    catch(const std::exception& e)
+    std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
+    if (tokens.size() < 2)
     {
-        std::cerr << e.what() << '\n';
-    }*/
-    
+        std::string error = "Invalid cgi directory: " + cgi_pass;
+        Utils::log(error, RED);
+    }
+    for (size_t i = 1; i < tokens.size(); i++)
+    {
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(tokens[i]);
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    } 
 }
 
 void Config::SetCgiExtension(std::string cgi_extension)
@@ -430,7 +400,7 @@ bool Config::IsValid(void)
     {
         for (std::vector<uint16_t>::iterator it = this->_ports.begin(); it != this->_ports.end(); it++)
         {
-            if (*it < 1024 || *it > 49151) //maybe 0 to 65535
+            if (*it < 1024 || *it > 49151)
             {
                 std::string error = "Invalid port: " + Utils::Uint16ToString(*it);
                 Utils::log(error, RED);
@@ -467,7 +437,6 @@ bool Config::IsValid(void)
     {
         for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
         {
-            //check if cgi path is a valid file
             if (Utils::FileIsReadable(it->GetCgiPath()) == false)
             {
                 std::string error = "Invalid cgi path" + it->GetCgiPath();

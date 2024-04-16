@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:35:13 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:14:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
         }
         for (int i = 0; args[i]; i++)
             free(args[i]);
-        return Response(500);
+        return Response(404);
     }
     if(Utils::DirIsValid(path))
     {

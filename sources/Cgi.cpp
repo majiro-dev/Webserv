@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 13:42:36 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:11:40 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ bool Cgi::IsCgi(std::string path)
 
 bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
 {
+    (void)env;
     pid_t pid;
     int fd[2];
     int status;
@@ -131,7 +132,6 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
         }
     }
     return (false);
-    (void)env;
 }
 
 std::string Cgi::GetResult(void) const

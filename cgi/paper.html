@@ -34,7 +34,7 @@
 			formData.append('word1', word1);
 
 			var xhr = new XMLHttpRequest();
-			xhr.open('GET', 'http://localhost:8080/tours/paper.php?draw=' + word1, true);
+			xhr.open('GET', 'http://localhost:2020/cgi/paper.php?draw=' + word1, true);
 			xhr.onload = function () {
 				if (xhr.status === 200) {
 					document.getElementById('serverResponse').innerText = xhr.responseText;

@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/15 13:02:23 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:08:53 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 
 
-#define PORT 8080
+#define PORT 2020
 
 char *getFileBuffer(const char *filename) {
     FILE *file = fopen(filename, "r");
@@ -76,7 +76,8 @@ std::string buildHttpRequest(int contentOption) {
         return "GET /testpost.txt HTTP/1.1\r\n"
             "Host: example.com\r\n"
             "Content-Length: " + getFileContentLength("data/testWroteFile.txt") + "\r\n"
-            "\r\n" + std::string(getFileBuffer("data/testWroteFile.txt")) + "\r\n";;
+            "\r\n" + std::string(getFileBuffer("data/testWroteFile.txt")) + "\r\n";
+    }
     if (contentOption == 1) {
         //GET request for hello.sh in the /tours location
         return "GET /tours/hola.py?hola=mam&fdfdfdfe=4 HTTP/1.1\r\n"
@@ -103,7 +104,7 @@ std::string buildHttpRequest(int contentOption) {
                "Host: example.com\r\n";
     }
     else if (contentOption == 4) {
-        return "GET /tours/hola.sh HTTP/1.1\r\n"
+        return "GET /cgi/loop.py HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
@@ -163,8 +164,8 @@ int main(int argc, char const **argv) {
 
     // Enviar la solicitud en partes
     //std::string part1 = buildHttpRequest(1).c_str();
-    int contentOption = argc -1;
-    std::string part1 = buildHttpRequest(5);
+    int contentOption = argv[1] ? atoi(argv[1]) : 0;
+    std::string part1 = buildHttpRequest(contentOption).c_str();
     const char *part2 = "0\r\n\r\n";
 
     sendPart(sock, part1.c_str());
@@ -178,9 +179,9 @@ int main(int argc, char const **argv) {
     } else {
         std::cerr << "Error de lectura o el servidor cerró la conexión" << std::endl;
     }
-
     // Cerrar el socket
     close(sock);
 
     return 0;
+
 }

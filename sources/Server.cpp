@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 12:55:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:43:25 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 Server::Server(Config config):
     _config(config)
 {
-    //config.PrintConfig();
     std::stringstream ss;
     std::string name = config.GetServerName();
     
