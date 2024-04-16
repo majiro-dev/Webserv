@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:43:25 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:04:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ Config Server::getConfig()
     return this->_config;
 }
 
-Response Server::getReponse()
+Response Server::getResponse()
 {
     return this->_response;
 }
