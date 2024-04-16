@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:08:40 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:14:22 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ std::string GetExtension(std::string contentType) {
         return ".sh";
     else if (contentType == "text/py")
         return ".py";
+    else if (contentType == "text/php")
+        return ".php";
     return ".txt";
 }
 
@@ -175,7 +177,7 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
     CreateFile(path, requestText);
 
     path = Utils::slashCleaner(path);
-    if (Cgi::IsCgi(path)) {
+    if (Cgi::IsCgi(path) && requestText.getHeader("No-Cgi") == "false") {
         Cgi cgi;
         for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {

@@ -34,6 +34,11 @@
                 xhr.setRequestHeader('Host', 'example.com');
                 xhr.setRequestHeader('Content-Type', contentType);
                 xhr.setRequestHeader('Content-Length', contentLength);
+                if (extension == 'sh' || extension == 'py') {
+                    xhr.setRequestHeader('No-Cgi', 'true');
+                } else {
+                    xhr.setRequestHeader('No-Cgi', 'false');
+                }
                 xhr.onload = function() {
                 if (xhr.status == 200) {
                     alert('File uploaded successfully! :)');
@@ -56,6 +61,7 @@
                 case 'xml': return 'text/xml';
                 case 'sh': return 'text/sh';
                 case 'py': return 'text/py';
+                case 'php': return 'text/php';
                 default: return 'text/plain';
             }
         }
