@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/15 13:50:58 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/16 11:03:52 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ Response Methods::HandleDelete(std::string path)
 }
 
 std::string GetExtension(std::string contentType) {
+    std::cout << "CONTENT  !!!!!!! TYPE: " << contentType << std::endl;
     if (contentType == "application/json")
         return ".json";
     else if (contentType == "text/plain")
@@ -143,7 +144,7 @@ std::string GetExtension(std::string contentType) {
         return ".sh";
     else if (contentType == "text/py")
         return ".py";
-    return "";
+    return ".txt";
 }
 
 Response CreateFile(std::string path, Request request) 
@@ -218,7 +219,7 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
             std::cout << "NO CGI PATH" << std::endl;
             return Response(500);
         }
-        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path));
+        char **args = makeArgs(Utils::slashCleaner(cgi.GetCgiPath()), Utils::slashCleaner(path), requestText.getQuerys());
         std::cout << "ARGS: " << args[0] << " " << args[1] << std::endl;
         if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
         {

@@ -20,7 +20,7 @@
             formData.append('file', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/your-server-endpoint', true);
+            xhr.open('POST', 'http://localhost:8080/', true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     alert('File uploaded successfully!');
