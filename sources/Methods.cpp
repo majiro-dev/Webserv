@@ -6,7 +6,7 @@
 /*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:14:22 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/17 16:31:16 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,15 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
         if (cgi.ExecuteCgi(NULL, args, location.GetProjectPath()))
         {
             response.setBody(cgi.GetResult());
+            for (int i = 0; args[i]; i++)
+                free(args[i]);
+            free(args);
             return response;
         }
-        return Response(500);
+        for (int i = 0; args[i]; i++)
+            free(args[i]);
+        free(args);
+        return Response(404);
     }
     if(Utils::DirIsValid(path))
     {
@@ -141,6 +147,10 @@ Response CreateFile(std::string path, Request request)
 
     try {
         std::string requestBody = request.getBody();
+        size_t pos = requestBody.rfind('?');
+        if (pos != std::string::npos) {
+            requestBody = requestBody.substr(0, pos);
+        }
         file << requestBody;
         file.close();
         return Response(200);
@@ -174,10 +184,10 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
         createFile.close();
     }
 
-    CreateFile(path, requestText);
+    Response responseCase(CreateFile(path, requestText));
 
     path = Utils::slashCleaner(path);
-    if (Cgi::IsCgi(path) && requestText.getHeader("No-Cgi") == "false") {
+    if (Cgi::IsCgi(path) && requestText.getHeader("No-Cgi") != "true" && cgis.size() > 0){
         Cgi cgi;
         for (std::vector<Cgi>::iterator it = cgis.begin(); it != cgis.end(); it++)
         {
@@ -200,5 +210,5 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
         return Response(500);
     }
 
-    return CreateFile(path, requestText);
+    return responseCase;
 }

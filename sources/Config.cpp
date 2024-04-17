@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:09:40 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/17 15:25:00 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 Config::Config(void)
 {
     this->_parent = NULL;
-    this->_port = 8080;
-    //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
     this->_index = "";
     this->_client_max_body_size = 0;
@@ -141,9 +139,7 @@ void Config::SetPort(std::string port)
             Utils::exceptWithError(error);
         }
         uint16_t port_int = Utils::StringToUint16(port_str);
-        //port_int = Utils::StringToUint16(port_str);
         this->_ports.push_back(port_int);
-        //this->_port = port_int;// TODO: remove this line
     }
     catch(const std::exception& e)
     {
@@ -214,21 +210,6 @@ void Config::SetClientMaxBodySize(std::string client_max_body_size)
 
 void Config::SetIndex(std::string index)
 {
-    /*
-    try
-    {
-        std::string indexPath = this->_root + "/" + _trim(index);
-        if (Utils::FileIsReadable(indexPath) == false)
-        {
-            std::string error = "Invalid index file: " + indexPath;
-            Utils::exceptWithError(error);
-        }
-        this->_index = _trim(index);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }*/
 
     this->_index = _trim(index);
 }
@@ -268,32 +249,19 @@ void Config::SetAllowMethods(std::string allow_methods)
 
 void Config::SetCgiPass(std::string cgi_pass)
 {
-    //try
-    //{
-        std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
-        if (tokens.size() < 2)
-        {
-            std::string error = "Invalid cgi directory: " + cgi_pass;
-            Utils::log(error, RED);
-        }
-        for (size_t i = 1; i < tokens.size(); i++)
-        {
-            //if (Utils::DirIsValid(tokens[i]) == false)
-            //{
-            //    std::string error = "Invalid cgi directory: " + tokens[i];
-            //    Utils::exceptWithError(error);
-            //}
-            Cgi *cgi = new Cgi();
-            cgi->SetCgiPath(tokens[i]);
-            this->_cgis.push_back(*cgi);
-            delete cgi;
-        } /*
-    }
-    catch(const std::exception& e)
+    std::vector<std::string> tokens = Utils::Tokenize(cgi_pass, " \t;");
+    if (tokens.size() < 2)
     {
-        std::cerr << e.what() << '\n';
-    }*/
-    
+        std::string error = "Invalid cgi directory: " + cgi_pass;
+        Utils::log(error, RED);
+    }
+    for (size_t i = 1; i < tokens.size(); i++)
+    {
+        Cgi *cgi = new Cgi();
+        cgi->SetCgiPath(tokens[i]);
+        this->_cgis.push_back(*cgi);
+        delete cgi;
+    } 
 }
 
 void Config::SetCgiExtension(std::string cgi_extension)
@@ -411,6 +379,27 @@ void Config::ClearLocations(void)
 
 bool Config::IsValid(void)
 {
+    if (this->_ports.size() == 0)
+    {
+        std::string error = "No port specified";
+        Utils::log(error, RED);
+        return (false);
+    }
+
+    if (this->_server_name == "")
+    {
+        std::string error = "No server name specified";
+        Utils::log(error, RED);
+        return (false);
+    }
+    
+    if (this->_host == INADDR_NONE)
+    {
+        std::string error = "Invalid host: " + std::string(inet_ntoa(*(in_addr*)&this->_host));
+        Utils::log(error, RED);
+        return (false);
+    }
+    
     if (this->_index != "")
     {
         if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
@@ -430,7 +419,7 @@ bool Config::IsValid(void)
     {
         for (std::vector<uint16_t>::iterator it = this->_ports.begin(); it != this->_ports.end(); it++)
         {
-            if (*it < 1024 || *it > 49151) //maybe 0 to 65535
+            if (*it < 1024 || *it > 49151)
             {
                 std::string error = "Invalid port: " + Utils::Uint16ToString(*it);
                 Utils::log(error, RED);
@@ -467,7 +456,6 @@ bool Config::IsValid(void)
     {
         for (std::vector<Cgi>::iterator it = this->_cgis.begin(); it != this->_cgis.end(); it++)
         {
-            //check if cgi path is a valid file
             if (Utils::FileIsReadable(it->GetCgiPath()) == false)
             {
                 std::string error = "Invalid cgi path" + it->GetCgiPath();
@@ -479,17 +467,13 @@ bool Config::IsValid(void)
     
     if (this->_locations.size() != 0)
     {
-        std::cout << "LOCATIONS SIZE: " << this->_locations.size() << std::endl;
         int base = 0;
         for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
         {
             if (it->IsValid() == false)
                 return (false);
             if (it->GetLocationName() == "/")
-            {
-                std::cout << "BASE: " << it->GetLocationName() << std::endl;
                 base++;
-            }
         }
         if (base != 1)
         {
@@ -497,6 +481,22 @@ bool Config::IsValid(void)
             Utils::log(error, RED);
             return (false);
         }
+         for (std::vector<Config>::iterator it = this->_locations.begin(); it != this->_locations.end(); it++)
+         {
+            int instances = 0;
+            std::string aux = it->GetLocationName();
+            for (std::vector<Config>::iterator it2 = this->_locations.begin(); it2 != this->_locations.end(); it2++)
+            {
+                if (it2->GetLocationName() == aux)
+                    instances++;
+            }
+            if (instances > 1)
+            {
+                std::string error = "Location " + aux + " has more than one instance";
+                Utils::log(error, RED);
+                return (false);
+            }
+         }
     }
     
 

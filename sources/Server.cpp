@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 12:55:09 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:06:22 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 Server::Server(Config config):
     _config(config)
 {
-    //config.PrintConfig();
     std::stringstream ss;
     std::string name = config.GetServerName();
     
@@ -59,7 +58,7 @@ Config Server::getConfig()
     return this->_config;
 }
 
-Response Server::getReponse()
+Response Server::getResponse()
 {
     return this->_response;
 }
@@ -251,6 +250,11 @@ Response Server::hadleRequest(Request &request, Config *location)
     {
         Utils::logger("Invalid protocol", ERROR);
         return Response(505);
+    }
+    if (request.getMethod() != "GET" && request.getMethod() != "POST" && request.getMethod() != "DELETE")
+    {
+        Utils::logger("Unknown method: " + request.getMethod(), ERROR);
+        return Response(501);
     }
     if(checkAllowMethods(location, request.getMethod()) == false)
     {

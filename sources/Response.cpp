@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 13:04:22 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:02:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void Response::init_code_message()
     this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
     this->_code_msgs.insert(std::make_pair(413, "Exceeds Body Limit"));
     this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
+    this->_code_msgs.insert(std::make_pair(501, "Unknown Method"));
     this->_code_msgs.insert(std::make_pair(505, "HTTP Version Not Supported"));
 }
 

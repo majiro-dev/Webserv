@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Word Submission</title>
+	<style>
+		body {
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<h1>Rock Paper Scissors</h1>
+		<form id="wordForm">
+			<input type="text" id="wordInput1" name="word1">
+			<button type="button" onclick="submitWords()">Submit</button>
+		</form>
+		<p id="serverResponse"></p>
+	</div>
+
+	<script>
+		function submitWords() {
+			var wordInput1 = document.getElementById('wordInput1');
+			var word1 = wordInput1.value;
+
+			if (!word1) {
+            	alert('Error: you must draw your choice.');
+            	return;
+        	}
+
+			var formData = new FormData();
+			formData.append('word1', word1);
+
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'http://localhost:2020/cgi/paper.php?draw=' + word1, true);
+			xhr.onload = function () {
+				if (xhr.status === 200) {
+					document.getElementById('serverResponse').innerText = xhr.responseText;
+				} else {
+					document.getElementById('serverResponse').innerText = 'Error submitting words. Please try again.';
+				}
+			};
+			xhr.send(formData);
+		}
+	</script>
+</body>
+</html>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 12:47:49 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/16 17:00:47 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void Cluster::checkClientSockets()
                 if (this->_pollfds[k].revents & POLLOUT && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
                     int val_send;
-                    val_send = clients[j]->sendResponse(this->_servers[i]->getReponse());
+                    val_send = clients[j]->sendResponse(this->_servers[i]->getResponse());
                     if(val_send == 0)
                     {
                         usleep(2000);
