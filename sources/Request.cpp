@@ -1,12 +1,13 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 22:22:56 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 12:53:10 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/17 15:20:54 by jmatas-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +177,28 @@ void Request::parseBody()
         return ;
     else
         this->_body = "";
+    
+    if (this->_querys.empty())
+    {
+        size_t pos = this->_body.rfind('?');
+        if (pos != std::string::npos)
+        {
+            std::string queries = this->_body.substr(pos + 1);
+            std::istringstream iss(queries);
+            std::string query;
+            while (std::getline(iss, query, '&'))
+            {
+                size_t equalPos = query.find('=');
+                if (equalPos != std::string::npos)
+                {
+                    std::string key = query.substr(0, equalPos);
+                    std::string value = query.substr(equalPos + 1);
+                    this->_querys.insert(std::make_pair(key, value));
+                }
+            }
+            this->_body = this->_body.substr(0, pos);
+        }
+    }
 }
 
 
