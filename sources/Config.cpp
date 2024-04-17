@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:45:08 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/17 15:25:00 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 Config::Config(void)
 {
     this->_parent = NULL;
-    this->_port = 8080;
-    //this->_host = inet_addr("127.0.0.1");
     this->_root = "";
     this->_index = "";
     this->_client_max_body_size = 0;
@@ -381,6 +379,27 @@ void Config::ClearLocations(void)
 
 bool Config::IsValid(void)
 {
+    if (this->_ports.size() == 0)
+    {
+        std::string error = "No port specified";
+        Utils::log(error, RED);
+        return (false);
+    }
+
+    if (this->_server_name == "")
+    {
+        std::string error = "No server name specified";
+        Utils::log(error, RED);
+        return (false);
+    }
+    
+    if (this->_host == INADDR_NONE)
+    {
+        std::string error = "Invalid host: " + std::string(inet_ntoa(*(in_addr*)&this->_host));
+        Utils::log(error, RED);
+        return (false);
+    }
+    
     if (this->_index != "")
     {
         if (Utils::FileIsReadable(this->_root + "/" + this->_index) == false)
