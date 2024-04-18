@@ -6,12 +6,12 @@
 #    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/04/18 11:24:08 by manujime         ###   ########.fr        #
+#    Updated: 2024/04/18 15:39:10 by manujime         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = c++
-CFLAGS = -g -Wall -Wextra -Werror -std=c++98 -fsanitize=address
+CFLAGS = -g -Wall -Wextra -Werror -std=c++98
 SRC_DIR = ./sources
 INC_DIR = ./includes
 OBJ_DIR = ./obj
@@ -57,5 +57,8 @@ r: re
 
 l: re
 	@./$(NAME) tests/conf/server_linux.conf
+
+val: re
+	@valgrind --leak-check=full ./$(NAME) tests/conf/server_linux.conf
 
 .PHONY: all clean fclean re
