@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 13:09:36 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/18 10:44:06 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ bool Client::getfinishReq()
 
 int Client::handleRecv()
 {
+    std::cout << "HANDLE RECV" << std::endl;
     if(this->_finishReq == true)
         return 0;
     int bytesReceived = 0;
@@ -124,7 +125,7 @@ int Client::sendResponse(Response res)
         totalBytesSent += bytesSent;
         bytesRemaining -= bytesSent;
     }
-
+    
     Utils::logger("Response sent successfully.", LOG);
     close(this->getSocket());
     return 0;

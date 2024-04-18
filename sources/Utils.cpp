@@ -291,3 +291,10 @@ std::string Utils::slashCleaner(const std::string path)
     }
     return newPath;
 }
+
+std::string Utils::SizeTToString(size_t number)
+{
+    std::stringstream ss;
+    ss << number;
+    return ss.str();
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmatas-p <jmatas-p@student.42.fr>          +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/17 16:31:16 by jmatas-p         ###   ########.fr       */
+/*   Updated: 2024/04/18 10:41:30 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ Response CreateFile(std::string path, Request request)
         return Response(400);
     }
     
-    std::ofstream file(path);
+    std::ofstream file(path.c_str());
     
     if (!file.is_open()) {
         return Response(500);
@@ -176,7 +176,7 @@ Response Methods::HandlePost(std::string path, Request requestText, Config &loca
     }
 
     if (access(path.c_str(), F_OK) == -1) {
-        std::ofstream createFile(path);
+        std::ofstream createFile(path.c_str());
         if (!createFile.is_open()) {
             std::cerr << "Error: Failed to create file" << std::endl;
             return Response(500);

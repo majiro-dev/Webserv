@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:09:25 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/18 00:24:13 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ class Utils
 		static uint16_t 				StringToUint16(std::string str);
 		static std::string 				Uint16ToString(uint16_t number);
 		static size_t 					StringToSizeT(std::string str);
+		static std::string 				SizeTToString(size_t number);
 		static std::vector<std::string>	Tokenize(const std::string &str, const std::string &delimiters);
 		static char **					MultimapToCharMatrix(std::multimap<std::string, std::string> &map);
 		static void 					logger(const std::string &msg, int mode);
