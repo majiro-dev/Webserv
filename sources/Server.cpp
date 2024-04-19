@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/17 17:06:22 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:43:21 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ Server::Server(Config config):
     ss << "New server started => " << '[' << this->_name << ']';
     Utils::logger(ss.str(), INFO);
     
+}
+
+Server::Server(const Server &src)
+{
+    *this = src;
 }
 
 Server::~Server(void)

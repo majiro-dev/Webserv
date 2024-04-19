@@ -18,6 +18,11 @@ Request::Request()
     : _req_msg(""),_method(""), _uri(""),_protocol(""), _body("")
 {}
 
+Request::Request(const Request &src)
+{
+    *this = src;
+}
+
 Request::Request(const std::string &msg)
     : _req_msg(msg),_method(""), _uri(""),_protocol(""), _body("")
 {

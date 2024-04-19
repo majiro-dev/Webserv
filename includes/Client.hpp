@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:00:02 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 12:57:19 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:40:01 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Client
         Client();
         Client(int fd, sockaddr_in socketaddr);
         ~Client();
+        Client(const Client& src);
         Client& operator=(const Client& src);
         
         int         handleRecv();

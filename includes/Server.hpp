@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:40:07 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 17:00:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:43:13 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Server
         void addSocketsServer();
     public:
         Server(Config config);
+        Server(const Server &src);
         ~Server(void);
         
         void                        removeClient(Client *client);

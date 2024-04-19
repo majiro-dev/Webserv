@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:40 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 12:57:36 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:39:37 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Cluster
         void removeClient(Client *client);
     public:
         Cluster(std::list<Config> &configs);
+        Cluster(const Cluster &src);
         ~Cluster();
 
         void    addSocketsPoll();

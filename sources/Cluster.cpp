@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/18 11:17:02 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:56:40 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 Cluster::Cluster(std::list<Config> &configs)
 {
     this->_configs.assign(configs.begin(), configs.end());
+}
+
+Cluster::Cluster(const Cluster &src)
+{
+    *this = src;
 }
 
 Cluster::~Cluster()
@@ -187,7 +192,7 @@ void Cluster::checkClientSockets()
                     val_send = clients[j]->sendResponse(this->_servers[i]->getResponse());
                     if(val_send == 0)
                     {
-                        usleep(2000);
+                        //usleep(2000);
                         this->_servers[i]->removeClient(clients[j]);
                         std::cout << "Removed client " << j << " on server " << i << std::endl;
                     }

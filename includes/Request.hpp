@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 21:02:17 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 13:02:53 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/19 13:34:08 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Request
     public:
         Request();
         Request(const std::string &msg);
+        Request(const Request &src);
         ~Request();
         
         void                                    parseQuerys(std::string &uri);
