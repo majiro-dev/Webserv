@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 10:40:55 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/21 18:00:15 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:01:25 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ Response Methods::HandleGet(std::string &path, Config &location, Request &req)
             response.setBody(cgi.GetResult());
             for (int i = 0; args[i]; i++)
                 free(args[i]);
-            //free(args);
+            free(args);
             return response;
         }
         for (int i = 0; args[i]; i++)
             free(args[i]);
-        //free(args);
+        free(args);
         return Response(404);
     }
     if(Utils::DirIsValid(path))
