@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/21 18:32:44 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:45:53 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,12 @@ bool Client::getfinishReq()
 
 int Client::handleRecv()
 {
-    std::cout << "HANDLE RECV" << std::endl;
     if(this->_finishReq == true)
         return 0;
     int bytesReceived = 0;
     char buffer[BUFFER_SIZE + 1] = {0};
-    //print the request
-
     
     bytesReceived = recv(this->getSocket(), buffer, BUFFER_SIZE, 0);
-    std::cout << "REQUEST: " << this->_request << std::endl;
-    std::cout << "BUFFER" << buffer << std::endl;
-    std::cout << "REQUEST SIZE: " << this->_request.size() << std::endl;
     if (bytesReceived <= 0)
     {
         close(this->getSocket());

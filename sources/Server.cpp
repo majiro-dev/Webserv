@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:01:39 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/19 13:43:21 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:59:53 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,17 @@ Response Server::hadleRequest(Request &request, Config *location)
             this->_response.setBody("The size of the request body exceeds the allowed limit");
             Utils::logger("Request body exceeds the allowed limit", ERROR);
             return response;
-    } 
+    }
+    if(request.getHeader("Content-Length") == "" && request.getBody().size() != 0)
+    {
+        Utils::logger("Request without a defined Content- Length", ERROR);
+        return Response(411);
+    }
+    if(request.getProtocol() != "HTTP/1.1")
+    {
+        Utils::logger("Invalid protocol", ERROR);
+        return Response(505);
+    }
 	response.addHeaders("Server", this->_name);
     std::string redirect = location->GetRedirect();
     if(!redirect.empty())

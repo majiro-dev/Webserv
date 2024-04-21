@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 15:17:10 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:49:22 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
     {
         if (chdir(projectPath.c_str()) == -1)
         {
-            std::cout << "could not change directory to " << projectPath << std::endl;
+            Utils::logger("could not change directory to " + projectPath, ERROR);
             return (false);
         }
         dup2(fd[0], STDIN_FILENO);
@@ -93,7 +93,7 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
 
         if (execve(argv[0], argv, NULL) == -1)
         {
-            std::cout << "could not execute " << this->cgiPath << std::endl;
+            Utils::logger("could not execute " + this->cgiPath, ERROR);
             return (false);
         }
         alarm(5);
@@ -114,7 +114,6 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
                 while ((bytesRead = read(fd[0], buffer, 4096)) > 0)
                 {
                     this->result.append(buffer, bytesRead);
-                    std::cout << this->result << std::endl;
                 }
                 close(fd[0]);
                 return (true);

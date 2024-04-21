@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:16:53 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/17 17:02:01 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:59:06 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void Response::init_code_message()
     this->_code_msgs.insert(std::make_pair(403, "Forbiddent"));
     this->_code_msgs.insert(std::make_pair(404, "Not Found"));
     this->_code_msgs.insert(std::make_pair(405, "Method Not Allowed"));
+    this->_code_msgs.insert(std::make_pair(411, "Length Required"));
     this->_code_msgs.insert(std::make_pair(413, "Exceeds Body Limit"));
     this->_code_msgs.insert(std::make_pair(500, "Internal Server Error"));
     this->_code_msgs.insert(std::make_pair(501, "Unknown Method"));
@@ -103,7 +104,7 @@ void Response::setBody(std::string body)
 {
     this->_body += body;
     this->_bodyLen = body.size();
-    addHeaders("Content-lent", Utils::IntToString(this->_bodyLen));
+    addHeaders("Content-lenght", Utils::IntToString(this->_bodyLen));
 }
 
 std::string Response::getStatusMsg()

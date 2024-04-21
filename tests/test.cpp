@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 15:35:24 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 19:01:31 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,8 @@ void sendPart(int sock, const char* part) {
 std::string buildHttpRequest(int contentOption) {
 
     if (contentOption == 0) {
-        return "GET /testpost.txt HTTP/1.1\r\n"
+        return "GET / HTTP/1.1\r\n"
             "Host: example.com\r\n"
-            "Content-Length: " + getFileContentLength("data/testWroteFile.txt") + "\r\n"
             "\r\n" + std::string(getFileBuffer("data/testWroteFile.txt")) + "\r\n";
     }
     if (contentOption == 1) {
