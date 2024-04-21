@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 13:03:00 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/21 18:49:22 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/22 00:05:04 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,23 @@ bool Cgi::IsCgi(std::string path)
     return (false);
 }
 
+static std::string relativePath(std::string projectPath, std::string exePath)
+{
+    std::string aux;
+    aux = exePath.substr(0, exePath.find_last_of('/'));
+    return (Utils::slashCleaner(projectPath + "/" + aux));
+}
+
+static std::string fixArgv1(std::string path)
+{
+    std::string fixedPath = path.substr(path.find_last_of('/') + 1);
+    return (fixedPath);
+}
+
 bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
 {
     (void)env;
+    (void)projectPath;
     pid_t pid;
     int fd[2];
     int status;
@@ -80,16 +94,22 @@ bool Cgi::ExecuteCgi(char **env, char **argv, std::string projectPath)
     pid = fork();
     if (pid == 0)
     {
-        if (chdir(projectPath.c_str()) == -1)
+        if (chdir(relativePath(projectPath, argv[1]).c_str()) == -1)
         {
-            Utils::logger("could not change directory to " + projectPath, ERROR);
+            Utils::logger("could not change directory to " + relativePath(projectPath, argv[1]), ERROR);
             return (false);
-        }
+        }   
+
+        std::string aux = fixArgv1(argv[1]);
+        free(argv[1]);
+        argv[1] = strdup(aux.c_str());
+
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[1]);
         alarm(5);
+
 
         if (execve(argv[0], argv, NULL) == -1)
         {
