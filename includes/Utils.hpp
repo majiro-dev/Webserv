@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 21:02:34 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/18 00:24:13 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 22:23:58 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <iostream>
 # include <sstream>
 # include <unistd.h>
+# include <string.h>
 # include <ctime>
 
 # include <netinet/in.h>
