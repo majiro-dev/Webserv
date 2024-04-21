@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/17 15:25:00 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 19:45:05 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 Config::Config(void)
 {
+    this->valid = true;
     this->_parent = NULL;
     this->_root = "";
     this->_index = "";
@@ -29,6 +30,7 @@ Config::Config(void)
 
 Config::Config(const Config &src)
 {
+    this->valid = src.valid;
     this->_parent = NULL;
     this->_ports = src._ports;
     this->_host = src._host;
@@ -253,7 +255,7 @@ void Config::SetCgiPass(std::string cgi_pass)
     if (tokens.size() < 2)
     {
         std::string error = "Invalid cgi directory: " + cgi_pass;
-        Utils::log(error, RED);
+        Utils::logger(error, ERROR);
     }
     for (size_t i = 1; i < tokens.size(); i++)
     {
@@ -266,24 +268,17 @@ void Config::SetCgiPass(std::string cgi_pass)
 
 void Config::SetCgiExtension(std::string cgi_extension)
 {
-    try
+    std::vector <std::string> tokens = Utils::Tokenize(cgi_extension, " \t;");
+    if (tokens.size() != _cgis.size() + 1)
     {
-        std::vector <std::string> tokens = Utils::Tokenize(cgi_extension, " \t;");
-        if (tokens.size() != _cgis.size() + 1)
-        {
-            std::string error = "cgi_extension and cgi_pass mismatch";
-            Utils::exceptWithError(error);
-        }
-        for (size_t i = 1; i < tokens.size(); i++)
-        {
-            this->_cgis[i - 1].SetCgiExtension(tokens[i]);
-        }
+        Utils::logger("cgi_extension and cgi_pass mismatch", ERROR);
+        this->valid = false;
     }
-    catch(const std::exception& e)
+    for (size_t i = 1; i < tokens.size(); i++)
     {
-        std::cerr << e.what() << '\n';
+        this->_cgis[i - 1].SetCgiExtension(tokens[i]);
     }
-    
+
 }
 
 void Config::SetRedirect(std::string redirect)
@@ -379,6 +374,8 @@ void Config::ClearLocations(void)
 
 bool Config::IsValid(void)
 {
+    //if (!this->valid)
+      //  return (false);
     if (this->_ports.size() == 0)
     {
         std::string error = "No port specified";

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
+/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:38:23 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/16 13:01:27 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/21 19:40:37 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ class Config
         void                        SetLocationName(std::string locationName);
         void                        SetProjectPath(std::string projectPath);
 
+        bool valid;
     private:
         Config *                        _parent;
         std::vector<uint16_t>           _ports;
