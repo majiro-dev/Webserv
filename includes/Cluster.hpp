@@ -6,7 +6,7 @@
 /*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:40 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/16 12:57:36 by cmorales         ###   ########.fr       */
+/*   Updated: 2024/04/21 17:46:02 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ class Cluster
         Cluster(std::list<Config> &configs);
         ~Cluster();
 
-        void    addSocketsPoll();
+        int    addSocketsPoll(struct pollfd *fds);
         int     acceptConnection(unsigned int sock, int idxServer, sockaddr_in servSockAdrr);
-        void    checkServerSockets();
-        void    checkClientSockets();
+        void    checkServerSockets(struct pollfd *fds);
+        void    checkClientSockets(struct pollfd *fds);
         bool    init();
         void    run();
 };
