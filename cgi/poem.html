@@ -48,7 +48,7 @@
 			formData.append('word4', word4);
 
 			var xhr = new XMLHttpRequest();
-			xhr.open('GET', 'http://localhost:2020/cgi/poem.sh?word1=' + word1 + '&word2=' + word2 + '&word3=' + word3 + '&word4=' + word4, true);
+			xhr.open('GET', 'http://localhost:2020/cgis/poem.sh?word1=' + word1 + '&word2=' + word2 + '&word3=' + word3 + '&word4=' + word4, true);
 			xhr.onload = function () {
 				if (xhr.status === 200) {
 					document.getElementById('serverResponse').innerText = xhr.responseText;
