@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 20:59:16 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/19 13:59:06 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:32:44 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ Client::Client()
 Client::Client(int fd, sockaddr_in socketaddr)
    : _fd(fd), _socketaddr(socketaddr)
 {
+    this->_finishReq = false;
+    this->_request = "";
 }
 
 Client::~Client(){}
@@ -54,8 +56,8 @@ bool Client::getfinishReq()
 int Client::handleRecv()
 {
     std::cout << "HANDLE RECV" << std::endl;
-    //if(this->_finishReq == true)
-    //    return 0;
+    if(this->_finishReq == true)
+        return 0;
     int bytesReceived = 0;
     char buffer[BUFFER_SIZE + 1] = {0};
     //print the request

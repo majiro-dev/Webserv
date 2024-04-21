@@ -6,7 +6,7 @@
 /*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/19 13:56:40 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/21 18:40:52 by manujime         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ void Cluster::addSocketsPoll()
         {
             struct pollfd pollsock;
             pollsock.fd = clients[j]->getSocket();
+            
             if(clients[j]->getfinishReq())
                 pollsock.events = POLLOUT;
             else
@@ -136,79 +137,60 @@ void Cluster::checkServerSockets()
 
 void Cluster::checkClientSockets()
 {
-    std::cout << "Starting checkClientSockets" << std::endl;
     for (size_t i = 0; i < this->_servers.size(); i++)
     {
-        std::cout << "Checking server " << i << std::endl;
         std::vector<Client *> clients = this->_servers[i]->getClients();
         for (size_t j = 0; j < clients.size(); j++)
         {
-            std::cout << "Checking client " << j << " on server " << i << std::endl;
             for (size_t k = 0; k < this->_pollfds.size(); k++)
             {
-                this->_pollfds[k].fd = clients[j]->getSocket();
-                std::cout << "Checking pollfd " << k << " for client " << j << " on server " << i << std::endl;
-                std::cout << "pollfd k fd: " << this->_pollfds[k].fd << " client socket: " << clients[j]->getSocket() << std::endl;
                 if (this->_pollfds[k].revents & (POLLERR | POLLHUP) && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
-                    std::cout << "Client close the connection" << std::endl;
                     close(clients[j]->getSocket());
                     this->_servers[i]->removeClient(clients[j]);
                     this->_pollfds.erase(this->_pollfds.begin() + k);
-                    std::cout << "Client " << j << " on server " << i << " closed the connection" << std::endl;
                     break; 
                 }
                 if (this->_pollfds[k].revents & (POLLNVAL) && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
-                    std::cout << "Client socket is not open" << std::endl;
                     this->_servers[i]->removeClient(clients[j]);
                     this->_pollfds.erase(this->_pollfds.begin() + k);
-                    std::cout << "Client " << j << " on server " << i << " socket is not open" << std::endl;
                     break; 
                 }
                 if (this->_pollfds[k].revents & POLLIN && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
-                    std::cout << "Client " << j << " on server " << i << " has data to read" << std::endl;
                     int val_recv;
                     val_recv = clients[j]->handleRecv();
                     if(val_recv == 0)
                     {
                         this->_servers[i]->generateResponse(clients[j]->getRequest(), clients[j]->getSocketaddr());
-                        std::cout << "Generated response for client " << j << " on server " << i << std::endl;
                     }
                     if(val_recv < 0)
                     {
-                        std::cout << "Error reading from client " << j << " on server " << i << std::endl;
                         this->_servers[i]->removeClient(clients[j]);
                         this->_pollfds.erase(this->_pollfds.begin() + k);
-                        std::cout << "Error reading from client " << j << " on server " << i << std::endl;
                     }
                     break;
                 }
                 if (this->_pollfds[k].revents & POLLOUT && this->_pollfds[k].fd == clients[j]->getSocket())
                 {
-                    std::cout << "Client " << j << " on server " << i << " is ready to receive data" << std::endl;
                     int val_send;
                     val_send = clients[j]->sendResponse(this->_servers[i]->getResponse());
                     if(val_send == 0)
                     {
-                        //usleep(2000);
+                        usleep(2000);
                         this->_servers[i]->removeClient(clients[j]);
-                        std::cout << "Removed client " << j << " on server " << i << std::endl;
                     }
                     if(val_send == -1)
                     {
                         this->_servers[i]->removeClient(clients[j]);
-                        std::cout << "Failed to send response to client " << j << " on server " << i << std::endl;
                     }
                     this->_pollfds.erase(this->_pollfds.begin() + k);
-                    std::cout << "Erased pollfd " << k << " for client " << j << " on server " << i << std::endl;
                     break;
                 }
             }
         }
     }
-    std::cout << "Finished checkClientSockets" << std::endl;
 }
 
 void Cluster::run()
