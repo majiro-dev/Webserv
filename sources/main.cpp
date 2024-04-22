@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 11:11:11 by manujime          #+#    #+#             */
 /*   Updated: 2024/04/21 20:02:50 by manujime         ###   ########.fr       */
@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 {
     //atexit(leaks);
     std::string path;
+    //atexit(leaks);
     if (argc != 2)
     {
         std::cout << ERROR_ARGC;

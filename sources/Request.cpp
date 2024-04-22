@@ -111,7 +111,6 @@ void Request::parseHeader(std::string line)
     this->_headers.insert(std::make_pair(key, value)); 
 }
 
-//Mejorarlo****
 void Request::parseQuerys(std::string &uri)
 {
     std::string key;
@@ -127,9 +126,7 @@ void Request::parseQuerys(std::string &uri)
         this->_resource = uri;
         return ;
     }
-    //Obtener recursos
     this->_resource = uri.substr(0, len);
-    //Obtner cadenas de consultas
     querys = uri.substr(len + 1);
     
     len = querys.find('&');
