@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Cluster.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 17:29:22 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/21 18:40:52 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/22 12:44:31 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ Cluster::~Cluster()
 bool Cluster::init()
 {
     size_t servers = this->_configs.size();
-    //ModIFICAR PARA EL MAIN SE TERMINE EL BUCLE
     try
     {
         for(size_t i = 0; i < servers; i++)

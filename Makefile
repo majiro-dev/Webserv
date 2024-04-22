@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+         #
+#    By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/22 11:35:35 by manujime          #+#    #+#              #
-#    Updated: 2024/04/21 18:01:51 by manujime         ###   ########.fr        #
+#    Updated: 2024/04/22 12:37:58 by cmorales         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,12 +53,12 @@ fclean: clean
 re: fclean all
 
 r: re
-	@./$(NAME) tests/conf/server.conf
+	@./$(NAME) conf/server.conf
 
 l: re
-	@./$(NAME) tests/conf/server_linux.conf
+	@./$(NAME) conf/server_linux.conf
 
 val: re
-	@valgrind --leak-check=full ./$(NAME) tests/conf/server_linux.conf
+	@valgrind --leak-check=full ./$(NAME) conf/server_linux.conf
 
 .PHONY: all clean fclean re

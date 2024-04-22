@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 21:03:07 by cmorales          #+#    #+#             */
-/*   Updated: 2024/04/21 19:01:31 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/22 13:08:30 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,14 @@ std::string buildHttpRequest(int contentOption) {
                "\r\n";
     }
     else if (contentOption == 6) {
-                return "GET /tours/Math.py?first=5&second=10 HTTP/1.1\r\n"
-               "Host: example.com\r\n"
-               "\r\n";
+                return "GET / HTTP/1.1\r\n"
+                "Host: example.com\r\n"
+                "Content-Length: 10\r\n"
+                "\r\n"
+                "Hola mund";
     }
     else  if (contentOption == 7) {
-                return "GET /tours/print.sh?hola=mam HTTP/1.1\r\n"
+                return "GE /tours/print.sh?hola=mam HTTP/1.1\r\n"
                "Host: example.com\r\n"
                "\r\n";
     }
@@ -156,6 +158,7 @@ int main(int argc, char const **argv) {
     const char *part2 = "0\r\n\r\n";
 
     sendPart(sock, part1.c_str());
+    //sendPart(sock, part2);
 
     char buffer[1024] = {0};
     ssize_t valread = read(sock, buffer, sizeof(buffer));

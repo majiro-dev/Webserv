@@ -281,7 +281,6 @@ std::string Utils::Uint16ToString(uint16_t number)
 
 std::string Utils::slashCleaner(const std::string path)
 {
-    //cleans all duplicate slashes from a path until there are no / beside each other
     std::string newPath = path;
     size_t found = newPath.find("//");
     while (found != std::string::npos)

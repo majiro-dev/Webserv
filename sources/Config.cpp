@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manujime <manujime@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cmorales <moralesrojascr@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:02:10 by manujime          #+#    #+#             */
-/*   Updated: 2024/04/21 19:45:05 by manujime         ###   ########.fr       */
+/*   Updated: 2024/04/22 12:45:06 by cmorales         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ Config::Config(const Config &src)
 
 Config::~Config(void)
 {
-    /*this->_locations.clear();
-    this->_cgis.clear();
-    this->_error_pages.clear();*/
 }
 
 uint16_t Config::GetPort(void)
@@ -374,8 +371,8 @@ void Config::ClearLocations(void)
 
 bool Config::IsValid(void)
 {
-    //if (!this->valid)
-      //  return (false);
+    if (!this->valid)
+        return (false);
     if (this->_ports.size() == 0)
     {
         std::string error = "No port specified";
